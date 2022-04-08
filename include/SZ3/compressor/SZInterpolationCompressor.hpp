@@ -171,7 +171,7 @@ namespace SZ {
                 
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize=blocksize;
-                
+                /*
                 if (blockwiseTuning){
                     cur_blocksize=blocksize;
                 }
@@ -181,7 +181,7 @@ namespace SZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }
-                
+                */
                 //std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
