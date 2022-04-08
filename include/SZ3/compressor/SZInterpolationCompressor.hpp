@@ -1039,6 +1039,7 @@ namespace SZ {
 
                 } else {
                     T *d;
+                    SZ::Timer timer(true);
 
                     size_t i;
                     for (i = 3; i + 3 < n; i += 2) {
@@ -1056,6 +1057,8 @@ namespace SZ {
                         d = data + begin + (n - 1) * stride;
                         recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
                     }
+                    if (begin==0 and stride==1)
+                        timer.stop("Recover");
                 }
             }
 
