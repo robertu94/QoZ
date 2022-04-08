@@ -108,13 +108,14 @@ namespace SZ {
             size_t op_index=0;
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
-                if (alpha<0) {
+                //if (alpha<0) {
                     if (level >= 3) {
                         quantizer.set_eb(eb * eb_ratio);
                     } else {
                         quantizer.set_eb(eb);
                     }
-                }
+                //}
+                    /*
                 else if (alpha>=1){
                     
                     
@@ -136,18 +137,20 @@ namespace SZ {
                     quantizer.set_eb(eb*cur_ratio);
                 }
 
+               */
 
-
-                 
+                /*
                 if(anchor and level==interpolation_level){
                     //quantizer.print_unpred();
                     recover_grid(decData,global_dimensions,maxStep);
                     //break;
                     continue;
 
-                }
+                }*/
+                    /*
                 uint8_t cur_interpolator;
                 uint8_t cur_direction;
+
                 if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
@@ -164,9 +167,10 @@ namespace SZ {
                         }
                     }
                 }
-
+                */
                 size_t stride = 1U << (level - 1);
-                size_t cur_blocksize;
+                size_t cur_blocksize=blocksize;
+                /*
                 if (blockwiseTuning){
                     cur_blocksize=blocksize;
                 }
@@ -176,6 +180,7 @@ namespace SZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }
+                */
                 //std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
