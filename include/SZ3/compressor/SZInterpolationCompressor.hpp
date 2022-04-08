@@ -108,9 +108,9 @@ namespace SZ {
             else{
 
                 //quantizer.print_unpred();
-                 recover_grid(decData,global_dimensions,maxStep);
+                 //recover_grid(decData,global_dimensions,maxStep);
                     //break;
-                interpolation_level--;
+                //interpolation_level--;
 
                 
             }
