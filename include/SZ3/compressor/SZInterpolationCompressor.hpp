@@ -946,6 +946,124 @@ namespace SZ {
             return predict_error;
         }
 
+        double block_interpolation_1d_2(T *data, size_t begin, size_t end, size_t stride,
+                                      const std::string &interp_func,
+                                      const PredictorBehavior pb) {
+
+            size_t n = (end - begin) / stride + 1;
+            if (n <= 1) {
+                return 0;
+            }
+            double predict_error = 0;
+
+            size_t stride3x = 3 * stride;
+            size_t stride5x = 5 * stride;
+
+            if (interp_func == "linear" || n < 5) {
+                if (pb == PB_predict_overwrite) {
+
+                    
+                       
+
+                        for (size_t i = 1; i + 1 < n; i += 2) {
+                            T *d = data + begin + i * stride;
+                            quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
+                        }
+                      
+
+                        if (n % 2 == 0) {
+                            T *d = data + begin + (n - 1) * stride;
+                            if (n < 4) {
+                                
+                              
+                                quantize(d - data, *d, *(d - stride));
+                               
+
+                            } else {
+                               
+
+                                quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)));
+                                
+
+                            }
+                        }
+                       
+
+                    
+
+                } else {
+                    for (size_t i = 1; i + 1 < n; i += 2) {
+                        T *d = data + begin + i * stride;
+                        recover(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
+                    }
+                    if (n % 2 == 0) {
+                        T *d = data + begin + (n - 1) * stride;
+                        if (n < 4) {
+                            recover(d - data, *d, *(d - stride));
+                        } else {
+                            recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)));
+                        }
+                    }
+                }
+            } else {
+                if (pb == PB_predict_overwrite) {
+
+                    
+
+                    
+                    
+                        
+
+                        T *d;
+                        size_t i;
+                        for (i = 3; i + 3 < n; i += 2) {
+                            d = data + begin + i * stride;
+                            quantize(d - data, *d,
+                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
+                        }
+                       
+
+                        d = data + begin + stride;
+                        quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)));
+
+                        d = data + begin + i * stride;
+                        
+                        quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)));
+                        
+                        if (n % 2 == 0) {
+                            d = data + begin + (n - 1) * stride;
+                            quantize(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
+                        }
+                        
+                    
+
+                } else {
+                    T *d;
+
+                    size_t i;
+                    for (i = 3; i + 3 < n; i += 2) {
+                        d = data + begin + i * stride;
+                        recover(d - data, *d, interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
+                    }
+                    d = data + begin + stride;
+
+                    recover(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)));
+
+                    d = data + begin + i * stride;
+                    recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)));
+
+                    if (n % 2 == 0) {
+                        d = data + begin + (n - 1) * stride;
+                        recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
+                    }
+                }
+            }
+
+            return predict_error;
+        }
+
+
+
         double block_interpolation_2d(T *data, size_t begin1, size_t end1, size_t begin2, size_t end2, size_t stride1,size_t stride2,
                                       const std::string &interp_func,
                                       const PredictorBehavior pb,int tuning=0) {
@@ -1372,7 +1490,7 @@ namespace SZ {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                               k * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d(data, begin_offset,
+                        predict_error += block_interpolation_1d_2(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
@@ -1383,7 +1501,7 @@ namespace SZ {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
                                               k * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d(data, begin_offset,
+                        predict_error += block_interpolation_1d_2(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
@@ -1394,7 +1512,7 @@ namespace SZ {
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                               begin[dims[2]] * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d(data, begin_offset,
+                        predict_error += block_interpolation_1d_2(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
