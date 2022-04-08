@@ -91,7 +91,7 @@ namespace SZ {
             
 
             init();
-            SZ::timer timer(true);
+            SZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
             quant_inds = encoder.decode(buffer_pos, num_elements);
