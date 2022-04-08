@@ -176,7 +176,7 @@ namespace SZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }
-                std::cout<<cur_blocksize<<std::endl;
+                //std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
                         SZ::multi_dimensional_range<T, N>>(decData,
@@ -185,6 +185,7 @@ namespace SZ {
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
                 int count=0;
+                timer.stop("prep");
                 for (auto block = inter_begin; block != inter_end; ++block) {
 
                     auto start_idx=block.get_global_index();
@@ -216,7 +217,7 @@ namespace SZ {
                 
                 timer.stop("level");
                 timer.start();
-                std::cout<<count<<std::endl;
+                //std::cout<<count<<std::endl;
             }
             quantizer.postdecompress_data();
            
