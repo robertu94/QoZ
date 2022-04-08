@@ -1057,7 +1057,7 @@ namespace SZ {
                         d = data + begin + (n - 1) * stride;
                         recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
                     }
-                    if (stride==1)
+                    if ((begin==0 or begin==512 or begin==512*512) and (stride==1 or stride==512 or stride==512*512) )
                         timer.stop("Recover");
                 }
             }
