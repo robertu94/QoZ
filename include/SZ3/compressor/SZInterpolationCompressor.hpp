@@ -800,7 +800,8 @@ namespace SZ {
 
         double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,
                                       const std::string &interp_func,
-                                      const PredictorBehavior pb,int tuning=0) {
+                                      const PredictorBehavior pb) {
+            int tuning=0;
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
@@ -1359,7 +1360,7 @@ namespace SZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0) {
+                            const std::string &interp_func, const int direction, uint stride = 1) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             if(direction!=6){
@@ -1374,7 +1375,7 @@ namespace SZ {
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -1385,7 +1386,7 @@ namespace SZ {
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
@@ -1396,7 +1397,7 @@ namespace SZ {
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
+                                                                stride * dimension_offsets[dims[2]], interp_func, pb);
                     }
                 }
             }
