@@ -150,7 +150,7 @@ namespace SZ {
                     
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
-                /*
+                
                 if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
@@ -167,7 +167,7 @@ namespace SZ {
                         }
                     }
                 }
-                */
+                
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize=blocksize;
                 
