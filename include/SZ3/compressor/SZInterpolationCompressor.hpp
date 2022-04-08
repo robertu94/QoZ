@@ -659,7 +659,7 @@ namespace SZ {
 
             dimension_offsets[N - 1] = 1;
             for (int i = N - 2; i >= 0; i--) {
-                dimension_offsets[i] = dimension_offsets[i + 1] * global_dimensions[i + 1];
+                dimension_offsets[i] = dimension_offsets[i +1] * global_dimensions[i + 1];
             }
 
             dimension_sequences = std::vector<std::array<int, N>>();
