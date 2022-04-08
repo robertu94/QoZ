@@ -209,7 +209,7 @@ namespace SZ {
                                         interpolators[cur_interpolator], cur_direction, stride);
                     }
                     if (count==0)
-                        timer.stop("first block")
+                        timer.stop("first block");
                     count++;
 
                 }
