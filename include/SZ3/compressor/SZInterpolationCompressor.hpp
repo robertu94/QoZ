@@ -139,14 +139,14 @@ namespace SZ {
 
                */
 
-                /*
+                
                 if(anchor and level==interpolation_level){
                     //quantizer.print_unpred();
                     recover_grid(decData,global_dimensions,maxStep);
                     //break;
                     continue;
 
-                }*/
+                }
                     
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
