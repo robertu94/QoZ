@@ -1361,6 +1361,7 @@ namespace SZ {
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
                             const std::string &interp_func, const int direction, uint stride = 1) {
+            int tuning=0;
             double predict_error = 0;
             size_t stride2x = stride * 2;
             if(direction!=6){
