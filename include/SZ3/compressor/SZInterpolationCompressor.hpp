@@ -195,19 +195,19 @@ namespace SZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-             
+                    /*             
                     if (blockwiseTuning){
                         
     
                         block_interpolation(decData, start_idx, end_idx, PB_recover,
                                         interpolators[interpAlgo_list[op_index]], interpDirection_list[op_index], stride);
                         op_index++;
-                    }
+                    }*/
 
-                    else{
+                   //else{
                         block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_interpolator], cur_direction, stride);
-                    }
+                   // }
                     if (count==0)
                         timer.stop("first block");
                     count++;
@@ -1039,7 +1039,7 @@ namespace SZ {
 
                 } else {
                     T *d;
-                    SZ::Timer timer(true);
+                    //SZ::Timer timer(true);
 
                     size_t i;
                     for (i = 3; i + 3 < n; i += 2) {
@@ -1057,8 +1057,8 @@ namespace SZ {
                         d = data + begin + (n - 1) * stride;
                         recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)));
                     }
-                    if ((begin==0 or begin==512 or begin==512*512) and (stride==1 or stride==512 or stride==512*512) )
-                        timer.stop("Recover");
+                   // if ((begin==0 or begin==512 or begin==512*512) and (stride==1 or stride==512 or stride==512*512) )
+                        //timer.stop("Recover");
                 }
             }
 
@@ -1485,7 +1485,7 @@ namespace SZ {
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction!=6){
+            //if(direction!=6){
             
 
                 const std::array<int, N> dims = dimension_sequences[direction];
@@ -1522,8 +1522,8 @@ namespace SZ {
                                                                 stride * dimension_offsets[dims[2]], interp_func, pb);
                     }
                 }
-            }
-            
+            //}
+            /*
             else{
 
                 const std::array<int, N> dims = dimension_sequences[0];
@@ -1632,7 +1632,7 @@ namespace SZ {
 
 
 
-            }
+            }*/
 
 
 
