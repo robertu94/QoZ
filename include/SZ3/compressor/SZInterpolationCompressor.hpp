@@ -800,8 +800,8 @@ namespace SZ {
 
         double block_interpolation_1d(T *data, size_t begin, size_t end, size_t stride,
                                       const std::string &interp_func,
-                                      const PredictorBehavior pb) {
-            int tuning=0;
+                                      const PredictorBehavior pb,int tuning=0) {
+
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
                 return 0;
