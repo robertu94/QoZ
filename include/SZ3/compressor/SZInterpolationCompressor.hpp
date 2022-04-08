@@ -184,6 +184,8 @@ namespace SZ {
                                                            cur_blocksize, 0);
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
+                timer.stop("level prepro");
+                timer.start();
                 for (auto block = inter_begin; block != inter_end; ++block) {
                     auto start_idx=block.get_global_index();
                     auto end_idx = start_idx;
@@ -1355,7 +1357,7 @@ namespace SZ {
                             const std::string &interp_func, const int direction, uint stride = 1,int tuning=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
-            if(direction!=6){
+            //if(direction!=6){
             
 
                 const std::array<int, N> dims = dimension_sequences[direction];
@@ -1392,8 +1394,8 @@ namespace SZ {
                                                                 stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
                     }
                 }
-            }
-
+            //}
+            /*
             else{
 
                 const std::array<int, N> dims = dimension_sequences[0];
@@ -1503,6 +1505,7 @@ namespace SZ {
 
 
             }
+            */
 
 
 
