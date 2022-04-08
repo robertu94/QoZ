@@ -40,6 +40,7 @@ namespace SZ {
         }
 
         T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) {
+
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
@@ -90,7 +91,7 @@ namespace SZ {
             
 
             init();
-            
+            SZ::timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
             quant_inds = encoder.decode(buffer_pos, num_elements);
@@ -98,7 +99,8 @@ namespace SZ {
             encoder.postprocess_decode();
 
             lossless.postdecompress_data(buffer);
-            
+            timer.stop("decode");
+            timer.start();
             double eb = quantizer.get_eb();
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
@@ -206,6 +208,8 @@ namespace SZ {
                     }
 
                 }
+                timer.stop("level");
+                timer.start();
             }
             quantizer.postdecompress_data();
            
@@ -659,7 +663,7 @@ namespace SZ {
 
             dimension_offsets[N - 1] = 1;
             for (int i = N - 2; i >= 0; i--) {
-                dimension_offsets[i] = dimension_offsets[i +1] * global_dimensions[i + 1];
+                dimension_offsets[i] = dimension_offsets[i + 1] * global_dimensions[i + 1];
             }
 
             dimension_sequences = std::vector<std::array<int, N>>();
