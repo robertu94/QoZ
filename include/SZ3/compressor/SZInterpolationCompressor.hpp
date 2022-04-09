@@ -91,7 +91,7 @@ namespace SZ {
             
 
             init();
-            SZ::Timer timer(true);
+            //SZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
             quant_inds = encoder.decode(buffer_pos, num_elements);
@@ -99,8 +99,8 @@ namespace SZ {
             encoder.postprocess_decode();
 
             lossless.postdecompress_data(buffer);
-            timer.stop("decode");
-            timer.start();
+            //timer.stop("decode");
+            //timer.start();
             double eb = quantizer.get_eb();
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
@@ -197,8 +197,8 @@ namespace SZ {
                                                            cur_blocksize, 0);
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
-                int count=0;
-                timer.stop("prep");
+                
+                //timer.stop("prep");
                 for (auto block = inter_begin; block != inter_end; ++block) {
 
                     auto start_idx=block.get_global_index();
@@ -222,14 +222,11 @@ namespace SZ {
                         block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_interpolator], cur_direction, stride);
                    // }
-                    if (count==0)
-                        timer.stop("first block");
-                    count++;
+                   
 
                 }
                 
-                timer.stop("level");
-                timer.start();
+                
                 //std::cout<<count<<std::endl;
             }
             quantizer.postdecompress_data();
