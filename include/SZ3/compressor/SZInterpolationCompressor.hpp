@@ -1507,33 +1507,33 @@ namespace SZ {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                               k * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d_2(data, begin_offset,
+                        predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[0]] - begin[dims[0]]) *
                                                                 dimension_offsets[dims[0]],
-                                                                stride * dimension_offsets[dims[0]], interp_func, pb);
+                                                                stride * dimension_offsets[dims[0]], interp_func, pb,tuning);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                     for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
                                               k * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d_2(data, begin_offset,
+                        predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[1]] - begin[dims[1]]) *
                                                                 dimension_offsets[dims[1]],
-                                                                stride * dimension_offsets[dims[1]], interp_func, pb);
+                                                                stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
                     }
                 }
                 for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                         size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                               begin[dims[2]] * dimension_offsets[dims[2]];
-                        predict_error += block_interpolation_1d_2(data, begin_offset,
+                        predict_error += block_interpolation_1d(data, begin_offset,
                                                                 begin_offset +
                                                                 (end[dims[2]] - begin[dims[2]]) *
                                                                 dimension_offsets[dims[2]],
-                                                                stride * dimension_offsets[dims[2]], interp_func, pb);
+                                                                stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
                     }
                 }
             //}
