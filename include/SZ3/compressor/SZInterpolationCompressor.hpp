@@ -108,10 +108,10 @@ namespace SZ {
             /*
             else{
 
-                //quantizer.print_unpred();
-                 //recover_grid(decData,global_dimensions,maxStep);
-                    //break;
-                //interpolation_level--;
+             
+                 recover_grid(decData,global_dimensions,maxStep);
+                    
+                interpolation_level--;
 
                 
             }*/
@@ -156,7 +156,7 @@ namespace SZ {
                     
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
-                
+                /*
                 if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
@@ -173,6 +173,7 @@ namespace SZ {
                         }
                     }
                 }
+                */
                 
                 
                 size_t stride = 1U << (level - 1);
