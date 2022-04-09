@@ -105,7 +105,7 @@ namespace SZ {
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
             }
-            /*
+            
             else{
 
              
@@ -114,20 +114,20 @@ namespace SZ {
                 interpolation_level--;
 
                 
-            }*/
+            }
             size_t op_index=0;
 
 
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
-               // if (alpha<0) {
+                if (alpha<0) {
                     if (level >= 3) {
                         quantizer.set_eb(eb * eb_ratio);
                     } else {
                         quantizer.set_eb(eb);
                     }
-               // }
-                /*
+                }
+                
                 else if (alpha>=1){
                     
                     
@@ -150,13 +150,13 @@ namespace SZ {
                 }
 
                
-               */
+               
                 
                 
                     
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
-                /*
+                
                 if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
@@ -173,12 +173,12 @@ namespace SZ {
                         }
                     }
                 }
-                */
+                
                 
                 
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize=blocksize;
-                /*
+                
                 if (blockwiseTuning){
                     cur_blocksize=blocksize;
                 }
@@ -188,7 +188,7 @@ namespace SZ {
                 else{
                     cur_blocksize=blocksize*stride;
                 }
-                */
+                
                 //std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
@@ -209,7 +209,7 @@ namespace SZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-                              
+                    /*
                     if (blockwiseTuning){
                         
     
@@ -217,11 +217,11 @@ namespace SZ {
                                         interpolators[interpAlgo_list[op_index]], interpDirection_list[op_index], stride);
                         op_index++;
                     }
-
-                   else{
+                   */
+                   //else{
                         block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
                                         interpolators[cur_interpolator], cur_direction, stride);
-                    }
+                   // }
                     if (count==0)
                         timer.stop("first block");
                     count++;
