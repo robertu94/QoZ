@@ -157,7 +157,7 @@ namespace SZ {
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
                 
-                if(!blockwiseTuning){
+                //if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
                         cur_direction=direction_sequence_id;
@@ -172,17 +172,18 @@ namespace SZ {
                             cur_direction=interpDirection_list[levelwise_predictor_levels-1];
                         }
                     }
-                }
+                //}
                 
                 
                 
                 size_t stride = 1U << (level - 1);
-                size_t cur_blocksize=blocksize;
+                size_t cur_blocksize;
                 
-                if (blockwiseTuning){
-                    cur_blocksize=blocksize;
-                }
-                else if (fixBlockSize>0){
+                //if (blockwiseTuning){
+                 //   cur_blocksize=blocksize;
+                //}
+                //else 
+                    if (fixBlockSize>0){
                     cur_blocksize=fixBlockSize;
                 }
                 else{
@@ -273,13 +274,6 @@ namespace SZ {
             double eb = quantizer.get_eb();
 
 //            printf("Absolute error bound = %.5f\n", eb);
-            if(!anchor){
-                quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
-            }
-
-            
-            double predict_error=0.0;
-          
 
             if (start_level<=0 or start_level>interpolation_level ){
                 start_level=interpolation_level;
@@ -288,6 +282,25 @@ namespace SZ {
             if(end_level>=start_level){
                 end_level=0;
             }
+
+
+            if(!anchor){
+                quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
+            }
+            else if (start_level==interpolation_level){
+                if(tuning){
+                    conf.quant_bin_counts[start_level-1]=quant_inds.size();
+                }
+                    
+                build_grid(conf,data,maxStep,tuning);
+                start_level--;
+            }
+
+            
+            double predict_error=0.0;
+          
+
+            
             int levelwise_predictor_levels=conf.interpAlgo_list.size();
 
             
@@ -325,26 +338,18 @@ namespace SZ {
                     quantizer.set_eb(eb*cur_ratio);
                 }
               
-                if (anchor and level==interpolation_level){
-                    if(tuning){
-                        
-                        conf.quant_bin_counts[level-1]=quant_inds.size();
-
-                    }
+               
                     
-                    build_grid(conf,data,maxStep,tuning);
                     
                    
 
 
 
-                    continue;
-                }
-
+              
 
                 int cur_interpolator;
                 int cur_direction;
-                if(!conf.blockwiseTuning){
+                //if(!conf.blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
                         cur_direction=direction_sequence_id;
@@ -359,14 +364,15 @@ namespace SZ {
                             cur_direction=conf.interpDirection_list[levelwise_predictor_levels-1];
                         }
                     }
-                }
+                //}
                 
                 uint stride = 1U << (level - 1);
                 size_t cur_blocksize;
-                if (conf.blockwiseTuning){
+                //if (conf.blockwiseTuning){
                     cur_blocksize=blocksize;
-                }
-                else if (conf.fixBlockSize>0){
+                //}
+                //else 
+                    if (conf.fixBlockSize>0){
                     cur_blocksize=conf.fixBlockSize;
                 }
                 else{
@@ -398,7 +404,7 @@ namespace SZ {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
                     }
-
+                    /*
                     if (conf.blockwiseTuning){
                         size_t cur_element_num=1;
                         for (int i=0;i<N;i++){
@@ -481,16 +487,16 @@ namespace SZ {
 
                     
 
-
+                    */
 
                     
 
-                    else{
+                    //else{
                     
                     
                         predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                             interpolators[cur_interpolator], cur_direction, stride,tuning);
-                    }
+                    //}
                 
                     
                 }
