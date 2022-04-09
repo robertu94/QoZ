@@ -105,6 +105,7 @@ namespace SZ {
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
             }
+            /*
             else{
 
                 //quantizer.print_unpred();
@@ -113,20 +114,20 @@ namespace SZ {
                 //interpolation_level--;
 
                 
-            }
+            }*/
             size_t op_index=0;
 
 
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
-                if (alpha<0) {
+               // if (alpha<0) {
                     if (level >= 3) {
                         quantizer.set_eb(eb * eb_ratio);
                     } else {
                         quantizer.set_eb(eb);
                     }
-                }
-                    
+               // }
+                /*
                 else if (alpha>=1){
                     
                     
@@ -149,7 +150,7 @@ namespace SZ {
                 }
 
                
-
+               */
                 
                 
                     
