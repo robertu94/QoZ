@@ -209,7 +209,7 @@ namespace SZ {
         assert(dims.size() == N);
         assert(sample_dims.size() == N);
         SZ::Timer timer(true);
-        size_t num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<>(T));
+        size_t num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<T>());
 
         size_t dmin = *std::min_element(dims.begin(), dims.end());
         sampling_block = dmin;
