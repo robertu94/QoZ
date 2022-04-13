@@ -179,7 +179,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
             }
         
         }
-        delete sz;
+        //delete sz;
         
         conf.interpAlgo=best_interpAlgo;
         conf.interpDirection=best_interpDirection;
@@ -256,7 +256,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
             
             sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
         }
-        delete sz;
+        //delete sz;
 
         conf.interpAlgo_list=best_interpAlgo_list;
         conf.interpDirection_list=best_interpDirection_list;
@@ -963,7 +963,7 @@ double Tuning(SZ::Config &conf, T *data){
                     }
                     size_t sampleOutSize;
                     auto cmprData=sz->encoding_lossless(sampleOutSize);
-                    delete sz;
+                    //delete sz;
                     delete[]cmprData;
                     best_lorenzo_ratio=ele_num * 1.0 * sizeof(T) / sampleOutSize;
 
@@ -978,7 +978,7 @@ double Tuning(SZ::Config &conf, T *data){
                     }
                     size_t sampleOutSize;
                     auto cmprData=sz->encoding_lossless(sampleOutSize);
-                    delete sz;
+                    //delete sz;
                     delete[]cmprData;
                     
                     best_lorenzo_ratio=ele_num * 1.0 * sizeof(T) / sampleOutSize;
@@ -2030,9 +2030,9 @@ double Tuning(SZ::Config &conf, T *data){
                     }
                     size_t sampleOutSize;
                     auto cmprData=sz->encoding_lossless(sampleOutSize);
-                    //delete sz;
+                   
                     delete[]cmprData;
-                    delete sz;
+                    //delete sz;
                     bitrate=8*double(sampleOutSize)/ele_num;
 
                    
@@ -2104,7 +2104,7 @@ double Tuning(SZ::Config &conf, T *data){
                     size_t sampleOutSize;
                     auto cmprData=sz->encoding_lossless(sampleOutSize);
                     delete[]cmprData;
-                    delete sz;
+                    //delete sz;
                     bitrate=8*double(sampleOutSize)/ele_num;
                   
 
@@ -2242,9 +2242,9 @@ double Tuning(SZ::Config &conf, T *data){
                         }
                         size_t sampleOutSize;
                         auto cmprData=sz->encoding_lossless(sampleOutSize);
-                        //delete sz;
+                       
                         delete[]cmprData;
-                        delete sz;
+                        //delete sz;
                         bitrate_r=8*double(sampleOutSize)/ele_num;
 
                        
@@ -2316,7 +2316,7 @@ double Tuning(SZ::Config &conf, T *data){
                         size_t sampleOutSize;
                         auto cmprData=sz->encoding_lossless(sampleOutSize);
                         delete[]cmprData;
-                        delete sz;
+                        //delete sz;
                         bitrate_r=8*double(sampleOutSize)/ele_num;
                       
 
