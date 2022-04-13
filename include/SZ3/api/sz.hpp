@@ -50,7 +50,7 @@ conf.errorBoundMode = SZ::EB_ABS; // refer to def.hpp for all supported error bo
 conf.absErrorBound = 1E-3; // absolute error bound 1e-3
 char *compressedData = SZ_compress(conf, data, outSize);
  */
-/*
+
 template<class T>
 char *SZ_compress(const SZ::Config &config, const T *data, size_t &outSize) {
     SZ::Config conf(config);
@@ -82,8 +82,8 @@ char *SZ_compress(const SZ::Config &config, const T *data, size_t &outSize) {
     }
     return cmpData;
 }
-*/
 
+/*
 template<class T>
 char *SZ_compress(const SZ::Config &config, T *data, size_t &outSize) {
     char *cmpData;
@@ -114,7 +114,7 @@ char *SZ_compress(const SZ::Config &config, T *data, size_t &outSize) {
     }
     return cmpData;
 }
-
+*/
 /**
  * API for decompression
  * Similar with SZ_decompress(SZ::Config &conf, char *cmpData, size_t cmpSize)
@@ -133,11 +133,13 @@ char *SZ_compress(const SZ::Config &config, T *data, size_t &outSize) {
 
  */
 template<class T>
-void SZ_decompress(SZ::Config &conf, char *cmpData, size_t cmpSize, T *&decData) {
+void SZ_decompress(SZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
     //SZ::Timer timer(true);
+    SZ::Config conf(config);
     {
         //load config
         int confSize;
+        
         memcpy(&confSize, cmpData + (cmpSize - sizeof(int)), sizeof(int));
         SZ::uchar const *cmpDataPos = (SZ::uchar *) cmpData + (cmpSize - sizeof(int) - confSize);
         conf.load(cmpDataPos);
