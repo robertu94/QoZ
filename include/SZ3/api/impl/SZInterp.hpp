@@ -1966,7 +1966,7 @@ double Tuning(SZ::Config &conf, T *data){
                                                                    SZ::Lossless_zstd());
                     for (int k=0;k<num_sampled_blocks;k++){
                         size_t sampleOutSize;
-                        cur_block=sampled_blocks[i];
+                        cur_block=sampled_blocks[k];
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
@@ -2041,7 +2041,7 @@ double Tuning(SZ::Config &conf, T *data){
                     auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, SZ::HuffmanEncoder<int>(), SZ::Lossless_zstd());
                     for (int k=0;k<num_sampled_blocks;k++){
                         size_t sampleOutSize;
-                        cur_block=sampled_blocks[i];
+                        cur_block=sampled_blocks[k];
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
@@ -2179,7 +2179,7 @@ double Tuning(SZ::Config &conf, T *data){
                                                                        SZ::Lossless_zstd());
                         for (int k=0;k<num_sampled_blocks;k++){
                             size_t sampleOutSize;
-                            cur_block=sampled_blocks[i];
+                            cur_block=sampled_blocks[k];
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
@@ -2254,7 +2254,7 @@ double Tuning(SZ::Config &conf, T *data){
                         auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, SZ::HuffmanEncoder<int>(), SZ::Lossless_zstd());
                         for (int k=0;k<num_sampled_blocks;k++){
                             size_t sampleOutSize;
-                            cur_block=sampled_blocks[i];
+                            cur_block=sampled_blocks[k];
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
