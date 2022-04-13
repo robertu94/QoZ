@@ -1969,8 +1969,8 @@ double Tuning(SZ::Config &conf, T *data){
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
-                            for(size_t i=0;i<per_block_ele_num;i++){
-                                T value=sampled_blocks[i]-cur_block[i];
+                            for(size_t j=0;j<per_block_ele_num;j++){
+                                T value=sampled_blocks[i][j]-cur_block[j];
                                 square_error+=value*value;
                             }
                         }
@@ -2044,8 +2044,8 @@ double Tuning(SZ::Config &conf, T *data){
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
-                            for(size_t i=0;i<per_block_ele_num;i++){
-                                T value=sampled_blocks[i]-cur_block[i];
+                            for(size_t j=0;j<per_block_ele_num;j++){
+                                T value=sampled_blocks[i][j]-cur_block[j];
                                 square_error+=value*value;
                             }
                         }
@@ -2181,8 +2181,8 @@ double Tuning(SZ::Config &conf, T *data){
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
-                                for(size_t i=0;i<per_block_ele_num;i++){
-                                    T value=sampled_blocks[i]-cur_block[i];
+                                for(size_t j=0;j<per_block_ele_num;j++){
+                                    T value=sampled_blocks[i][j]-cur_block[j];
                                     square_error+=value*value;
                                 }
                             }
@@ -2256,8 +2256,8 @@ double Tuning(SZ::Config &conf, T *data){
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
-                                for(size_t i=0;i<per_block_ele_num;i++){
-                                    T value=sampled_blocks[i]-cur_block[i];
+                                for(size_t j=0;j<per_block_ele_num;j++){
+                                    T value=sampled_blocks[i][j]-cur_block[j];
                                     square_error+=value*value;
                                 }
                             }
