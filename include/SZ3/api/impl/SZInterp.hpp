@@ -2376,7 +2376,7 @@ double Tuning(SZ::Config &conf, T *data){
                             bestb=bitrate;
                             bestm=metric;
                             useInterp=false;
-                            printf("Best: %.4f %.2f\n"bestb,bestm);
+                            printf("Best: %.4f %.2f\n",bestb,bestm);
                         }
 
 
