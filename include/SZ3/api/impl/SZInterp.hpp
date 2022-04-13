@@ -130,7 +130,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
         for (int i=0;i<element_num;i++){
             orig_data[i]=data[i];
         }
-        auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+        auto sz = SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                         SZ::LinearQuantizer<T>(conf.absErrorBound),
                         SZ::HuffmanEncoder<int>(),
                         SZ::Lossless_zstd());
@@ -144,7 +144,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
                 if (blockwise){
                     double cur_predloss;
 
-                    auto cmprData = sz->compress(conf,data,cur_cmpsize,2);
+                    auto cmprData = sz.compress(conf,data,cur_cmpsize,2);
                     delete []cmprData;
                     cur_predloss=conf.decomp_square_error;
                    
@@ -159,7 +159,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
                     }
                 }
                 else{
-                    auto cmprData=sz->compress(conf,data,cur_cmpsize,0);
+                    auto cmprData=sz.compress(conf,data,cur_cmpsize,0);
                     delete []cmprData;
                    
                     if (best_cmpsize==0 or cur_cmpsize<best_cmpsize){
@@ -214,7 +214,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
 
             orig_data[i]=data[i];
         }
-        auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+        auto sz = SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                             SZ::LinearQuantizer<T>(conf.absErrorBound),
                             SZ::HuffmanEncoder<int>(),
                             SZ::Lossless_zstd());
@@ -228,7 +228,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
                     conf.interpDirection=interp_direction;
                     size_t cur_cmpsize;
                     
-                    auto cmprData = sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+                    auto cmprData = sz.compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
                     delete []cmprData;
                     double cur_loss=conf.decomp_square_error;
                     if ( cur_loss<best_loss){
@@ -257,7 +257,7 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
             best_interpAlgo_list[start_level-1]=best_interpAlgo;
             best_interpDirection_list[start_level-1]=best_interpDirection;
             
-            auto cmprData = sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+            auto cmprData = sz.compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
             delete []cmprData;
         }
         //delete sz;
@@ -1051,7 +1051,7 @@ double Tuning(SZ::Config &conf, T *data){
 
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
-                auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+                auto sz = SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                                             SZ::LinearQuantizer<T>(conf.absErrorBound),
                                             SZ::HuffmanEncoder<int>(),
                                             SZ::Lossless_zstd());
@@ -1084,7 +1084,7 @@ double Tuning(SZ::Config &conf, T *data){
 
                                 size_t outSize=0;
                                
-                                auto cmprData =sz->compress(conf, cur_block.data(), outSize,2,start_level,end_level);
+                                auto cmprData =sz.compress(conf, cur_block.data(), outSize,2,start_level,end_level);
                                 delete []cmprData;
                                 
                                 
@@ -1131,7 +1131,7 @@ double Tuning(SZ::Config &conf, T *data){
                         size_t sampleOutSize;
                         cur_block=sampled_blocks[i];
                         
-                        auto cmprData = sz->compress(conf, cur_block.data(), sampleOutSize,1);
+                        auto cmprData = sz.compress(conf, cur_block.data(), sampleOutSize,1);
                         delete []cmprData;
                        
                         block_q_bins.push_back(conf.quant_bins);
@@ -1165,9 +1165,9 @@ double Tuning(SZ::Config &conf, T *data){
                         
                     size_t outSize=0;
                
-                    auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
+                    auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
                     
-                    delete sz;
+                    //delete sz;
                     delete []cmprData;
                     best_interp_cr=ele_num*1.0*sizeof(T)/outSize;
                     
@@ -1191,7 +1191,7 @@ double Tuning(SZ::Config &conf, T *data){
                 
                 uint8_t bestInterpAlgo = SZ::INTERP_ALGO_CUBIC;
                 uint8_t bestDirection = 0;
-                auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+                auto sz = SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                                             SZ::LinearQuantizer<T>(conf.absErrorBound),
                                             SZ::HuffmanEncoder<int>(),
                                             SZ::Lossless_zstd());
@@ -1215,7 +1215,7 @@ double Tuning(SZ::Config &conf, T *data){
                         for (int i=0;i<num_sampled_blocks;i++){
                             size_t sampleOutSize;
                             std::vector<T> cur_block=sampled_blocks[i];
-                            auto cmprData = sz->compress(conf, cur_block.data(), sampleOutSize,1);
+                            auto cmprData = sz.compress(conf, cur_block.data(), sampleOutSize,1);
                             delete []cmprData;
 
                     
@@ -1246,7 +1246,7 @@ double Tuning(SZ::Config &conf, T *data){
                        
                         size_t outSize=0;
                    
-                        auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
+                        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
                         
                         delete []cmprData;
 
@@ -1269,7 +1269,7 @@ double Tuning(SZ::Config &conf, T *data){
                     }
 
                 }
-                delete sz;
+                //delete sz;
                 conf.interpAlgo=bestInterpAlgo;
                 conf.interpDirection=bestDirection;
                 
@@ -1599,7 +1599,7 @@ double Tuning(SZ::Config &conf, T *data){
               
             
             
-            auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+            auto sz =  SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                             SZ::LinearQuantizer<T>(conf.absErrorBound),
                             SZ::HuffmanEncoder<int>(),
                             SZ::Lossless_zstd());
@@ -1642,7 +1642,7 @@ double Tuning(SZ::Config &conf, T *data){
                         
 
                         size_t outSize=0;
-                        auto cmprData = sz->compress(conf, cur_block.data(), outSize,1);
+                        auto cmprData = sz.compress(conf, cur_block.data(), outSize,1);
                         delete []cmprData;
                         
                        
@@ -1728,7 +1728,7 @@ double Tuning(SZ::Config &conf, T *data){
                     size_t outSize=0;
                     
            
-                    auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
+                    auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
                     
                     delete []cmprData;
                    
@@ -1799,7 +1799,7 @@ double Tuning(SZ::Config &conf, T *data){
                             eb_fixrate=rel_bound>1e-4?1.2:1.1;
                         else
                             eb_fixrate=rel_bound>1e-4?0.8:0.9;
-                        sz->set_eb(conf.absErrorBound*eb_fixrate);
+                        sz.set_eb(conf.absErrorBound*eb_fixrate);
                         
                         square_error=0.0;
                         double metric_r=0.0;
@@ -1810,7 +1810,7 @@ double Tuning(SZ::Config &conf, T *data){
                             
 
                             size_t outSize=0;
-                            auto cmprData = sz->compress(conf, cur_block.data(), outSize,1);
+                            auto cmprData = sz.compress(conf, cur_block.data(), outSize,1);
                             delete []cmprData;
                            
                             block_q_bins.push_back(conf.quant_bins);
@@ -1882,8 +1882,8 @@ double Tuning(SZ::Config &conf, T *data){
                         outSize=0;
                         
 
-                        auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
-                        sz->set_eb(conf.absErrorBound);
+                        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+                        sz.set_eb(conf.absErrorBound);
                         delete []cmprData;
                         
 
@@ -1943,7 +1943,7 @@ double Tuning(SZ::Config &conf, T *data){
 
                 }
             }
-            delete sz;
+           // delete sz;
             
 
             
@@ -2157,7 +2157,7 @@ double Tuning(SZ::Config &conf, T *data){
                     std::vector<double>().swap(flattened_cur_blocks);
                         
                 }
-                printf("%.4f %.2f\n",bitrate,metric);
+                //printf("%.4f %.2f\n",bitrate,metric);
                     
 
                 if ( (conf.tuningTarget!=SZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==SZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
@@ -2374,8 +2374,8 @@ double Tuning(SZ::Config &conf, T *data){
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
-                        printf("%.4f %.2f\n",bitrate_r,metric_r);
-                       printf("%.4f %.2f\n",bestb,reg);
+                      //  printf("%.4f %.2f\n",bitrate_r,metric_r);
+                       //printf("%.4f %.2f\n",bestb,reg);
                         
                         //conf.absErrorBound=orig_eb;
 
@@ -2386,7 +2386,7 @@ double Tuning(SZ::Config &conf, T *data){
                             bestb=bitrate;
                             bestm=metric;
                             useInterp=false;
-                            printf("Best: %.4f %.2f\n",bestb,bestm);
+                            //printf("Best: %.4f %.2f\n",bestb,bestm);
                         }
 
 
@@ -2936,7 +2936,7 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
             std::vector<double> flattened_cur_blocks;
 
 
-            auto sz = new SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
+            auto sz = SZ::SZInterpolationCompressor<T, N, SZ::LinearQuantizer<T>, SZ::HuffmanEncoder<int>, SZ::Lossless_zstd>(
                             SZ::LinearQuantizer<T>(conf.absErrorBound),
                             SZ::HuffmanEncoder<int>(),
                             SZ::Lossless_zstd());
@@ -3054,7 +3054,7 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
                     size_t outSize=0;
                     
            
-                    auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
+                    auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
                     delete []cmprData;
                     
                     
@@ -3189,7 +3189,7 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
                         outSize=0;
                         
 
-                        auto cmprData=sz->encoding_lossless(conf,q_bins,outSize);
+                        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
                         //delete sz;
                         delete []cmprData;
                         
@@ -3258,7 +3258,7 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
             conf.num=global_num;
             conf.interpAlgo_list.clear();
             conf.interpDirection_list.clear();
-            delete sz;
+            //delete sz;
             
            
 
