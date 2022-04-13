@@ -143,7 +143,9 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
                 
                 if (blockwise){
                     double cur_predloss;
-                    sz->compress(conf,data,cur_cmpsize,2);
+
+                    auto cmprData = sz->compress(conf,data,cur_cmpsize,2);
+                    delete []cmprData;
                     cur_predloss=conf.decomp_square_error;
                    
                     if (cur_predloss<best_predloss){
@@ -226,7 +228,8 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
                     conf.interpDirection=interp_direction;
                     size_t cur_cmpsize;
                     
-                    sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+                    auto cmprData = sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+                    delete []cmprData;
                     double cur_loss=conf.decomp_square_error;
                     if ( cur_loss<best_loss){
                         best_loss=cur_loss;
@@ -254,7 +257,8 @@ char *SZ_compress_AutoSelectiveInterp(SZ::Config &conf, T *data, size_t &outSize
             best_interpAlgo_list[start_level-1]=best_interpAlgo;
             best_interpDirection_list[start_level-1]=best_interpDirection;
             
-            sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+            auto cmprData = sz->compress(conf,data,cur_cmpsize,2,conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+            delete []cmprData;
         }
         //delete sz;
 
@@ -1080,7 +1084,8 @@ double Tuning(SZ::Config &conf, T *data){
 
                                 size_t outSize=0;
                                
-                                sz->compress(conf, cur_block.data(), outSize,2,start_level,end_level);
+                                auto cmprData =sz->compress(conf, cur_block.data(), outSize,2,start_level,end_level);
+                                delete []cmprData;
                                 
                                 
                                 
@@ -1127,6 +1132,7 @@ double Tuning(SZ::Config &conf, T *data){
                         cur_block=sampled_blocks[i];
                         
                         auto cmprData = sz->compress(conf, cur_block.data(), sampleOutSize,1);
+                        delete []cmprData;
                        
                         block_q_bins.push_back(conf.quant_bins);
                         
@@ -1210,6 +1216,7 @@ double Tuning(SZ::Config &conf, T *data){
                             size_t sampleOutSize;
                             std::vector<T> cur_block=sampled_blocks[i];
                             auto cmprData = sz->compress(conf, cur_block.data(), sampleOutSize,1);
+                            delete []cmprData;
 
                     
                             block_q_bins.push_back(conf.quant_bins);
@@ -1635,7 +1642,8 @@ double Tuning(SZ::Config &conf, T *data){
                         
 
                         size_t outSize=0;
-                        sz->compress(conf, cur_block.data(), outSize,1);
+                        auto cmprData = sz->compress(conf, cur_block.data(), outSize,1);
+                        delete []cmprData;
                         
                        
                         block_q_bins.push_back(conf.quant_bins);
@@ -1802,7 +1810,8 @@ double Tuning(SZ::Config &conf, T *data){
                             
 
                             size_t outSize=0;
-                            sz->compress(conf, cur_block.data(), outSize,1);
+                            auto cmprData = sz->compress(conf, cur_block.data(), outSize,1);
+                            delete []cmprData;
                            
                             block_q_bins.push_back(conf.quant_bins);
                             square_error+=conf.decomp_square_error;
