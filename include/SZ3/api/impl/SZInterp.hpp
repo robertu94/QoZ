@@ -2135,6 +2135,7 @@ double Tuning(SZ::Config &conf, T *data){
                     */
 
                 if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
+                    std::cout<<square_error<<std::endl;
                     double mse=square_error/ele_num;
                     if(conf.profiling){
                         mse*=((double)num_blocks)/(totalblock_num);
