@@ -1959,18 +1959,19 @@ double Tuning(SZ::Config &conf, T *data){
 
                 //char *cmpData;
                 auto quantizer = SZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+                size_t idx=0;
                 if (N == 3 && !conf.regression2) {
                     // use fast version for 3D
                     auto sz = SZ::make_sz_general_compressor<T, N>(SZ::make_sz_fast_frontend<T, N>(conf, quantizer), SZ::HuffmanEncoder<int>(),
                                                                    SZ::Lossless_zstd());
-                    for (int i=0;i<num_sampled_blocks;i++){
+                    for (int k=0;k<num_sampled_blocks;k++){
                         size_t sampleOutSize;
                         cur_block=sampled_blocks[i];
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
                             for(size_t j=0;j<per_block_ele_num;j++){
-                                T value=sampled_blocks[i][j]-cur_block[j];
+                                T value=sampled_blocks[k][j]-cur_block[j];
                                 square_error+=value*value;
                             }
                         }
@@ -2038,14 +2039,14 @@ double Tuning(SZ::Config &conf, T *data){
                    
                 } else {
                     auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, SZ::HuffmanEncoder<int>(), SZ::Lossless_zstd());
-                    for (int i=0;i<num_sampled_blocks;i++){
+                    for (int k=0;k<num_sampled_blocks;k++){
                         size_t sampleOutSize;
                         cur_block=sampled_blocks[i];
                         auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                         delete[]cmprData;
                         if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
                             for(size_t j=0;j<per_block_ele_num;j++){
-                                T value=sampled_blocks[i][j]-cur_block[j];
+                                T value=sampled_blocks[k][j]-cur_block[j];
                                 square_error+=value*value;
                             }
                         }
@@ -2171,18 +2172,19 @@ double Tuning(SZ::Config &conf, T *data){
 
                     //char *cmpData;
                     auto quantizer = SZ::LinearQuantizer<T>(conf.absErrorBound*eb_fixrate, conf.quantbinCnt / 2);
+                    size_t idx=0;
                     if (N == 3 && !conf.regression2) {
                     // use fast version for 3D
                         auto sz = SZ::make_sz_general_compressor<T, N>(SZ::make_sz_fast_frontend<T, N>(conf, quantizer), SZ::HuffmanEncoder<int>(),
                                                                        SZ::Lossless_zstd());
-                        for (int i=0;i<num_sampled_blocks;i++){
+                        for (int k=0;k<num_sampled_blocks;k++){
                             size_t sampleOutSize;
                             cur_block=sampled_blocks[i];
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
                                 for(size_t j=0;j<per_block_ele_num;j++){
-                                    T value=sampled_blocks[i][j]-cur_block[j];
+                                    T value=sampled_blocks[k][j]-cur_block[j];
                                     square_error+=value*value;
                                 }
                             }
@@ -2250,14 +2252,14 @@ double Tuning(SZ::Config &conf, T *data){
                        
                     } else {
                         auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, SZ::HuffmanEncoder<int>(), SZ::Lossless_zstd());
-                        for (int i=0;i<num_sampled_blocks;i++){
+                        for (int k=0;k<num_sampled_blocks;k++){
                             size_t sampleOutSize;
                             cur_block=sampled_blocks[i];
                             auto cmprData = sz->compress(lorenzo_config, cur_block.data(), sampleOutSize,1);
                             delete[]cmprData;
                             if(conf.tuningTarget==SZ::TUNING_TARGET_RD){
                                 for(size_t j=0;j<per_block_ele_num;j++){
-                                    T value=sampled_blocks[i][j]-cur_block[j];
+                                    T value=sampled_blocks[k][j]-cur_block[j];
                                     square_error+=value*value;
                                 }
                             }
