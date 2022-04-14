@@ -660,6 +660,7 @@ namespace SZ {
                 conf.decomp_square_error=predict_error;
                 size_t bufferSize = 1;
                 uchar *buffer = new uchar[bufferSize];
+                buffer[0]=0;
                 
                 return buffer;
             }
@@ -732,7 +733,7 @@ namespace SZ {
 
 
 
-            size_t bufferSize = 3 * (q_inds.size() * sizeof(T) + quantizer.size_est());
+            size_t bufferSize = 1.5 * (q_inds.size() * sizeof(T) + quantizer.size_est());//original is 3
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
            
