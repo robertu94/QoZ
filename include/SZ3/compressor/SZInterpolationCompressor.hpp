@@ -200,34 +200,9 @@ namespace SZ {
                 auto inter_end = inter_block_range->end();
                 
                 //timer.stop("prep");
-                if (blockwiseTuning){
-                    for (auto block = inter_begin; block != inter_end; ++block) {
+                
 
-                        auto start_idx=block.get_global_index();
-                        auto end_idx = start_idx;
-                        for (int i = 0; i < N; i++) {
-                            end_idx[i] += cur_blocksize;
-                            if (end_idx[i] > global_dimensions[i] - 1) {
-                                end_idx[i] = global_dimensions[i] - 1;
-                            }
-                        }
-                        
-                     
-                            
-        
-                        block_interpolation(decData, start_idx, end_idx, PB_recover,
-                                            interpolators[interpAlgo_list[op_index]], interpDirection_list[op_index], stride);
-                        op_index++;
-                     
-                       
-                      
-
-                    }
-
-
-                }
-
-                else{
+                if (!blockwiseTuning){
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
                         auto start_idx=block.get_global_index();
@@ -254,6 +229,33 @@ namespace SZ {
                        
 
                     }
+                }
+
+                else{
+                    for (auto block = inter_begin; block != inter_end; ++block) {
+
+                        auto start_idx=block.get_global_index();
+                        auto end_idx = start_idx;
+                        for (int i = 0; i < N; i++) {
+                            end_idx[i] += cur_blocksize;
+                            if (end_idx[i] > global_dimensions[i] - 1) {
+                                end_idx[i] = global_dimensions[i] - 1;
+                            }
+                        }
+                        
+                     
+                            
+        
+                        block_interpolation(decData, start_idx, end_idx, PB_recover,
+                                            interpolators[interpAlgo_list[op_index]], interpDirection_list[op_index], stride);
+                        op_index++;
+                     
+                       
+                      
+
+                    }
+
+
                 }
                 
                 
@@ -417,102 +419,9 @@ namespace SZ {
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
 
-                if(conf.blockwiseTuning){
-                    for (auto block = inter_begin; block != inter_end; ++block) {
+                
 
-
-                        auto start_idx=block.get_global_index();
-                        auto end_idx = start_idx;
-                        for (int i = 0; i < N; i++) {
-                            end_idx[i] += cur_blocksize ;
-                            if (end_idx[i] > global_dimensions[i] - 1) {
-                                end_idx[i] = global_dimensions[i] - 1;
-                            }
-                        }
-
-
-                        size_t cur_element_num=1;
-                        for (int i=0;i<N;i++){
-                            cur_element_num*=(end_idx[i]-start_idx[i]+1);
-                        }
-                            
-                        std::vector<T> orig_block(cur_element_num,0);
-                        size_t local_idx=0;
-                        if(N==2){
-                            for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                    orig_block[local_idx]=data[global_idx];
-                                    local_idx++;
-                                }
-                            }
-                        }
-
-                        else if(N==3){
-                            for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                    for(size_t z=start_idx[2];z<=end_idx[2];z++){
-                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                        orig_block[local_idx]=data[global_idx];
-                                        local_idx++;
-                                    }
-                                }
-                            }
-                        }
-                            
-                        uint8_t best_op=SZ::INTERP_ALGO_CUBIC;
-                        uint8_t best_dir=0;
-                        double best_loss=9e10;
-                        std::vector<int> op_candidates={SZ::INTERP_ALGO_LINEAR,SZ::INTERP_ALGO_CUBIC};
-                        std::vector<int> dir_candidates={0,SZ::factorial(N) - 1};
-                        for (auto &interp_op:op_candidates) {
-                            for (auto &interp_direction: dir_candidates) {
-                                double cur_loss=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[interp_op], interp_direction, stride,2);
-
-                                if(cur_loss<best_loss){
-                                    best_loss=cur_loss;
-                                    best_op=interp_op;
-                                    best_dir=interp_direction;
-                                }
-
-                                size_t local_idx=0;
-                                if(N==2){
-                                    for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                        for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                            data[global_idx]=orig_block[local_idx];
-                                            local_idx++;
-                                        }
-                                    }
-                                }
-                                else if(N==3){
-                                    for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                        for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                            for(size_t z=start_idx[2];z<=end_idx[2];z++){
-                                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                                data[global_idx]=orig_block[local_idx];
-                                                local_idx++;
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-
-                        interp_ops.push_back(best_op);
-                        interp_dirs.push_back(best_dir);
-                        block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                        interpolators[best_op], best_dir, stride,0);
-
-
-
-                    }
-
-                }
-
-                else{
+                if(!conf.blockwiseTuning){
                
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
@@ -628,7 +537,100 @@ namespace SZ {
                     }
                 }
 
+                else{
+                    for (auto block = inter_begin; block != inter_end; ++block) {
 
+
+                        auto start_idx=block.get_global_index();
+                        auto end_idx = start_idx;
+                        for (int i = 0; i < N; i++) {
+                            end_idx[i] += cur_blocksize ;
+                            if (end_idx[i] > global_dimensions[i] - 1) {
+                                end_idx[i] = global_dimensions[i] - 1;
+                            }
+                        }
+
+
+                        size_t cur_element_num=1;
+                        for (int i=0;i<N;i++){
+                            cur_element_num*=(end_idx[i]-start_idx[i]+1);
+                        }
+                            
+                        std::vector<T> orig_block(cur_element_num,0);
+                        size_t local_idx=0;
+                        if(N==2){
+                            for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                    orig_block[local_idx]=data[global_idx];
+                                    local_idx++;
+                                }
+                            }
+                        }
+
+                        else if(N==3){
+                            for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                    for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                        orig_block[local_idx]=data[global_idx];
+                                        local_idx++;
+                                    }
+                                }
+                            }
+                        }
+                            
+                        uint8_t best_op=SZ::INTERP_ALGO_CUBIC;
+                        uint8_t best_dir=0;
+                        double best_loss=9e10;
+                        std::vector<int> op_candidates={SZ::INTERP_ALGO_LINEAR,SZ::INTERP_ALGO_CUBIC};
+                        std::vector<int> dir_candidates={0,SZ::factorial(N) - 1};
+                        for (auto &interp_op:op_candidates) {
+                            for (auto &interp_direction: dir_candidates) {
+                                double cur_loss=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                    interpolators[interp_op], interp_direction, stride,2);
+
+                                if(cur_loss<best_loss){
+                                    best_loss=cur_loss;
+                                    best_op=interp_op;
+                                    best_dir=interp_direction;
+                                }
+
+                                size_t local_idx=0;
+                                if(N==2){
+                                    for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                        for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                            data[global_idx]=orig_block[local_idx];
+                                            local_idx++;
+                                        }
+                                    }
+                                }
+                                else if(N==3){
+                                    for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                        for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                            for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                                data[global_idx]=orig_block[local_idx];
+                                                local_idx++;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+
+                        interp_ops.push_back(best_op);
+                        interp_dirs.push_back(best_dir);
+                        block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                        interpolators[best_op], best_dir, stride,0);
+
+
+
+                    }
+
+                }
 
 
 
