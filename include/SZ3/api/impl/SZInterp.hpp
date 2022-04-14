@@ -82,7 +82,13 @@ void SZ_decompress_Interp(const SZ::Config &conf, char *cmpData, size_t cmpSize,
             SZ::LinearQuantizer<T>(),
             SZ::HuffmanEncoder<int>(),
             SZ::Lossless_zstd());
-    sz.decompress(cmpDataPos, cmpSize, decData);
+    if (!conf.blockwiseTuning)
+        sz.decompress(cmpDataPos, cmpSize, decData);
+    else{
+        std::cout<<"block decomp"<<std::endl;
+        sz.decompress_block(cmpDataPos, cmpSize, decData);
+    }
+    
 }
 
 

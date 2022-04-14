@@ -177,8 +177,8 @@ namespace SZ {
             write(relErrorBound, c);
             write(alpha,c);
             write(beta,c);
-            write(autoTuningRate,c);
-            write(predictorTuningRate,c);
+            //write(autoTuningRate,c);
+            //write(predictorTuningRate,c);
             write(lorenzo, c);
             write(lorenzo2, c);
             write(regression, c);
@@ -213,8 +213,8 @@ namespace SZ {
             read(relErrorBound, c);
             read(alpha,c);
             read(beta,c);
-            read(autoTuningRate,c);
-            read(predictorTuningRate,c);
+            //read(autoTuningRate,c);
+            //read(predictorTuningRate,c);
             read(lorenzo, c);
             read(lorenzo2, c);
             read(regression, c);
