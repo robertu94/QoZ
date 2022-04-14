@@ -230,7 +230,7 @@ namespace SZ {
 
                     }
                 }
-
+                
                 else{
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
@@ -380,7 +380,7 @@ namespace SZ {
 
                 int cur_interpolator;
                 int cur_direction;
-                if(!conf.blockwiseTuning){
+                //if(!conf.blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
                         cur_direction=direction_sequence_id;
@@ -395,14 +395,14 @@ namespace SZ {
                             cur_direction=conf.interpDirection_list[levelwise_predictor_levels-1];
                         }
                     }
-                }
+                //}
                 
                 uint stride = 1U << (level - 1);
                 size_t cur_blocksize;
-                if (conf.blockwiseTuning){
-                    cur_blocksize=blocksize;
-                }
-                else 
+                //if (conf.blockwiseTuning){
+                    //cur_blocksize=blocksize;
+                //}
+                //else 
                     if (conf.fixBlockSize>0){
                     cur_blocksize=conf.fixBlockSize;
                 }
@@ -421,7 +421,7 @@ namespace SZ {
 
                 
 
-                if(!conf.blockwiseTuning){
+                //if(!conf.blockwiseTuning){
                
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
@@ -535,8 +535,8 @@ namespace SZ {
                     
                         
                     }
-                }
-
+                //}
+                /*
                 else{
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
@@ -631,6 +631,7 @@ namespace SZ {
                     }
 
                 }
+                */
 
 
 
@@ -731,6 +732,332 @@ namespace SZ {
             //quantizer.print_unpred();
             return lossless_data;
         }
+
+
+        // compress given the error bound
+        uchar *compress_block( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
+            
+            //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
+            Timer timer;
+            timer.start();
+            std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
+            blocksize = conf.interpBlockSize;
+            
+            maxStep=conf.maxStep;
+            
+            interpolator_id = conf.interpAlgo;
+            direction_sequence_id = conf.interpDirection;
+            alpha=conf.alpha;
+            beta=conf.beta;
+
+
+
+            std::vector<uint8_t>interp_ops;
+            std::vector<uint8_t>interp_dirs;
+            init();
+            if (tuning){
+                std::vector<int>().swap(quant_inds);
+                std::vector<int>().swap(conf.quant_bins);
+                conf.quant_bin_counts=std::vector<size_t>(interpolation_level,0);
+                //conf.quant_bin_counts.reserve(interpolation_level);
+                //conf.pred_square_error=0.0;
+                conf.decomp_square_error=0.0;
+
+            }
+            
+            quant_inds.reserve(num_elements);
+            size_t interp_compressed_size = 0;
+
+            double eb = quantizer.get_eb();
+
+//            printf("Absolute error bound = %.5f\n", eb);
+
+            if (start_level<=0 or start_level>interpolation_level ){
+                start_level=interpolation_level;
+                
+            } 
+            if(end_level>=start_level){
+                end_level=0;
+            }
+
+
+            if(!anchor){
+                quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
+            }
+            else if (start_level==interpolation_level){
+                if(tuning){
+                    conf.quant_bin_counts[start_level-1]=quant_inds.size();
+                }
+                    
+                build_grid(conf,data,maxStep,tuning);
+                start_level--;
+            }
+
+            
+            double predict_error=0.0;
+          
+
+            
+            int levelwise_predictor_levels=conf.interpAlgo_list.size();
+
+            
+            
+
+            for (uint level = start_level; level > end_level && level <= start_level; level--) {
+
+                
+
+                if (alpha<0) {
+                    if (level >= 3) {
+                        quantizer.set_eb(eb * eb_ratio);
+                    } else {
+                        quantizer.set_eb(eb);
+                    }
+                }
+                else if (alpha>=1){
+                    
+                    
+                    double cur_ratio=pow(alpha,level-1);
+                    if (cur_ratio>beta){
+                        cur_ratio=beta;
+                    }
+                    
+                    quantizer.set_eb(eb/cur_ratio);
+                }
+                else{
+                    
+                    
+                    double cur_ratio=1-(level-1)*alpha;
+                    if (cur_ratio<beta){
+                        cur_ratio=beta;
+                    }
+                    
+                    quantizer.set_eb(eb*cur_ratio);
+                }
+              
+               
+                    
+                    
+                   
+
+
+
+              
+
+                int cur_interpolator;
+                int cur_direction;
+                
+                
+                uint stride = 1U << (level - 1);
+                size_t cur_blocksize=blocksize;
+               
+               
+                
+                auto inter_block_range = std::make_shared<
+                        SZ::multi_dimensional_range<T, N>>(data, std::begin(global_dimensions),
+                                                           std::end(global_dimensions),
+                                                           cur_blocksize, 0);
+
+                auto inter_begin = inter_block_range->begin();
+                auto inter_end = inter_block_range->end();
+
+                
+
+                
+                for (auto block = inter_begin; block != inter_end; ++block) {
+
+
+                    auto start_idx=block.get_global_index();
+                    auto end_idx = start_idx;
+                    for (int i = 0; i < N; i++) {
+                        end_idx[i] += cur_blocksize ;
+                        if (end_idx[i] > global_dimensions[i] - 1) {
+                            end_idx[i] = global_dimensions[i] - 1;
+                        }
+                    }
+
+
+                    size_t cur_element_num=1;
+                    for (int i=0;i<N;i++){
+                        cur_element_num*=(end_idx[i]-start_idx[i]+1);
+                    }
+                            
+                    std::vector<T> orig_block(cur_element_num,0);
+                    size_t local_idx=0;
+                    if(N==2){
+                        for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                            for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                orig_block[local_idx]=data[global_idx];
+                                local_idx++;
+                            }
+                        }
+                    }
+
+                    else if(N==3){
+                        for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                            for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                                    size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                    orig_block[local_idx]=data[global_idx];
+                                    local_idx++;
+                                }
+                            }
+                        }
+                    }
+                            
+                    uint8_t best_op=SZ::INTERP_ALGO_CUBIC;
+                    uint8_t best_dir=0;
+                    double best_loss=9e10;
+                    std::vector<int> op_candidates={SZ::INTERP_ALGO_LINEAR,SZ::INTERP_ALGO_CUBIC};
+                    std::vector<int> dir_candidates={0,SZ::factorial(N) - 1};
+                    for (auto &interp_op:op_candidates) {
+                        for (auto &interp_direction: dir_candidates) {
+                            double cur_loss=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                interpolators[interp_op], interp_direction, stride,2);
+
+                            if(cur_loss<best_loss){
+                                best_loss=cur_loss;
+                                best_op=interp_op;
+                                best_dir=interp_direction;
+                            }
+
+                            size_t local_idx=0;
+                            if(N==2){
+                                for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                    for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                        size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
+                                        data[global_idx]=orig_block[local_idx];
+                                        local_idx++;
+                                    }
+                                }
+                            }
+                            else if(N==3){
+                                for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                                    for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                        for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                                            size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
+                                            data[global_idx]=orig_block[local_idx];
+                                            local_idx++;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    interp_ops.push_back(best_op);
+                    interp_dirs.push_back(best_dir);
+                    block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                    interpolators[best_op], best_dir, stride,0);
+
+
+
+                }
+
+            
+
+
+
+                if(tuning){
+                        
+                    conf.quant_bin_counts[level-1]=quant_inds.size();
+                }
+                
+
+            }
+            
+//            std::cout << "Number of data point = " << num_elements << std::endl;
+//            std::cout << "quantization element = " << quant_inds.size() << std::endl;
+             
+             
+            //timer.start();
+
+//            writefile("pred.dat", preds.data(), num_elements);
+//            writefile("quant.dat", quant_inds.data(), num_elements);
+            quantizer.set_eb(eb);
+            if (tuning){
+               
+                
+                conf.quant_bins=quant_inds;
+                std::vector<int>().swap(quant_inds);
+
+                //quantizer.clear();
+                conf.decomp_square_error=predict_error;
+                size_t bufferSize = 1;
+                uchar *buffer = new uchar[bufferSize];
+                buffer[0]=0;
+                
+                return buffer;
+            }
+            //std::cout<<"predict_ended"<<std::endl;
+            if(conf.verbose)
+                timer.stop("prediction");
+           
+            //assert(quant_inds.size() == num_elements);
+
+            size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
+            uchar *buffer = new uchar[bufferSize];
+            uchar *buffer_pos = buffer;
+
+            write(global_dimensions.data(), N, buffer_pos);
+            write(blocksize, buffer_pos);
+            
+
+            write(interpolator_id, buffer_pos);
+            write(direction_sequence_id, buffer_pos);
+            write(alpha,buffer_pos);
+            write(beta,buffer_pos);
+           
+            write(maxStep,buffer_pos);
+            write(levelwise_predictor_levels,buffer_pos);
+            write(conf.blockwiseTuning,buffer_pos);
+            write(conf.fixBlockSize,buffer_pos);
+
+            if(conf.blockwiseTuning){
+                size_t ops_num=interp_ops.size();
+                write(ops_num,buffer_pos);
+                write(interp_ops.data(),ops_num,buffer_pos);
+                write(interp_dirs.data(),ops_num,buffer_pos);
+
+            }
+            else if(levelwise_predictor_levels>0){
+                write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
+                write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+            }
+           
+            quantizer.save(buffer_pos);
+            quantizer.postcompress_data();
+            quantizer.clear();
+          
+
+           
+            encoder.preprocess_encode(quant_inds, 0);
+            encoder.save(buffer_pos);
+            encoder.encode(quant_inds, buffer_pos);
+            encoder.postprocess_encode();
+            
+            //timer.stop("Coding");
+            //timer.start();
+            assert(buffer_pos - buffer < bufferSize);
+
+            
+            uchar *lossless_data = lossless.compress(buffer,
+                                                     buffer_pos - buffer,
+                                                     compressed_size);
+            lossless.postcompress_data(buffer);
+            
+            //timer.stop("Lossless") ;
+            
+
+            compressed_size += interp_compressed_size;
+            
+            //quantizer.print_unpred();
+            return lossless_data;
+        }
+
+
         uchar *encoding_lossless(Config &conf,std::vector<int> &q_inds,size_t &compressed_size,bool write_metadata=false) {
 
 

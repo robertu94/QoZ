@@ -42,6 +42,7 @@ char *SZ_compress_Interp(SZ::Config &conf, T *data, size_t &outSize) {
     
    
     //SZ::Timer timer;
+
     //timer.start();
     char *cmpData = (char *) sz.compress(conf, data, outSize);
      //double incall_time = timer.stop();
@@ -3303,7 +3304,7 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
             SZ::HuffmanEncoder<int>(),
             SZ::Lossless_zstd());
 
-        char *cmpData = (char *) sz.compress(conf, data, outSize);
+        char *cmpData = (char *) sz.compress_block(conf, data, outSize);
         return cmpData;
         
         
