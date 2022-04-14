@@ -157,7 +157,7 @@ namespace SZ {
                 uint8_t cur_interpolator=interpolator_id;
                 uint8_t cur_direction=direction_sequence_id;
                 
-                if(!blockwiseTuning){
+                //if(!blockwiseTuning){
                     if (levelwise_predictor_levels==0){
                         cur_interpolator=interpolator_id;
                         cur_direction=direction_sequence_id;
@@ -172,17 +172,17 @@ namespace SZ {
                             cur_direction=interpDirection_list[levelwise_predictor_levels-1];
                         }
                     }
-                }
+               // }
                 
                 
                 
                 size_t stride = 1U << (level - 1);
                 size_t cur_blocksize;
                 
-                if (blockwiseTuning){
-                    cur_blocksize=blocksize;
-                }
-                else 
+                //if (blockwiseTuning){
+               //     cur_blocksize=blocksize;
+               // }
+               // else 
                     if (fixBlockSize>0){
                     cur_blocksize=fixBlockSize;
                 }
@@ -202,7 +202,7 @@ namespace SZ {
                 //timer.stop("prep");
                 
 
-                if (!blockwiseTuning){
+                //if (!blockwiseTuning){
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
                         auto start_idx=block.get_global_index();
@@ -229,8 +229,8 @@ namespace SZ {
                        
 
                     }
-                }
-                
+               // }
+                /*
                 else{
                     for (auto block = inter_begin; block != inter_end; ++block) {
 
@@ -257,6 +257,7 @@ namespace SZ {
 
 
                 }
+                */
                 
                 
                
