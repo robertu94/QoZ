@@ -269,6 +269,180 @@ namespace SZ {
             return decData;
         }
 
+        T *decompress_block(uchar const *cmpData, const size_t &cmpSize, T *decData) {
+
+            size_t remaining_length = cmpSize;
+            uchar *buffer = lossless.decompress(cmpData, remaining_length);
+            int levelwise_predictor_levels;
+            int blockwiseTuning;
+            uchar const *buffer_pos = buffer;
+            std::vector <uint8_t> interpAlgo_list;
+            std::vector <uint8_t> interpDirection_list;
+            int fixBlockSize;
+            //size_t maxStep;
+           
+            read(global_dimensions.data(), N, buffer_pos, remaining_length);
+           
+            read(blocksize, buffer_pos, remaining_length);
+            
+            read(interpolator_id, buffer_pos, remaining_length);
+            
+            read(direction_sequence_id, buffer_pos, remaining_length);
+           
+            read(alpha,buffer_pos,remaining_length);
+            
+            read(beta,buffer_pos,remaining_length);
+           
+            read(maxStep,buffer_pos,remaining_length);
+           
+            read(levelwise_predictor_levels,buffer_pos);
+            
+            read(blockwiseTuning,buffer_pos);
+
+            read(fixBlockSize,buffer_pos);
+            if(blockwiseTuning){
+                size_t ops_num;
+                read(ops_num,buffer_pos);
+                interpAlgo_list=std::vector <uint8_t>(ops_num,0);
+                interpDirection_list=std::vector <uint8_t>(ops_num,0);
+                read(interpAlgo_list.data(),ops_num,buffer_pos);
+                read(interpDirection_list.data(),ops_num,buffer_pos);
+
+
+
+            }
+
+            else if(levelwise_predictor_levels>0){
+                interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
+                interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
+                read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+            }
+            
+
+            init();
+            //SZ::Timer timer(true);
+            quantizer.load(buffer_pos, remaining_length);
+            encoder.load(buffer_pos, remaining_length);
+            quant_inds = encoder.decode(buffer_pos, num_elements);
+
+            encoder.postprocess_decode();
+
+            lossless.postdecompress_data(buffer);
+            //timer.stop("decode");
+            //timer.start();
+            double eb = quantizer.get_eb();
+            if(!anchor){
+                *decData = quantizer.recover(0, quant_inds[quant_index++]);
+            }
+            
+            else{
+
+             
+                 recover_grid(decData,global_dimensions,maxStep);
+                    
+                interpolation_level--;
+
+                
+            }
+            size_t op_index=0;
+
+
+    
+            for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
+                if (alpha<0) {
+                    if (level >= 3) {
+                        quantizer.set_eb(eb * eb_ratio);
+                    } else {
+                        quantizer.set_eb(eb);
+                    }
+                }
+                
+                else if (alpha>=1){
+                    
+                    
+                    double cur_ratio=pow(alpha,level-1);
+                    if (cur_ratio>beta){
+                        cur_ratio=beta;
+                    }
+                    
+                    quantizer.set_eb(eb/cur_ratio);
+                }
+                else{
+                    
+                    
+                    double cur_ratio=1-(level-1)*alpha;
+                    if (cur_ratio<beta){
+                        cur_ratio=beta;
+                    }
+                   
+                    quantizer.set_eb(eb*cur_ratio);
+                }
+
+               
+               
+                
+                
+                    
+                uint8_t cur_interpolator=interpolator_id;
+                uint8_t cur_direction=direction_sequence_id;
+                
+                
+                
+                
+                
+                size_t stride = 1U << (level - 1);
+                size_t cur_blocksize=blocksize;
+                
+              
+
+                auto inter_block_range = std::make_shared<
+                        SZ::multi_dimensional_range<T, N>>(decData,
+                                                           std::begin(global_dimensions), std::end(global_dimensions),
+                                                           cur_blocksize, 0);
+                auto inter_begin = inter_block_range->begin();
+                auto inter_end = inter_block_range->end();
+                
+                //timer.stop("prep");
+                
+
+                
+              
+                    for (auto block = inter_begin; block != inter_end; ++block) {
+
+                        auto start_idx=block.get_global_index();
+                        auto end_idx = start_idx;
+                        for (int i = 0; i < N; i++) {
+                            end_idx[i] += cur_blocksize;
+                            if (end_idx[i] > global_dimensions[i] - 1) {
+                                end_idx[i] = global_dimensions[i] - 1;
+                            }
+                        }
+                        
+                     
+                            
+        
+                        block_interpolation(decData, start_idx, end_idx, PB_recover,
+                                            interpolators[interpAlgo_list[op_index]], interpDirection_list[op_index], stride);
+                        op_index++;
+                     
+                       
+                      
+
+                    }
+
+
+                
+                
+                
+               
+            }
+            quantizer.postdecompress_data();
+           
+            
+
+            return decData;
+        }
         // compress given the error bound
         uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
             
