@@ -85,7 +85,7 @@ void SZ_decompress_Interp(const SZ::Config &conf, char *cmpData, size_t cmpSize,
     if (!conf.blockwiseTuning)
         sz.decompress(cmpDataPos, cmpSize, decData);
     else{
-        std::cout<<"block decomp"<<std::endl;
+        //std::cout<<"block decomp"<<std::endl;
         sz.decompress_block(cmpDataPos, cmpSize, decData);
     }
     
