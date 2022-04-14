@@ -227,7 +227,7 @@ namespace SZ {
             read(quantbinCnt, c);
             read(blockSize, c);
             read(levelwisePredictionSelection, c);
-            load(blockwiseTuning, c);
+            read(blockwiseTuning, c);
             read(stride, c);
             read(maxStep,c);
             read(pred_dim, c);
