@@ -863,6 +863,8 @@ double Tuning(SZ::Config &conf, T *data){
                 if(conf.profiling){
                     
                     int sample_ratio=int(num_blocks/(totalblock_num*conf.predictorTuningRate));
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
                    
                     
 
@@ -891,6 +893,8 @@ double Tuning(SZ::Config &conf, T *data){
                 
                 else{
                     int sample_ratio=int(1.0/conf.predictorTuningRate);
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
                     if (N==2){
                         
                         //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
@@ -1446,6 +1450,8 @@ double Tuning(SZ::Config &conf, T *data){
                 if(conf.profiling){
                    
                     int sample_ratio=int(num_blocks/(totalblock_num*conf.predictorTuningRate));
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
                     
 
                     if(N==2){
@@ -1473,6 +1479,8 @@ double Tuning(SZ::Config &conf, T *data){
 
                 else{
                     int sample_ratio=int(1.0/conf.autoTuningRate);
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
                 
                     if (N==2){
                         
@@ -1958,6 +1966,7 @@ double Tuning(SZ::Config &conf, T *data){
 
             //add lorenzo
             if(conf.testLorenzo){
+                printf("%.4f %.2f\n",bestb,bestm);
                 lorenzo_config.cmprAlgo = SZ::ALGO_LORENZO_REG;
                 lorenzo_config.dims=conf.dims;
                 lorenzo_config.num=conf.num;
@@ -2164,7 +2173,7 @@ double Tuning(SZ::Config &conf, T *data){
                     std::vector<double>().swap(flattened_cur_blocks);
                         
                 }
-                //printf("%.4f %.2f\n",bitrate,metric);
+                printf("%.4f %.2f\n",bitrate,metric);
                     
 
                 if ( (conf.tuningTarget!=SZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==SZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
@@ -2381,8 +2390,8 @@ double Tuning(SZ::Config &conf, T *data){
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
-                      //  printf("%.4f %.2f\n",bitrate_r,metric_r);
-                       //printf("%.4f %.2f\n",bestb,reg);
+                        printf("%.4f %.2f\n",bitrate_r,metric_r);
+                       printf("%.4f %.2f\n",bestb,reg);
                         
                         //conf.absErrorBound=orig_eb;
 
@@ -2763,7 +2772,8 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
             if(conf.profiling){
                     
                     int sample_ratio=int(num_blocks/(totalblock_num*conf.predictorTuningRate));
-                    
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
 
                     if(N==2){
                         for(int i=0;i<num_blocks;i+=sample_ratio){
@@ -2788,6 +2798,8 @@ char *SZ_compress_Interp_blocked(SZ::Config &conf, T *data, size_t &outSize) {
             }
             else{
                 int sample_ratio=int(1.0/conf.autoTuningRate);
+                if(sample_ratio<=0)
+                    sample_ratio=1;
                 if (N==2){
                     
                     //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
