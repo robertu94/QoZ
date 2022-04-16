@@ -1966,7 +1966,7 @@ double Tuning(SZ::Config &conf, T *data){
 
             //add lorenzo
             if(conf.testLorenzo){
-                printf("%.4f %.2f\n",bestb,bestm);
+                //printf("%.4f %.2f\n",bestb,bestm);
                 lorenzo_config.cmprAlgo = SZ::ALGO_LORENZO_REG;
                 lorenzo_config.dims=conf.dims;
                 lorenzo_config.num=conf.num;
@@ -2173,7 +2173,7 @@ double Tuning(SZ::Config &conf, T *data){
                     std::vector<double>().swap(flattened_cur_blocks);
                         
                 }
-                printf("%.4f %.2f\n",bitrate,metric);
+                //printf("%.4f %.2f\n",bitrate,metric);
                     
 
                 if ( (conf.tuningTarget!=SZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==SZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
@@ -2390,8 +2390,8 @@ double Tuning(SZ::Config &conf, T *data){
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
-                        printf("%.4f %.2f\n",bitrate_r,metric_r);
-                       printf("%.4f %.2f\n",bestb,reg);
+                        //printf("%.4f %.2f\n",bitrate_r,metric_r);
+                       //printf("%.4f %.2f\n",bestb,reg);
                         
                         //conf.absErrorBound=orig_eb;
 
