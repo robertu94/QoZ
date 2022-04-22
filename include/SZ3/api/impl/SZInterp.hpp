@@ -2611,7 +2611,7 @@ char *SZ_compress_Interp_lorenzo(SZ::Config &conf, T *data, size_t &outSize) {
                 auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);
                 delete[]cmprData;
                 ratio = sampling_num * 1.0 * sizeof(T) / sampleOutSize;
-                printf("Lorenzo ratio = %.2f\n", ratio);
+                //printf("Lorenzo ratio = %.2f\n", ratio);
 
                 best_lorenzo_ratio = ratio;
             }
@@ -2625,7 +2625,7 @@ char *SZ_compress_Interp_lorenzo(SZ::Config &conf, T *data, size_t &outSize) {
             auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);
             delete[]cmprData;
             ratio = sampling_num * 1.0 * sizeof(T) / sampleOutSize;
-            printf("Lorenzo, pred_dim=2, ratio = %.4f\n", ratio);
+            //printf("Lorenzo, pred_dim=2, ratio = %.4f\n", ratio);
             if (ratio > best_lorenzo_ratio * 1.02) {
                 best_lorenzo_ratio = ratio;
             } else {
