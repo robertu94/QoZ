@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
             case 'q':
                 qoz = true;
                 break;
-            case 'z':
+            case 'l':
                 testLorenzo = true;
                 break;
             case 'o':
