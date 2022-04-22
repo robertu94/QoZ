@@ -217,6 +217,7 @@ int main(int argc, char *argv[]) {
 
     bool sz2mode = false;
     bool qoz=false;
+    bool testLorenzo=false;
 
     size_t r4 = 0;
     size_t r3 = 0;
@@ -300,6 +301,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'q':
                 qoz = true;
+                break;
+            case 'z':
+                testLorenzo = true;
                 break;
             case 'o':
                 if (++i == argc)
@@ -427,6 +431,9 @@ int main(int argc, char *argv[]) {
     }
     if (qoz){
         conf.QoZ=1;
+    }
+    if (testLorenzo){
+        conf.testLorenzo=1;
     }
 
     if (errBoundMode != nullptr) {
