@@ -161,6 +161,7 @@ namespace SZ {
             SSIMBlockSize=cfg.GetInteger("AlgoSettings", "SSIMBlockSize", SSIMBlockSize);
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
             verbose=cfg.GetInteger("AlgoSettings", "verbose", verbose);
+            QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
             
 
 
@@ -198,6 +199,8 @@ namespace SZ {
             write(pred_dim, c);
             write(openmp, c);
             write(fixBlockSize, c);
+            write(QoZ, c);
+
             
         };
 
@@ -233,6 +236,7 @@ namespace SZ {
             read(pred_dim, c);
             read(openmp, c);
             read(fixBlockSize, c);
+            read(QoZ, c);
         }
 
         void print() {
@@ -291,6 +295,7 @@ namespace SZ {
         std::vector<double> lorenzo1_coeffs;
         std::vector<double> lorenzo2_coeffs;
         int verbose=1;
+        int QoZ=0;
         
 
     };

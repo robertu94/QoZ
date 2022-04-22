@@ -354,6 +354,22 @@ double Tuning(SZ::Config &conf, T *data){
     else
         rel_bound=conf.absErrorBound/rng;
     //timer.stop("")
+
+    if(conf.QoZ){
+        if(conf.autoTuningRate<=0)
+            conf.autoTuningRate = (N==2?0.01:0.005);
+        if(conf.predictorTuningRate<=0)
+            conf.predictorTuningRate = (N==2?0.01:0.005);
+        if (conf.maxStep<=0)
+            conf.maxStep = (N==2?64:32);
+        if (conf.levelwisePredictionSelection<=0)
+            conf.levelwisePredictionSelection = (N==2?6:4);
+        if (conf.sampleBlockSize<=0)
+            conf.sampleBlockSize = (N==2?64:32);
+
+    }
+
+
     
     SZ::Config lorenzo_config = conf;
     size_t sampling_num, sampling_block;

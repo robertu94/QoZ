@@ -35,6 +35,7 @@ void usage() {
     printf("	-f: single precision (float type)\n");
     printf("	-d: double precision (double type)\n");
     printf("	-I <width>: integer type (width = 32 or 64)\n");
+    printf("    -q: activate qoz features");
     printf("* configuration file: \n");
     printf("	-c <configuration file> : configuration file qoz.config\n");
     printf("* error control: (the error control parameters here will overwrite the setting in sz.config)\n");
@@ -52,6 +53,14 @@ void usage() {
 //    printf("		-P <point-wise relative error bound>: specifying point-wise relative error bound\n");
     printf("		-S <PSNR>: specifying PSNR\n");
     printf("		-N <normErr>: specifying normErr\n");
+    printf("    -q: activate qoz features");
+    printf("    -T <QoZ tuning target> \n");
+    printf("    tuning targets as follows: \n");
+    printf("        PSNR (peak signal-to-noise ratio)\n");
+    printf("        CR (compression ratio)\n");
+    printf("        SSIM (structural similarity)\n");
+    printf("        AC (autocorrelation)\n");
+
     printf("* dimensions: \n");
     printf("	-1 <nx> : dimension for 1D data such as data[nx]\n");
     printf("	-2 <nx> <ny> : dimensions for 2D data such as data[ny][nx]\n");
@@ -204,8 +213,10 @@ int main(int argc, char *argv[]) {
     char *pwrErrorBound = nullptr;
     char *psnrErrorBound = nullptr;
     char *normErrorBound = nullptr;
+    char *tuningTarget = nullptr;
 
     bool sz2mode = false;
+    bool qoz=false;
 
     size_t r4 = 0;
     size_t r3 = 0;
@@ -269,6 +280,7 @@ int main(int argc, char *argv[]) {
             case 'd':
                 dataType = SZ_DOUBLE;
                 break;
+
             case 'I':
                 if (++i == argc || sscanf(argv[i], "%d", &width) != 1) {
                     usage();
@@ -285,6 +297,9 @@ int main(int argc, char *argv[]) {
                 if (++i == argc)
                     usage();
                 inPath = argv[i];
+                break;
+            case 'q':
+                qoz = true;
                 break;
             case 'o':
                 if (++i == argc)
@@ -357,6 +372,12 @@ int main(int argc, char *argv[]) {
                     usage();
                 psnrErrorBound = argv[i];
                 break;
+
+            case 'T':
+                if (++i == argc)
+                    usage();
+                tuningTarget = argv[i];
+                break;
             default:
                 usage();
                 break;
@@ -403,6 +424,9 @@ int main(int argc, char *argv[]) {
     }
     if (compression && conPath != nullptr) {
         conf.loadcfg(conPath);
+    }
+    if (qoz){
+        conf.QoZ=1;
     }
 
     if (errBoundMode != nullptr) {
@@ -451,6 +475,31 @@ int main(int argc, char *argv[]) {
             exit(0);
         }
     }
+
+    if (tuningTarget!= nullptr) {
+       
+        if (strcmp(tuningTarget, "PSNR") == 0) {
+            conf.tuningTarget = SZ::TUNING_TARGET_RD;
+        }
+        else if (strcmp(tuningTarget, "CR") == 0) {
+            conf.tuningTarget = SZ::TUNING_TARGET_CR;
+        }
+        else if (strcmp(tuningTarget, "SSIM") == 0) {
+            conf.tuningTarget = SZ::TUNING_TARGET_SSIM;
+        }
+        else if (strcmp(tuningTarget, "AC") == 0) {
+            conf.tuningTarget = SZ::TUNING_TARGET_AC;
+        }
+        else {
+            printf("Error: wrong tuning target setting by using the option '-T'\n");
+            usage();
+            exit(0);
+        }
+        
+    }
+
+
+
 
     if (compression) {
 
