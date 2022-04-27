@@ -482,10 +482,12 @@ namespace QoZ {
 //            printf("Absolute error bound = %.5f\n", eb);
 
             if (start_level<=0 or start_level>interpolation_level ){
+
                 start_level=interpolation_level;
+
                 
             } 
-            if(end_level>=start_level){
+            if(end_level>=start_level or end_level<0){
                 end_level=0;
             }
 
@@ -948,10 +950,12 @@ namespace QoZ {
 //            printf("Absolute error bound = %.5f\n", eb);
 
             if (start_level<=0 or start_level>interpolation_level ){
+                
                 start_level=interpolation_level;
+
                 
             } 
-            if(end_level>=start_level){
+            if(end_level>=start_level or end_level<0){
                 end_level=0;
             }
 
