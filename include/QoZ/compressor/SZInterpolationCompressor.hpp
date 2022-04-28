@@ -1054,7 +1054,7 @@ namespace QoZ {
                         if (end_idx[i] > global_dimensions[i] - 1) {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
-                        sample_end_idx+=conf.blockwiseSampleBlockSize;
+                        sample_end_idx[i]+=conf.blockwiseSampleBlockSize;
                         if (sample_end_idx[i] > global_dimensions[i] - 1) {
                             sample_end_idx[i] = global_dimensions[i] - 1;
                         }
