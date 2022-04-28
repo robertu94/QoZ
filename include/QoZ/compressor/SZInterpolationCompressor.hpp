@@ -1040,7 +1040,7 @@ namespace QoZ {
                 auto inter_begin = inter_block_range->begin();
                 auto inter_end = inter_block_range->end();
 
-                
+                size_t blockwiseSampleBlockSize=(level<=2)?conf.blockwiseSampleBlockSize:cur_blocksize;
 
                 
                 for (auto block = inter_begin; block != inter_end; ++block) {
