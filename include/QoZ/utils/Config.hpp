@@ -205,6 +205,7 @@ namespace QoZ {
             write(pred_dim, c);
             write(openmp, c);
             write(fixBlockSize, c);
+            write(blockwiseSampleBlockSize, c);
             write(QoZ, c);
 
             
@@ -242,6 +243,7 @@ namespace QoZ {
             read(pred_dim, c);
             read(openmp, c);
             read(fixBlockSize, c);
+            read(blockwiseSampleBlockSize, c);
             read(QoZ, c);
         }
 
@@ -298,10 +300,12 @@ namespace QoZ {
         int profiling=0;
         int SSIMBlockSize=8;
         int fixBlockSize=0;
+        int blockwiseSampleBlockSize=0;
         std::vector<double> lorenzo1_coeffs;
         std::vector<double> lorenzo2_coeffs;
         int verbose=1;
         int QoZ=0;
+
         
 
     };

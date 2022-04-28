@@ -1048,37 +1048,48 @@ namespace QoZ {
 
                     auto start_idx=block.get_global_index();
                     auto end_idx = start_idx;
+                    auto sample_end_idx=start_idx;
                     for (int i = 0; i < N; i++) {
                         end_idx[i] += cur_blocksize ;
                         if (end_idx[i] > global_dimensions[i] - 1) {
                             end_idx[i] = global_dimensions[i] - 1;
                         }
+                        sample_end_idx+=conf.blockwiseSampleBlockSize;
+                        if (sample_end_idx[i] > global_dimensions[i] - 1) {
+                            sample_end_idx[i] = global_dimensions[i] - 1;
+                        }
                     }
 
 
-                    size_t cur_element_num=1;
-                    for (int i=0;i<N;i++){
-                        cur_element_num*=(end_idx[i]-start_idx[i]+1);
+                    //size_t cur_element_num=1;
+                    //for (int i=0;i<N;i++){
+                    //    cur_element_num*=(end_idx[i]-start_idx[i]+1);
+                    //}
+                    size_t sampled_element_num=1;
+                    for(int i=0;i<N;i++){
+
+                        sampled_element_num*=(sample_end_idx[i]-sample_start_idx[i]+1);
+
                     }
-                            
-                    std::vector<T> orig_block(cur_element_num,0);
+
+                    std::vector<T> orig_sampled_block(sampled_element_num,0);
                     size_t local_idx=0;
                     if(N==2){
-                        for(size_t x=start_idx[0];x<=end_idx[0];x++){
+                        for(size_t x=start_idx[0];x<=sample_end_idx[0] ;x++){
                             for(size_t y=start_idx[1];y<=end_idx[1];y++){
                                 size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                orig_block[local_idx]=data[global_idx];
+                                orig_sampled_block[local_idx]=data[global_idx];
                                 local_idx++;
                             }
                         }
                     }
 
                     else if(N==3){
-                        for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                            for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                        for(size_t x=start_idx[0];x<=sample_end_idx[0] ;x++){
+                            for(size_t y=start_idx[1];y<=sample_end_idx[1] ;y++){
+                                for(size_t z=start_idx[2];z<=sample_end_idx[2];z++){
                                     size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                    orig_block[local_idx]=data[global_idx];
+                                    orig_sampled_block[local_idx]=data[global_idx];
                                     local_idx++;
                                 }
                             }
@@ -1092,7 +1103,7 @@ namespace QoZ {
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
                         for (auto &interp_direction: dir_candidates) {
-                            double cur_loss=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                            double cur_loss=block_interpolation(data, start_idx, sample_end_idx, PB_predict_overwrite,
                                 interpolators[interp_op], interp_direction, stride,2);
 
                             if(cur_loss<best_loss){
@@ -1103,8 +1114,8 @@ namespace QoZ {
 
                             size_t local_idx=0;
                             if(N==2){
-                                for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                    for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                                for(size_t x=start_idx[0];x<=sample_end_idx[0];x++){
+                                    for(size_t y=start_idx[1];y<=sample_end_idx[1];y++){
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                         data[global_idx]=orig_block[local_idx];
                                         local_idx++;
@@ -1112,9 +1123,9 @@ namespace QoZ {
                                 }
                             }
                             else if(N==3){
-                                for(size_t x=start_idx[0];x<=end_idx[0];x++){
-                                    for(size_t y=start_idx[1];y<=end_idx[1];y++){
-                                        for(size_t z=start_idx[2];z<=end_idx[2];z++){
+                                for(size_t x=start_idx[0];x<=sample_end_idx[0];x++){
+                                    for(size_t y=start_idx[1];y<=sample_end_idx[1];y++){
+                                        for(size_t z=start_idx[2];z<=sample_end_idx[2];z++){
                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
                                             data[global_idx]=orig_block[local_idx];
                                             local_idx++;
