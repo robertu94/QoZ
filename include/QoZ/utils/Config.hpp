@@ -168,6 +168,7 @@ namespace QoZ {
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
             verbose=cfg.GetInteger("AlgoSettings", "verbose", verbose);
             QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
+            blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
             
 
 

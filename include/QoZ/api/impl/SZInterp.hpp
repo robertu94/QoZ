@@ -3039,7 +3039,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.blockwiseSampleBlockSize<=0){
         conf.blockwiseSampleBlockSize=(N==2?16:8);
     }
-    std::cout<<conf.blockwiseSampleBlockSize<<std::endl;
+    
     int max_interp_level=(int)log2(conf.blockwiseSampleBlockSize)+1;
     if(conf.maxStep>0){
         int temp=(int)log2(conf.maxStep);
