@@ -302,7 +302,7 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
     size_t  global_num=conf.num;
     std::vector<size_t> global_dims=conf.dims;
 
-    std::vector<size_t> sampled_data;
+    std::vector<T> sampled_data;
 
     if(N==2){
         conf.dims=std::vector<size_t>{sample_size+1,sample_size+1};
