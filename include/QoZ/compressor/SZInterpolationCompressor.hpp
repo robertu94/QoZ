@@ -1068,7 +1068,7 @@ namespace QoZ {
                     size_t sampled_element_num=1;
                     for(int i=0;i<N;i++){
 
-                        sampled_element_num*=(sample_end_idx[i]-sample_start_idx[i]+1);
+                        sampled_element_num*=(sample_end_idx[i]-start_idx[i]+1);
 
                     }
 
@@ -1117,7 +1117,7 @@ namespace QoZ {
                                 for(size_t x=start_idx[0];x<=sample_end_idx[0];x++){
                                     for(size_t y=start_idx[1];y<=sample_end_idx[1];y++){
                                         size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
-                                        data[global_idx]=orig_block[local_idx];
+                                        data[global_idx]=orig_sampled_block[local_idx];
                                         local_idx++;
                                     }
                                 }
@@ -1127,7 +1127,7 @@ namespace QoZ {
                                     for(size_t y=start_idx[1];y<=sample_end_idx[1];y++){
                                         for(size_t z=start_idx[2];z<=sample_end_idx[2];z++){
                                             size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1]+z*dimension_offsets[2];
-                                            data[global_idx]=orig_block[local_idx];
+                                            data[global_idx]=orig_sampled_block[local_idx];
                                             local_idx++;
                                         }
                                     }
