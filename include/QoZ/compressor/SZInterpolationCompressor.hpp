@@ -2089,7 +2089,7 @@ namespace QoZ {
             double predict_error = 0;
             size_t stride2x = stride * 2;
 
-            if(direction!=2){
+            //if(direction!=2){
                
                 const std::array<int, N> dims = dimension_sequences[direction];
                 for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -2106,8 +2106,8 @@ namespace QoZ {
                                                             (end[dims[1]] - begin[dims[1]]) * dimension_offsets[dims[1]],
                                                             stride * dimension_offsets[dims[1]], interp_func, pb,tuning);
                 }
-            }
-
+            //}
+            /*
             else{
                 
 
@@ -2141,7 +2141,7 @@ namespace QoZ {
 
                
             }
-
+            */
             return predict_error;
         }
 
