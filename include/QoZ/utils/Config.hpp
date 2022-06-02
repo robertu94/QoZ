@@ -169,7 +169,11 @@ namespace QoZ {
             verbose=cfg.GetInteger("AlgoSettings", "verbose", verbose);
             QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
             blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
-            
+            pdTuningRealComp=cfg.GetInteger("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
+            pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
+            pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
+            pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
+            lastPdTuning=cfg.GetInteger("AlgoSettings", "lastPdTuning", lastPdTuning);
 
 
         }
@@ -306,6 +310,11 @@ namespace QoZ {
         std::vector<double> lorenzo2_coeffs;
         int verbose=1;
         int QoZ=0;
+        int pdTuningRealComp=0;
+        int pdTuningAbConf=0;
+        double pdAlpha=-1;
+        double pdBeta=-1;
+        int lastPdTuning=0;
 
         
 
