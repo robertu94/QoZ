@@ -2147,7 +2147,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     if(conf.profiling){
                         bitrate*=((double)num_blocks)/(totalblock_num);
                     }
-                    bitrate+=8*sizeof(T)*anchor_rate;//added
+                    //bitrate+=8*sizeof(T)*anchor_rate;//added
                     /*
                     if (conf.tuningTarget==QoZ::TUNING_TARGET_SSIM){
                         mean=sum/ele_num;
@@ -2301,7 +2301,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         if(conf.profiling){
                             bitrate_r*=((double)num_blocks)/(totalblock_num);
                         }
-                        bitrate_r+=8*sizeof(T)*anchor_rate;//added
+                        //bitrate_r+=8*sizeof(T)*anchor_rate;//added
                         
                        
 
