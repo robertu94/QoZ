@@ -1307,35 +1307,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         cur_beta=1;
                     }
                 }
-                else if(conf.pdTuningAbConf==2){
                 
-                    if (rel_bound>=0.01){
-                        cur_alpha=2;
-                        cur_beta=4;
-                    }
-                    else if (rel_bound>=0.007){
-                        cur_alpha=1.75;
-                        cur_beta=3;
-                    }
-                    
-                    else if (rel_bound>=0.004){
-                        cur_alpha=1.5;
-                        cur_beta=2;
-                    }
-                    
-                    else if (rel_bound>0.001){
-                        cur_alpha=1.5;
-                        cur_beta=1.5;
-                    }
-                    else if (rel_bound>0.0005){
-                        cur_alpha=1.25;
-                        cur_beta=1.5;
-                    }
-                    else {
-                        cur_alpha=1;
-                        cur_beta=1;
-                    }
-                }
                 else{
                     cur_alpha=conf.pdAlpha;
                     cur_beta=conf.pdBeta;
@@ -2175,7 +2147,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     if(conf.profiling){
                         bitrate*=((double)num_blocks)/(totalblock_num);
                     }
-                    //bitrate+=8*sizeof(T)*anchor_rate;//added
+                    bitrate+=8*sizeof(T)*anchor_rate;//added
                     /*
                     if (conf.tuningTarget==QoZ::TUNING_TARGET_SSIM){
                         mean=sum/ele_num;
@@ -2329,7 +2301,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         if(conf.profiling){
                             bitrate_r*=((double)num_blocks)/(totalblock_num);
                         }
-                        //bitrate_r+=8*sizeof(T)*anchor_rate;//added
+                        bitrate_r+=8*sizeof(T)*anchor_rate;//added
                         
                        
 
