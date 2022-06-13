@@ -487,10 +487,16 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
 
     else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){
-            if (rel_bound>1e-3)
+
+            if(conf.abList==0)
+            
                 alpha_list={1,1.25,1.5,1.75,2};
-            else 
-                alpha_list={1,1.25,1.5,1.75,2};
+            else if(conf.abList==0)
+                alpha_list={1,1.25,1.5,1.75,2,2.25,2.5};
+            else
+                alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
+
+
             
 
 
@@ -511,10 +517,8 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
 
     else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){
-            if (rel_bound>1e-3)
-                beta_list={1.5,2,3,4};
-            else
-                beta_list={1.5,2,3,4};
+            
+            beta_list={1.5,2,3,4};
         }
         else 
             beta_list={-1,1.5,2,3};

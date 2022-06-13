@@ -174,6 +174,8 @@ namespace QoZ {
             pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
             pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
             lastPdTuning=cfg.GetInteger("AlgoSettings", "lastPdTuning", lastPdTuning);
+            abList=cfg.GetInteger("AlgoSettings", "abList", abList);
+
 
 
         }
@@ -315,6 +317,7 @@ namespace QoZ {
         double pdAlpha=-1;
         double pdBeta=-1;
         int lastPdTuning=0;
+        int abList=0;
 
         
 
