@@ -491,7 +491,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
             if(conf.abList==0)
             
                 alpha_list={1,1.25,1.5,1.75,2};
-            else if(conf.abList==0)
+            else if(conf.abList==1)
                 alpha_list={1,1.25,1.5,1.75,2,2.25,2.5};
             else
                 alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
