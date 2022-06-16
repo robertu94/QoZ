@@ -17,6 +17,7 @@
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
 #include <cmath>
 #include <memory>
+#include <limits>
 
 
 template<class T, QoZ::uint N>
@@ -133,7 +134,7 @@ char *SZ_compress_AutoSelectiveInterp(QoZ::Config &conf, T *data, size_t &outSiz
         uint8_t best_interpAlgo;
         uint8_t best_interpDirection;
         size_t best_cmpsize=0;
-        size_t best_predloss=9e10;
+        double best_predloss=std::numeric_limits<double>::max();
         for (int i=0;i<element_num;i++){
             orig_data[i]=data[i];
         }
@@ -226,7 +227,7 @@ char *SZ_compress_AutoSelectiveInterp(QoZ::Config &conf, T *data, size_t &outSiz
                             QoZ::HuffmanEncoder<int>(),
                             QoZ::Lossless_zstd());
         for(int start_level=conf.levelwisePredictionSelection;start_level>=1;start_level--){
-            double best_loss=10e10;
+            double best_loss=std::numeric_limits<double>::max();
             uint8_t best_interpAlgo;
             uint8_t best_interpDirection;
             for (auto &interp_op:InterpAlgo_Candidates) {
@@ -332,7 +333,7 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
         uint8_t best_interpAlgo;
         uint8_t best_interpDirection;
         size_t best_cmpsize=0;
-        size_t best_predloss=9e10;
+        double best_predloss=std::numeric_limits<double>::max();
         
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                         QoZ::LinearQuantizer<T>(conf.absErrorBound),
@@ -411,7 +412,7 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
                             QoZ::HuffmanEncoder<int>(),
                             QoZ::Lossless_zstd());
         for(int start_level=conf.levelwisePredictionSelection;start_level>=1;start_level--){
-            double best_loss=10e10;
+            double best_loss=std::numeric_limits<double>::max();
             uint8_t best_interpAlgo;
             uint8_t best_interpDirection;
             for (auto &interp_op:InterpAlgo_Candidates) {
@@ -3768,7 +3769,9 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         cur_block=sampled_blocks[k];
                         //std::cout<<cur_block.size()<<std::endl;
                         size_t tempsize;
-                        SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.interpBlockSize,1);
+                        SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                        //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), empsize,op_candidates,dir_candidates,1);
+
                         //std::cout<<"step 3.5"<<std::endl;
                         //std::cout<<conf.quant_bins.size()<<std::endl;
                         //std::cout<<conf.decomp_square_error<<std::endl;
@@ -3920,7 +3923,9 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                             cur_block=sampled_blocks[k];
                             size_t tempsize;
 
-                            SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.interpBlockSize,1);
+                            SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                            //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), empsize,op_candidates,dir_candidates,1);
+
                             block_q_bins.push_back(conf.quant_bins);
                             square_error+=conf.decomp_square_error;
 

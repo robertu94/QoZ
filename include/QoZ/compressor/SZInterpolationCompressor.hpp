@@ -16,7 +16,7 @@
 #include "QoZ/utils/Config.hpp"
 #include <cstring>
 #include <cmath>
-
+#include <limits>
 namespace QoZ {
     template<class T, uint N, class Quantizer, class Encoder, class Lossless>
     class SZInterpolationCompressor {
@@ -1041,6 +1041,7 @@ namespace QoZ {
                 auto inter_end = inter_block_range->end();
 
                 size_t blockwiseSampleBlockSize=(level<=2)?conf.blockwiseSampleBlockSize:cur_blocksize;
+                //size_t blockwiseSampleBlockSize=cur_blocksize;
 
                 
                 for (auto block = inter_begin; block != inter_end; ++block) {
@@ -1076,7 +1077,7 @@ namespace QoZ {
                     size_t local_idx=0;
                     if(N==2){
                         for(size_t x=start_idx[0];x<=sample_end_idx[0] ;x++){
-                            for(size_t y=start_idx[1];y<=end_idx[1];y++){
+                            for(size_t y=start_idx[1];y<=sample_end_idx[1];y++){
                                 size_t global_idx=x*dimension_offsets[0]+y*dimension_offsets[1];
                                 orig_sampled_block[local_idx]=data[global_idx];
                                 local_idx++;
@@ -1098,7 +1099,7 @@ namespace QoZ {
                             
                     uint8_t best_op=QoZ::INTERP_ALGO_CUBIC;
                     uint8_t best_dir=0;
-                    double best_loss=9e10;
+                    double best_loss=std::numeric_limits<double>::max();
                     std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
