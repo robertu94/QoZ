@@ -450,8 +450,9 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
             best_interpAlgo_list[start_level-1]=best_interpAlgo;
             best_interpDirection_list[start_level-1]=best_interpDirection;
             
-            auto cmprData = sz.compress(conf,sampled_data.data(),cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);//may remove
-            delete []cmprData;
+           // auto cmprData = sz.compress(conf,sampled_data.data(),cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);//may remove
+            //delete []cmprData;
+            //regenerate orig
         }
         //delete sz;
 
@@ -3769,8 +3770,8 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         cur_block=sampled_blocks[k];
                         //std::cout<<cur_block.size()<<std::endl;
                         size_t tempsize;
-                        //SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
-                        SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
+                        SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                        //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
 
                         //std::cout<<"step 3.5"<<std::endl;
                         //std::cout<<conf.quant_bins.size()<<std::endl;
@@ -3923,8 +3924,8 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                             cur_block=sampled_blocks[k];
                             size_t tempsize;
 
-                            //SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
-                            SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
+                            SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                            //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
 
                             block_q_bins.push_back(conf.quant_bins);
                             square_error+=conf.decomp_square_error;
