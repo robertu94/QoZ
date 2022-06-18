@@ -264,9 +264,13 @@ char *SZ_compress_AutoSelectiveInterp(QoZ::Config &conf, T *data, size_t &outSiz
             conf.interpDirection=best_interpDirection;
             best_interpAlgo_list[start_level-1]=best_interpAlgo;
             best_interpDirection_list[start_level-1]=best_interpDirection;
-            
-            auto cmprData = sz.compress(conf,data,cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);
-            delete []cmprData;
+            if(conf.pdTuningRealComp){
+                auto cmprData = sz.compress(conf,data,cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+                delete []cmprData;
+                for (int i=0;i<element_num;i++){
+                    orig_data[i]=data[i];
+                }
+            }
         }
         //delete sz;
 
@@ -449,10 +453,14 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
             conf.interpDirection=best_interpDirection;
             best_interpAlgo_list[start_level-1]=best_interpAlgo;
             best_interpDirection_list[start_level-1]=best_interpDirection;
-            
-           // auto cmprData = sz.compress(conf,sampled_data.data(),cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);//may remove
-            //delete []cmprData;
-            //regenerate orig
+            if(conf.pdTuningRealComp){
+                auto cmprData = sz.compress(conf,sampled_data.data(),cur_cmpsize,2,start_level==conf.levelwisePredictionSelection?9999:start_level,start_level-1);
+                delete []cmprData;
+                for (int i=0;i<conf.num;i++){
+                    orig_sampled_data[i]=sampled_data[i];
+                }
+            }
+           
         }
         //delete sz;
 
