@@ -175,6 +175,7 @@ namespace QoZ {
             pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
             lastPdTuning=cfg.GetInteger("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
+            crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
 
 
 
@@ -214,6 +215,7 @@ namespace QoZ {
             write(fixBlockSize, c);
             write(blockwiseSampleBlockSize, c);
             write(QoZ, c);
+            write(crossBlock, c);
 
             
         };
@@ -252,6 +254,7 @@ namespace QoZ {
             read(fixBlockSize, c);
             read(blockwiseSampleBlockSize, c);
             read(QoZ, c);
+            read(crossBlock, c);
         }
 
         void print() {
@@ -318,7 +321,7 @@ namespace QoZ {
         double pdBeta=-1;
         int lastPdTuning=0;
         int abList=0;
-
+        int crossBlock=0;
         
 
     };

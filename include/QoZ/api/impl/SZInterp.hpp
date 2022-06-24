@@ -3511,6 +3511,18 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     size_t sampleBlockSize=conf.sampleBlockSize;
     if (sampleBlockSize<=0)
         sampleBlockSize=conf.interpBlockSize;
+    size_t min_sbs=16;
+    size_t min_bsbs=8;
+    if (sampleBlockSize<min_sbs){
+        sampleBlockSize=min_sbs;
+
+    }
+    if(conf.blockwiseSampleBlockSize<min_bsbs){
+        conf.blockwiseSampleBlockSize=min_bsbs;
+    }
+
+    if(conf.blockwiseSampleBlockSize>sampleBlockSize)
+        conf.blockwiseSampleBlockSize=sampleBlockSize;
     conf.fixBlockSize=conf.interpBlockSize;
 
     size_t num_blocks=0;
