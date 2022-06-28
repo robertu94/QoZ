@@ -1667,38 +1667,58 @@ namespace QoZ {
 
                     T *d;
                     size_t i;
+                    std::cout<<"zunnnihuojia1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         d = data + begin + i * stride;
                         recover(d - data, *d,
                             interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
                     d = data + begin + stride;
-                    if(cross_block and begin+stride>=stride3x)
+                    if(cross_block and begin+stride>=stride3x){
+                        std::cout<<"zunnnihuojia2"<<std::endl;
                         recover(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                    else
+                    }
+                    else{
+                        std::cout<<"zunnnihuojia3"<<std::endl;
                         recover(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+                    }
 
                     d = data + begin + i * stride;
-                    if(begin+i*stride+stride3x<cross_block)
+                    if(begin+i*stride+stride3x<cross_block){
+                        std::cout<<"zunnnihuojia4"<<std::endl;
                         recover(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                    else
+                    }
+                    else{
+                        std::cout<<"zunnnihuojia5"<<std::endl;
                         recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                    }
                     if (n % 2 == 0) {
+
                         size_t offset=begin + (n - 1) * stride;
                         d = data + offset;
-                        if(offset+stride3x<cross_block)
+                        if(offset+stride3x<cross_block){
+                            std::cout<<"zunnnihuojia6"<<std::endl;
                             recover(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                        else if (offset+stride<cross_block)
+                        }
+                        else if (offset+stride<cross_block){
+                            std::cout<<"zunnnihuojia7"<<std::endl;
                             recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
-                        else if (offset>=stride5x)
+                        }
+                        else if (offset>=stride5x){
+                            std::cout<<"zunnnihuojia8"<<std::endl;
                             recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) );
-                        else if (offset>=stride3x)
+                        }
+                        else if (offset>=stride3x){
+                            std::cout<<"zunnnihuojia9"<<std::endl;
                             recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
-                        else
+                        }
+                        else{
+                            std::cout<<"zunnnihuojia10"<<std::endl;
                             recover(d - data, *d, *(d - stride) );
+                        }
 
                     }
                 }
