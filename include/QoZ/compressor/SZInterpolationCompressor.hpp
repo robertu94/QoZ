@@ -2471,7 +2471,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,cross_block);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,1);
                         }
                     }
                     size_t iidx=begin[dims[0]] ? 1: 0;
@@ -2484,7 +2484,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,cross_block);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1);
                             else
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                     begin_offset +
@@ -2505,7 +2505,7 @@ namespace QoZ {
                                                                         begin_offset +
                                                                         (end[dims[2]] - begin[dims[2]]) *
                                                                         dimension_offsets[dims[2]],
-                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,cross_block);
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1);
                             else
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                         begin_offset +
