@@ -301,6 +301,7 @@ namespace QoZ {
 
             read(fixBlockSize,buffer_pos);
             size_t cross_block=0;
+            std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
                 read(ops_num,buffer_pos);
@@ -313,7 +314,7 @@ namespace QoZ {
 
 
             }
-
+            std::cout<<"step 2"<<std::endl;
             else if(levelwise_predictor_levels>0){
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
@@ -323,6 +324,7 @@ namespace QoZ {
             
 
             init();
+            std::cout<<"step 3 "<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
@@ -331,6 +333,7 @@ namespace QoZ {
             encoder.postprocess_decode();
 
             lossless.postdecompress_data(buffer);
+            std::cout<<"step 4 "<<std::endl;
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
@@ -348,6 +351,8 @@ namespace QoZ {
                 
             }
             size_t op_index=0;
+
+            std::cout<<"step 5 "<<std::endl;
 
 
     
@@ -380,7 +385,7 @@ namespace QoZ {
                    
                     quantizer.set_eb(eb*cur_ratio);
                 }
-
+                std::cout<<"step 6 "<<std::endl;
                
                
                 
