@@ -70,6 +70,8 @@ namespace QoZ {
             read(blockwiseTuning,buffer_pos);
 
             read(fixBlockSize,buffer_pos);
+            size_t cross_block=0;
+            read(cross_block,buffer_pos);
             if(blockwiseTuning){
                 size_t ops_num;
                 read(ops_num,buffer_pos);
@@ -224,7 +226,7 @@ namespace QoZ {
                        */
                        //else{
                             block_interpolation(decData, block.get_global_index(), end_idx, PB_recover,
-                                            interpolators[cur_interpolator], cur_direction, stride);
+                                            interpolators[cur_interpolator], cur_direction, stride,0,cross_block);
                        // }
                        
 
@@ -301,6 +303,7 @@ namespace QoZ {
 
             read(fixBlockSize,buffer_pos);
             size_t cross_block=0;
+            read(cross_block,buffer_pos);
            // std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
@@ -309,7 +312,7 @@ namespace QoZ {
                 interpDirection_list=std::vector <uint8_t>(ops_num,0);
                 read(interpAlgo_list.data(),ops_num,buffer_pos);
                 read(interpDirection_list.data(),ops_num,buffer_pos);
-                read(cross_block,buffer_pos);
+                
 
 
 
@@ -472,6 +475,7 @@ namespace QoZ {
 
             std::vector<uint8_t>interp_ops;
             std::vector<uint8_t>interp_dirs;
+            size_t cross_block=conf.crossBlock;
             init();
             if (tuning){
                 std::vector<int>().swap(quant_inds);
@@ -716,7 +720,7 @@ namespace QoZ {
                         
                         
                             predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                                interpolators[cur_interpolator], cur_direction, stride,tuning);
+                                                interpolators[cur_interpolator], cur_direction, stride,tuning,cross_block);
                         //}
                     
                         
@@ -876,6 +880,7 @@ namespace QoZ {
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
+            write(cross_block,buffer_pos);
 
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
@@ -935,8 +940,8 @@ namespace QoZ {
             direction_sequence_id = conf.interpDirection;
             alpha=conf.alpha;
             beta=conf.beta;
-            mark=std::vector<bool>(conf.num,false);
-            size_t cross_block=conf.crossBlock?conf.num:0;
+            //mark=std::vector<bool>(conf.num,false);
+            size_t cross_block=conf.crossBlock;
 
 
 
@@ -973,8 +978,8 @@ namespace QoZ {
 
             if(!anchor){
                 quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
-                if(tuning==0)
-                    mark[0]=true;
+               // if(tuning==0)
+                    //mark[0]=true;
             }
             else if (start_level==interpolation_level){
                 if(tuning){
@@ -1219,13 +1224,13 @@ namespace QoZ {
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
-
+            write(cross_block,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
                 write(ops_num,buffer_pos);
                 write(interp_ops.data(),ops_num,buffer_pos);
                 write(interp_dirs.data(),ops_num,buffer_pos);
-                write(cross_block,buffer_pos);
+                
 
             }
             else if(levelwise_predictor_levels>0){
@@ -1398,8 +1403,8 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
                             quantizer.insert_unpred(*(data+x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z) );
-                            if(tuning==0)
-                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            //if(tuning==0)
+                                //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             //quant_inds.push_back(0);
 
                         }
@@ -1534,7 +1539,7 @@ namespace QoZ {
                             T *d = data + begin + i * stride;
 
                             quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
-                            mark[begin + i * stride]=true;
+                            //mark[begin + i * stride]=true;
                         }
                       
 
@@ -1555,7 +1560,7 @@ namespace QoZ {
                             else { 
                                 quantize(d - data, *d, *(d - stride) );
                             }
-                            mark[offset]=true;
+                            //mark[offset]=true;
                         }
                        
 
@@ -1648,12 +1653,13 @@ namespace QoZ {
                             d = data + begin + i * stride;
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                             mark[begin + i * stride]=true;
+                             //mark[begin + i * stride]=true;
                         }
                         d = data + begin + stride;
                         if(cross_block and axis_begin >= 2*axis_stride){
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+                            /*
                             if (!mark[begin+stride-stride3x]){
                                 size_t temp=begin+stride;
                                 size_t x=temp/(352*1008);
@@ -1662,12 +1668,13 @@ namespace QoZ {
                                 size_t z =temp%352;
                                 std::cout<<x<<" "<<y<<" "<<z<<" "<<stride<<std::endl;
                             }
+                            */
 
                         }
                         else
                             quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
 
-                        mark[begin+stride]=true;
+                        //mark[begin+stride]=true;
 
                         d = data + begin + i * stride;
                         if(begin+i*stride+stride3x<cross_block)
@@ -1676,7 +1683,7 @@ namespace QoZ {
                         else
                             quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
 
-                        mark[begin+i*stride]=true;
+                        //mark[begin+i*stride]=true;
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
@@ -1692,7 +1699,7 @@ namespace QoZ {
                             else
                                 quantize(d - data, *d, *(d - stride) );
 
-                            mark[offset]=true;
+                           // mark[offset]=true;
 
 
                         }
@@ -2765,7 +2772,7 @@ namespace QoZ {
         double beta;
         std::vector<std::string> interpolators = {"linear", "cubic"};
         std::vector<int> quant_inds;
-        std::vector<bool> mark;
+       // std::vector<bool> mark;
         size_t quant_index = 0; // for decompress
         size_t maxStep=0;
         double max_error;
