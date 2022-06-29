@@ -1488,7 +1488,7 @@ namespace QoZ {
 
         double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride,
                                       const std::string &interp_func,
-                                      const PredictorBehavior pb,int tuning=0,size_t cross_block=0,size_t axis_begin,size_t axis_stride) {//cross block: 0: no cross 1: only front-cross x: cross until x
+                                      const PredictorBehavior pb,int tuning=0,size_t cross_block=0,size_t axis_begin=0,size_t axis_stride=0) {//cross block: 0: no cross 1: only front-cross x: cross until x
 
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
