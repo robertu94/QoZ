@@ -1515,7 +1515,7 @@ namespace QoZ {
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride), *(d + stride)),tuning);
 
                             }
-                            else if (n >= 4 or (cross_block and offset-stride3x >= 0)) {
+                            else if (n >= 4 or (cross_block and  axis_begin >= (4-n)*axis_stride )) {
                                 
                                 predict_error+=quantize_tuning(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)),tuning);
                               
@@ -1546,7 +1546,7 @@ namespace QoZ {
                                 quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
 
                             }
-                            else if (n >= 4 or (cross_block and axis_begin+(n-1)*axis_stride >= 3*axis_stride)) {
+                            else if (n >= 4 or (cross_block and axis_begin >= (4-n)*axis_stride )) {
                                 
                                quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ) );
                               
@@ -1574,7 +1574,7 @@ namespace QoZ {
                             recover(d - data, *d, interp_linear(*(d - stride), *(d + stride)) );
 
                         }
-                        else if (n >= 4 or (cross_block and axis_begin+(n-1)*axis_stride >= 3*axis_stride)) {
+                        else if (n >= 4 or (cross_block and  axis_begin >= (4-n)*axis_stride )) {
                                 
                             recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
                               
