@@ -1060,7 +1060,7 @@ namespace QoZ {
                     auto end_idx = start_idx;
                     auto sample_end_idx=start_idx;
                     for (int i = 0; i < N; i++) {
-                        std::cout<<start_idx[i]<<std::endl;
+                        //std::cout<<start_idx[i]<<std::endl;
                         end_idx[i] += cur_blocksize ;
                         if (end_idx[i] > global_dimensions[i] - 1) {
                             end_idx[i] = global_dimensions[i] - 1;
@@ -1110,7 +1110,7 @@ namespace QoZ {
                     uint8_t best_op=QoZ::INTERP_ALGO_CUBIC;
                     uint8_t best_dir=0;
                     double best_loss=std::numeric_limits<double>::max();
-                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
+                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR};//,QoZ::INTERP_ALGO_CUBIC};
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
                         for (auto &interp_direction: dir_candidates) {
