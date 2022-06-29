@@ -314,13 +314,15 @@ namespace QoZ {
 
 
             }
-            std::cout<<cross_block<<std::endl;
+            
             else if(levelwise_predictor_levels>0){
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
+
+            std::cout<<cross_block<<std::endl;
             std::cout<<"step 2"<<std::endl;
 
             init();
