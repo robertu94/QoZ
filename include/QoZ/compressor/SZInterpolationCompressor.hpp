@@ -1616,7 +1616,7 @@ namespace QoZ {
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
                                 predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),tuning);
                             else
-                                predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride), *(d + stride), ),tuning);
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear(*(d - stride), *(d + stride) ),tuning);
                         }
 
                         
@@ -1680,7 +1680,7 @@ namespace QoZ {
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
                                 quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
                             else
-                                quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride), ));
+                                quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride) ));
                         }
 
 
