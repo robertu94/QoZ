@@ -1604,12 +1604,20 @@ namespace QoZ {
                         }
                         d = data + begin + stride;
                         if(cross_block and axis_begin >= 2*axis_stride){
-                            predict_error+=quantize_tuning(d - data, *d,
-                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                            if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
+                                predict_error+=quantize_tuning(d - data, *d,
+                                    interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                            else
+                                predict_error+=quantize_tuning(d - data, *d,
+                                    interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride) ),tuning);
                             
                         }
-                        else
-                            predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                        else{
+                            if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
+                                predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                            else
+                                predict_error+=quantize_tuning(d - data, *d, interp_liear(*(d - stride), *(d + stride), ),tuning);
+                        }
 
                         
                         d = data + begin + i * stride;
@@ -1660,22 +1668,21 @@ namespace QoZ {
                         }
                         d = data + begin + stride;
                         if(cross_block and axis_begin >= 2*axis_stride){
-                            quantize(d - data, *d,
-                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                            /*
-                            if (!mark[begin+stride-stride3x]){
-                                size_t temp=begin+stride;
-                                size_t x=temp/(352*1008);
-                                temp=temp%(352*1008);
-                                size_t y =temp/(352);
-                                size_t z =temp%352;
-                                std::cout<<x<<" "<<y<<" "<<z<<" "<<stride<<std::endl;
-                            }
-                            */
-
+                            if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
+                                quantize(d - data, *d,
+                                    interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
+                            else
+                                quantize(d - data, *d,
+                                    interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride) ));
+                            
                         }
-                        else
-                            quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+                        else{
+                            if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
+                                quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+                            else
+                                quantize(d - data, *d, interp_liear(*(d - stride), *(d + stride), ));
+                        }
+
 
                         //mark[begin+stride]=true;
 
@@ -1726,17 +1733,27 @@ namespace QoZ {
                     }
                     d = data + begin + stride;
                     if(cross_block and axis_begin >= 2*axis_stride){
-                        std::cout<<"zunnnihuojia2"<<std::endl;
-                        //std::cout<<begin+stride<<std::endl;
-                        //std::cout<<stride3x<<std::endl;
-                       // std::cout<<cross_block<<std::endl;
-
-                        recover(d - data, *d,
-                                interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                    }
+                        if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) ){
+                            std::cout<<"zunnnihuojia2"<<std::endl;
+                            recover(d - data, *d,
+                                interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
+                        }
+                        else{
+                            std::cout<<"zunnnihuojia2.5"<<std::endl;
+                            recover(d - data, *d,
+                                interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride) ));
+                        }
+                            
+                        }
                     else{
-                        std::cout<<"zunnnihuojia3"<<std::endl;
-                        recover(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+                        if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) ){
+                            std::cout<<"zunnnihuojia3"<<std::endl;
+                            recover(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)));
+                        }
+                        else{
+                            std::cout<<"zunnnihuojia3.5"<<std::endl;
+                            recover(d - data, *d, interp_liear(*(d - stride), *(d + stride) ));
+                        }
                     }
 
                     d = data + begin + i * stride;
