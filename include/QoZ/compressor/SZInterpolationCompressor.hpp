@@ -935,7 +935,7 @@ namespace QoZ {
             direction_sequence_id = conf.interpDirection;
             alpha=conf.alpha;
             beta=conf.beta;
-
+            mark=std::vector<bool>(conf.num,false);
             size_t cross_block=conf.crossBlock?conf.num:0;
 
 
@@ -1528,7 +1528,9 @@ namespace QoZ {
 
                         for (size_t i = 1; i + 1 < n; i += 2) {
                             T *d = data + begin + i * stride;
+
                             quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
+                            mark[begin + i * stride]=true;
                         }
                       
 
@@ -1549,6 +1551,7 @@ namespace QoZ {
                             else { 
                                 quantize(d - data, *d, *(d - stride) );
                             }
+                            mark[offset]=true;
                         }
                        
 
@@ -1589,20 +1592,27 @@ namespace QoZ {
                             
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                           
                         }
                         d = data + begin + stride;
-                        if(cross_block and begin+stride >= stride3x)
+                        if(cross_block and begin+stride >= stride3x){
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
+                            
+                        }
                         else
                             predict_error+=quantize_tuning(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)),tuning);
 
+                        
                         d = data + begin + i * stride;
+
                         if(begin+i*stride+stride3x<cross_block)
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
                         else
                             predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),tuning);
+
+                        
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
@@ -1618,6 +1628,8 @@ namespace QoZ {
                             else
                                 predict_error+=quantize_tuning(d - data, *d, *(d - stride),tuning);
 
+                           
+
 
                         }
                     }
@@ -1632,13 +1644,19 @@ namespace QoZ {
                             d = data + begin + i * stride;
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+                             mark[begin + i * stride]=true;
                         }
                         d = data + begin + stride;
-                        if(cross_block and begin+stride >= stride3x)
+                        if(cross_block and begin+stride >= stride3x){
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+                            if (!mark[begin+stride-stride3x])
+                                std::cout<<begin<<" "<<stride<<std::endl;
+                        }
                         else
                             quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+
+                        mark[begin+stride]=true;
 
                         d = data + begin + i * stride;
                         if(begin+i*stride+stride3x<cross_block)
@@ -1646,6 +1664,8 @@ namespace QoZ {
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                         else
                             quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+
+                        mark[begin+i*stride]=true;
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
@@ -1660,6 +1680,8 @@ namespace QoZ {
                                 quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
                             else
                                 quantize(d - data, *d, *(d - stride) );
+
+                            mark[offset]=true;
 
 
                         }
@@ -2732,6 +2754,7 @@ namespace QoZ {
         double beta;
         std::vector<std::string> interpolators = {"linear", "cubic"};
         std::vector<int> quant_inds;
+        std::vector<bool> mark;
         size_t quant_index = 0; // for decompress
         size_t maxStep=0;
         double max_error;
@@ -2739,6 +2762,7 @@ namespace QoZ {
         Encoder encoder;
         Lossless lossless;
         size_t num_elements;
+
         std::array<size_t, N> global_dimensions;
         std::array<size_t, N> dimension_offsets;
         std::vector<std::array<int, N>> dimension_sequences;
