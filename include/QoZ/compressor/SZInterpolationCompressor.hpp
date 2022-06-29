@@ -301,7 +301,7 @@ namespace QoZ {
 
             read(fixBlockSize,buffer_pos);
             size_t cross_block=0;
-            std::cout<<"step 1 "<<std::endl;
+           // std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
                 read(ops_num,buffer_pos);
@@ -322,11 +322,11 @@ namespace QoZ {
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
 
-            std::cout<<cross_block<<std::endl;
-            std::cout<<"step 2"<<std::endl;
+            //std::cout<<cross_block<<std::endl;
+            //std::cout<<"step 2"<<std::endl;
 
             init();
-            std::cout<<"step 3 "<<std::endl;
+           // std::cout<<"step 3 "<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
@@ -335,7 +335,7 @@ namespace QoZ {
             encoder.postprocess_decode();
 
             lossless.postdecompress_data(buffer);
-            std::cout<<"step 4 "<<std::endl;
+           // std::cout<<"step 4 "<<std::endl;
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
@@ -354,7 +354,7 @@ namespace QoZ {
             }
             size_t op_index=0;
 
-            std::cout<<"step 5 "<<std::endl;
+            //std::cout<<"step 5 "<<std::endl;
 
 
     
@@ -387,7 +387,7 @@ namespace QoZ {
                    
                     quantizer.set_eb(eb*cur_ratio);
                 }
-                std::cout<<"step 6 "<<std::endl;
+                //std::cout<<"step 6 "<<std::endl;
                
                
                 
@@ -1488,7 +1488,7 @@ namespace QoZ {
 
         double block_interpolation_1d_cross(T *data, size_t begin, size_t end, size_t stride,
                                       const std::string &interp_func,
-                                      const PredictorBehavior pb,int tuning=0,size_t cross_block=0) {//cross block: 0: no cross 1: only front-cross x: cross until x
+                                      const PredictorBehavior pb,int tuning=0,size_t cross_block=0,size_t axis_begin,size_t axis_stride) {//cross block: 0: no cross 1: only front-cross x: cross until x
 
             size_t n = (end - begin) / stride + 1;
             if (n <= 1) {
@@ -1546,7 +1546,7 @@ namespace QoZ {
                                 quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
 
                             }
-                            else if (n >= 4 or (cross_block and offset-stride3x >= 0)) {
+                            else if (n >= 4 or (cross_block and axis_begin+(n-1)*axis_stride >= 3*axis_stride)) {
                                 
                                quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ) );
                               
@@ -1574,7 +1574,7 @@ namespace QoZ {
                             recover(d - data, *d, interp_linear(*(d - stride), *(d + stride)) );
 
                         }
-                        else if (n >= 4 or (cross_block and offset-stride3x >= 0)) {
+                        else if (n >= 4 or (cross_block and axis_begin+(n-1)*axis_stride >= 3*axis_stride)) {
                                 
                             recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
                               
@@ -1599,7 +1599,7 @@ namespace QoZ {
                            
                         }
                         d = data + begin + stride;
-                        if(cross_block and begin+stride >= stride3x){
+                        if(cross_block and axis_begin >= 2*axis_stride){
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
                             
@@ -1651,7 +1651,7 @@ namespace QoZ {
                              mark[begin + i * stride]=true;
                         }
                         d = data + begin + stride;
-                        if(cross_block and begin+stride >= stride3x){
+                        if(cross_block and axis_begin >= 2*axis_stride){
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                             if (!mark[begin+stride-stride3x]){
@@ -1662,7 +1662,7 @@ namespace QoZ {
                                 size_t z =temp%352;
                                 std::cout<<x<<" "<<y<<" "<<z<<" "<<stride<<std::endl;
                             }
-                            
+
                         }
                         else
                             quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
@@ -1711,7 +1711,7 @@ namespace QoZ {
                             interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
                     d = data + begin + stride;
-                    if(cross_block and begin+stride >= stride3x){
+                    if(cross_block and axis_begin >= 2*axis_stride){
                         //std::cout<<"zunnnihuojia2"<<std::endl;
                         //std::cout<<begin+stride<<std::endl;
                         //std::cout<<stride3x<<std::endl;
@@ -2507,7 +2507,7 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[0]] - begin[dims[0]]) *
                                                                     dimension_offsets[dims[0]],
-                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,1);
+                                                                    stride * dimension_offsets[dims[0]], interp_func, pb,tuning,1,begin[dims[0]],stride);
                         }
                     }
                     size_t iidx=begin[dims[0]] ? 1: 0;
@@ -2520,13 +2520,13 @@ namespace QoZ {
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1,begin[dims[1]],stride);
                             else
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                     begin_offset +
                                                                     (end[dims[1]] - begin[dims[1]]) *
                                                                     dimension_offsets[dims[1]],
-                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1);
+                                                                    stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1,begin[dims[1]],stride);
                             iidx++;
                         }
                     }
@@ -2541,13 +2541,13 @@ namespace QoZ {
                                                                         begin_offset +
                                                                         (end[dims[2]] - begin[dims[2]]) *
                                                                         dimension_offsets[dims[2]],
-                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1);
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1,begin[dims[2]],stride);
                             else
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                         begin_offset +
                                                                         (end[dims[2]] - begin[dims[2]]) *
                                                                         dimension_offsets[dims[2]],
-                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1);
+                                                                        stride * dimension_offsets[dims[2]], interp_func, pb,tuning,1,begin[dims[2]],stride);
 
 
                             iidx++;
