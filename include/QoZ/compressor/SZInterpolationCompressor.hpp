@@ -1632,7 +1632,7 @@ namespace QoZ {
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                         }
                         d = data + begin + stride;
-                        if(cross_block and begin+stride >= stride3x)
+                        if(0)//(cross_block and begin+stride >= stride3x)
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                         else
