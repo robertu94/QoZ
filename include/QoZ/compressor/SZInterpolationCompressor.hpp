@@ -1654,8 +1654,15 @@ namespace QoZ {
                         if(cross_block and begin+stride >= stride3x){
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                            if (!mark[begin+stride-stride3x])
-                                std::cout<<begin<<" "<<stride<<std::endl;
+                            if (!mark[begin+stride-stride3x]){
+                                size_t temp=begin+stride;
+                                size_t x=temp/(352*1008);
+                                temp=temp%(352*1008);
+                                size_t y =temp/(352);
+                                size_t z =temp%352;
+                                std::cout<<x<<" "<<y<<" "<<z<<" "<<stride<<std::endl;
+                            }
+                            
                         }
                         else
                             quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
