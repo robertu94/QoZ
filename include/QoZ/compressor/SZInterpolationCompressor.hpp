@@ -1614,21 +1614,25 @@ namespace QoZ {
                         
                         d = data + begin + i * stride;
 
-                        if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis])
+                        if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
-                        else
+                        else if (axis_begin+(i-3)*axis_stride>=0)
                             predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),tuning);
+                        else
+                            predict_error+=quantize_tuning(d - data, *d, interp_linear( *(d - stride), *(d + stride)),tuning);
 
                         
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
-                            if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis])
+                            if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0)
                                 predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
-                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis])
+                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0)
                                 predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),tuning);
+                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis])
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear( *(d - stride), *(d + stride)),tuning);
                             else if (axis_begin >= (6-n)*axis_stride)
                                 predict_error+=quantize_tuning(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)),tuning);
                             else if (axis_begin >= (4-n)*axis_stride)
@@ -1676,21 +1680,25 @@ namespace QoZ {
                         //mark[begin+stride]=true;
 
                         d = data + begin + i * stride;
-                        if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis])
+                        if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                        else
+                        else if (axis_begin+(i-3)*axis_stride>=0)
                             quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                        else
+                            quantize(d - data, *d, interp_quad_2( *(d - stride), *(d + stride)) );
 
                         //mark[begin+i*stride]=true;
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
-                            if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis])
+                            if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0)
                                 quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis])
+                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0)
                                 quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                            else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis])
+                                quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
                             else if (axis_begin >= (6-n)*axis_stride)
                                 quantize(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) );
                             else if (axis_begin >= (4-n)*axis_stride)
@@ -1710,7 +1718,7 @@ namespace QoZ {
 
                     T *d;
                     size_t i;
-                    //std::cout<<"zunnnihuojia1"<<std::endl;
+                    std::cout<<"zunnnihuojia1"<<std::endl;
                     for (i = 3; i + 3 < n; i += 2) {
                         d = data + begin + i * stride;
                         recover(d - data, *d,
@@ -1718,7 +1726,7 @@ namespace QoZ {
                     }
                     d = data + begin + stride;
                     if(cross_block and axis_begin >= 2*axis_stride){
-                        //std::cout<<"zunnnihuojia2"<<std::endl;
+                        std::cout<<"zunnnihuojia2"<<std::endl;
                         //std::cout<<begin+stride<<std::endl;
                         //std::cout<<stride3x<<std::endl;
                        // std::cout<<cross_block<<std::endl;
@@ -1727,43 +1735,53 @@ namespace QoZ {
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
                     else{
-                        //std::cout<<"zunnnihuojia3"<<std::endl;
+                        std::cout<<"zunnnihuojia3"<<std::endl;
                         recover(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
                     }
 
                     d = data + begin + i * stride;
-                    if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis]){
-                       // std::cout<<"zunnnihuojia4"<<std::endl;
+                    if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
+                        std::cout<<"zunnnihuojia4"<<std::endl;
                         recover(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
-                    else{
-                        //std::cout<<"zunnnihuojia5"<<std::endl;
+                    else if (axis_begin+(i-3)*axis_stride>=0){
+                        std::cout<<"zunnnihuojia5"<<std::endl;
                         recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                    }
+                    else{
+                        std::cout<<"zunnnihuojia5.5"<<std::endl;
+                        recover(d - data, *d, interp_quad_2( *(d - stride), *(d + stride)) );
+
                     }
                     if (n % 2 == 0) {
 
                         size_t offset=begin + (n - 1) * stride;
                         d = data + offset;
-                        if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis]){
-                           // std::cout<<"zunnnihuojia6"<<std::endl;
+                        if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
+                            std::cout<<"zunnnihuojia6"<<std::endl;
                             recover(d - data, *d,
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                         }
-                        else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis]){
-                           // std::cout<<"zunnnihuojia7"<<std::endl;
+                        else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
+                            std::cout<<"zunnnihuojia7"<<std::endl;
                             recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
                         }
+                        else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis]){
+                            std::cout<<"zunnnihuojia7.5"<<std::endl;
+                            recover(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+
+                        }
                         else if (axis_begin >= (6-n)*axis_stride){
-                           // std::cout<<"zunnnihuojia8"<<std::endl;
+                            std::cout<<"zunnnihuojia8"<<std::endl;
                             recover(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) );
                         }
                         else if (axis_begin >= (4-n)*axis_stride){
-                            //std::cout<<"zunnnihuojia9"<<std::endl;
+                            std::cout<<"zunnnihuojia9"<<std::endl;
                             recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
                         }
                         else{
-                           // std::cout<<"zunnnihuojia10"<<std::endl;
+                            std::cout<<"zunnnihuojia10"<<std::endl;
                             recover(d - data, *d, *(d - stride) );
                         }
 
@@ -2539,7 +2557,7 @@ namespace QoZ {
                     iidx=begin[dims[0]] ? 1: 0;
                     size_t jjdx=begin[dims[1]] ? 1: 0;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
-                        for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
+                         for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                             size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                                   begin[dims[2]] * dimension_offsets[dims[2]];
                             if(iidx%2==0 and jjdx%2==0)
