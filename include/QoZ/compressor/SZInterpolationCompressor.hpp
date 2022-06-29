@@ -973,6 +973,8 @@ namespace QoZ {
 
             if(!anchor){
                 quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
+                if(tuning==0)
+                    mark[0]=true;
             }
             else if (start_level==interpolation_level){
                 if(tuning){
@@ -1396,6 +1398,8 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
                             quantizer.insert_unpred(*(data+x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z) );
+                            if(tuning==0)
+                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
                             //quant_inds.push_back(0);
 
                         }
