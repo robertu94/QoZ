@@ -1060,6 +1060,7 @@ namespace QoZ {
                     auto end_idx = start_idx;
                     auto sample_end_idx=start_idx;
                     for (int i = 0; i < N; i++) {
+                        std::cout<<start_idx[i]<<std::endl;
                         end_idx[i] += cur_blocksize ;
                         if (end_idx[i] > global_dimensions[i] - 1) {
                             end_idx[i] = global_dimensions[i] - 1;
