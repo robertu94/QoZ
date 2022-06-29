@@ -1676,7 +1676,7 @@ namespace QoZ {
                             interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
                     d = data + begin + stride;
-                    if(cross_block and begin+stride >= stride3x){
+                    if(0)//(cross_block and begin+stride >= stride3x){
                         //std::cout<<"zunnnihuojia2"<<std::endl;
                         //std::cout<<begin+stride<<std::endl;
                         //std::cout<<stride3x<<std::endl;
