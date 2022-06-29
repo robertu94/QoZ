@@ -1686,7 +1686,7 @@ namespace QoZ {
                         else if (axis_begin+(i-3)*axis_stride>=0)
                             quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
                         else
-                            quantize(d - data, *d, interp_quad_2( *(d - stride), *(d + stride)) );
+                            quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
 
                         //mark[begin+i*stride]=true;
                         if (n % 2 == 0) {
@@ -1751,7 +1751,7 @@ namespace QoZ {
                     }
                     else{
                         std::cout<<"zunnnihuojia5.5"<<std::endl;
-                        recover(d - data, *d, interp_quad_2( *(d - stride), *(d + stride)) );
+                        recover(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
 
                     }
                     if (n % 2 == 0) {
