@@ -940,7 +940,7 @@ namespace QoZ {
             direction_sequence_id = conf.interpDirection;
             alpha=conf.alpha;
             beta=conf.beta;
-            mark=std::vector<bool>(conf.num,false);
+            //mark=std::vector<bool>(conf.num,false);
             size_t cross_block=conf.crossBlock;
 
 
@@ -978,8 +978,8 @@ namespace QoZ {
 
             if(!anchor){
                 quant_inds.push_back(quantizer.quantize_and_overwrite(*data, 0));
-                if(tuning==0)
-                    mark[0]=true;
+                //if(tuning==0)
+                    //mark[0]=true;
             }
             else if (start_level==interpolation_level){
                 if(tuning){
@@ -1403,8 +1403,8 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
                             quantizer.insert_unpred(*(data+x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z) );
-                            if(tuning==0)
-                                mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
+                            //if(tuning==0)
+                                //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
 
 
 
@@ -1542,7 +1542,7 @@ namespace QoZ {
 
                             quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride)));
 
-                            mark[begin + i * stride]=true;
+                            //mark[begin + i * stride]=true;
                         }
                       
 
@@ -1563,7 +1563,7 @@ namespace QoZ {
                             else { 
                                 quantize(d - data, *d, *(d - stride) );
                             }
-                            mark[offset]=true;
+                            //mark[offset]=true;
                         }
                        
 
@@ -1696,12 +1696,12 @@ namespace QoZ {
                         size_t i;
                         for (i = 3; i + 3 < n; i += 2) {
                             d = data + begin + i * stride;
-                            if(mark[begin+i*stride])
-                                std::cout<<"ne1 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                            //if(mark[begin+i*stride])
+                                //std::cout<<"ne1 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
 
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-
+                            /*
                             mark[begin + i * stride]=true;
                             if(!mark[begin+(i-3)*stride])
                                 std::cout<<"e1 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
@@ -1711,14 +1711,16 @@ namespace QoZ {
                                 std::cout<<"e3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             if(!mark[begin+(i+3)*stride])
                                 std::cout<<"e4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                         }
                         d = data + begin + stride;
-                        if(mark[begin+stride])
-                            std::cout<<"ne2 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                        //if(mark[begin+stride])
+                            //std::cout<<"ne2 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                         if(cross_block and axis_begin >= 2*axis_stride){
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) ){
                                 quantize(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)));
+                                /*
                                 if(!mark[begin-2*stride])
                                     std::cout<<"e5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin])
@@ -1727,27 +1729,30 @@ namespace QoZ {
                                     std::cout<<"e7 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+4*stride])
                                     std::cout<<"e8 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                             }
                             else if (axis_begin+2*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+2*stride<end)) {
                                 quantize(d - data, *d,
                                     interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride) ));
+                                /*
                                 if(!mark[begin-2*stride])
                                     std::cout<<"e9 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin])
                                     std::cout<<"e10 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+2*stride])
                                     std::cout<<"e11 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                                 
                             }
                             else{
                                 quantize(d - data, *d,
                                     interp_linear1(*(d - stride3x), *(d - stride) ) );
-
+                                /*
                                 if(!mark[begin-2*stride])
                                     std::cout<<"e11.3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin])
                                     std::cout<<"e11.6 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
-
+                                */
                             }
                             
                         }
@@ -1756,29 +1761,33 @@ namespace QoZ {
                         else{
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) ){
                                 quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
+                                /*
                                 if(!mark[begin])
                                     std::cout<<"e12 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+2*stride])
                                     std::cout<<"e13 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+4*stride])
                                     std::cout<<"e14 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                             }
                             else if (axis_begin+2*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+2*stride<end) ){
                                 quantize(d - data, *d, interp_linear(*(d - stride), *(d + stride) ));
+                                /*
                                 if(!mark[begin])
                                     std::cout<<"e15 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+2*stride])
                                     std::cout<<"e16 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                             }
                             else{
                                 quantize(d - data, *d, *(d - stride) );
-                                if(!mark[begin])
-                                    std::cout<<"e16.5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                //if(!mark[begin])
+                                    //std::cout<<"e16.5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             }
                         }
 
 
-                        mark[begin+stride]=true;
+                       // mark[begin+stride]=true;
                         if (begin + i * stride<end){
                             if(mark[begin+i*stride])
                                 std::cout<<"ne3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
@@ -1786,6 +1795,7 @@ namespace QoZ {
                             if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                                 quantize(d - data, *d,
                                          interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+                                /*
                                 if(!mark[begin+(i-3)*stride])
                                     std::cout<<"e17 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(i-1)*stride])
@@ -1805,6 +1815,7 @@ namespace QoZ {
                                     std::cout<<"e20 "<<x<<" "<<y<<" "<<z<<" "<<cur_axis<<std::endl;
                                     std::cout<<"---"<<std::endl;
                                 }
+                                */
 
 
                             }
@@ -1812,25 +1823,29 @@ namespace QoZ {
                                 if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
                                     
                                     quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                                    /*
                                     if(!mark[begin+(i-3)*stride])
                                         std::cout<<"e21 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                     if(!mark[begin+(i-1)*stride])
                                         std::cout<<"e22 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                     if(!mark[begin+(i+1)*stride])
                                         std::cout<<"e23 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    */
                                 }
                                 else if (cross_block>0 or i>=3){
                                    
                                     quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ) );
+                                    /*
                                     if(!mark[begin+(i-3)*stride])
                                         std::cout<<"e24 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                     if(!mark[begin+(i-1)*stride])
                                         std::cout<<"e25 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    */
                                 }
                                 else{
                                     quantize(d - data, *d,  *(d - stride)  );
-                                    if(!mark[begin+(i-1)*stride])
-                                        std::cout<<"e25.5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                   // if(!mark[begin+(i-1)*stride])
+                                        //std::cout<<"e25.5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
 
                                 }
 
@@ -1839,29 +1854,32 @@ namespace QoZ {
                                 if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
                                     
                                     quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                                    /*
                                     if(!mark[begin+(i-1)*stride])
                                         std::cout<<"e26 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                     if(!mark[begin+(i+1)*stride])
                                         std::cout<<"e27 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    */
                                 }
                                 else{
                                     
                                     quantize(d - data, *d, *(d - stride) );
-                                    if(!mark[begin+(i-1)*stride])
-                                        std::cout<<"e28 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    //if(!mark[begin+(i-1)*stride])
+                                        //std::cout<<"e28 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 }
 
                             }
-                            mark[begin+i*stride]=true;
+                            //mark[begin+i*stride]=true;
                         }
                         if (n % 2 == 0 and n>4) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
-                            if(mark[offset])
-                                std::cout<<"ne4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                            //if(mark[offset])
+                               // std::cout<<"ne4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
                                 quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+                                /*
                                 if(!mark[begin+(n-4)*stride])
                                     std::cout<<"e29 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(n-2)*stride])
@@ -1870,30 +1888,35 @@ namespace QoZ {
                                     std::cout<<"e31 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(n+2)*stride])
                                     std::cout<<"e32 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
 
 
                             }
                             else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
                                 quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
-
+                                /*
                                 if(!mark[begin+(n-4)*stride])
                                     std::cout<<"e33 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(n-2)*stride])
                                     std::cout<<"e34 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+n*stride])
                                     std::cout<<"e35 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                             }
                             else if (cross_block==2 and axis_begin+n*axis_stride<global_dimensions[cur_axis]){
                                 quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                                /*
                                 if(!mark[begin+(n-2)*stride])
                                     std::cout<<"e36 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+n*stride])
                                     std::cout<<"e37 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
 
 
                             }
                             else if (axis_begin >= (6-n)*axis_stride and (cross_block>0 or n>=6)){
                                 quantize(d - data, *d, interp_quad_3(*(d - stride5x), *(d - stride3x), *(d - stride)) );
+                                /*
                                 if(!mark[begin+(n-6)*stride])
                                     std::cout<<"e38 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
 
@@ -1901,23 +1924,26 @@ namespace QoZ {
                                     std::cout<<"e39 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(n-2)*stride])
                                     std::cout<<"e40 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
 
 
                             }
                             else if (axis_begin >= (4-n)*axis_stride and (cross_block>0 or n>=4) ){
                                 quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride)) );
+                                /*
                                 if(!mark[begin+(n-4)*stride])
                                     std::cout<<"e41 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(n-2)*stride])
                                     std::cout<<"e42 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                */
                             }
                             else{
                                 quantize(d - data, *d, *(d - stride) );
-                                if(!mark[begin+(n-2)*stride])
-                                    std::cout<<"e43 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                //if(!mark[begin+(n-2)*stride])
+                                    //std::cout<<"e43 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             }
 
-                            mark[offset]=true;
+                           // mark[offset]=true;
 
 
                         }
@@ -3052,7 +3078,7 @@ namespace QoZ {
         double beta;
         std::vector<std::string> interpolators = {"linear", "cubic"};
         std::vector<int> quant_inds;
-        std::vector<bool> mark;
+        //std::vector<bool> mark;
         size_t quant_index = 0; // for decompress
         size_t maxStep=0;
         double max_error;
