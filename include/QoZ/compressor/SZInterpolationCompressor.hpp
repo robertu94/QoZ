@@ -1751,7 +1751,7 @@ namespace QoZ {
                         mark[begin+stride]=true;
 
                         d = data + begin + i * stride;
-                        if(0)//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
+                        if(0){//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                             if(!mark[begin+(i-3)*stride])
