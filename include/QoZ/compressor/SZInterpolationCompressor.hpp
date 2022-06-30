@@ -1802,7 +1802,7 @@ namespace QoZ {
                                     size_t z =temp %352;
                                     std::cout<<"---"<<std::endl;
                                     std::cout<<"e20 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
-                                    std::cout<<"e20 "<<x<<" "<<y<<" "<<z<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    std::cout<<"e20 "<<x<<" "<<y<<" "<<z<<" "<<cur_axis<<std::endl;
                                     std::cout<<"---"<<std::endl;
                                 }
 
