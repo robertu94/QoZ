@@ -1119,7 +1119,7 @@ namespace QoZ {
                     uint8_t best_op=QoZ::INTERP_ALGO_CUBIC;
                     uint8_t best_dir=0;
                     double best_loss=std::numeric_limits<double>::max();
-                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
+                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR}//,QoZ::INTERP_ALGO_CUBIC};
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
                         for (auto &interp_direction: dir_candidates) {
@@ -1696,8 +1696,12 @@ namespace QoZ {
                         size_t i;
                         for (i = 3; i + 3 < n; i += 2) {
                             d = data + begin + i * stride;
+                            if(mark[begin+i*stride])
+                                std::cout<<"ne1 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
+
                             mark[begin + i * stride]=true;
                             if(!mark[begin+(i-3)*stride])
                                 std::cout<<"e1 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
