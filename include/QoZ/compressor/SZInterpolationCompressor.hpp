@@ -2780,7 +2780,7 @@ namespace QoZ {
                             size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
                                                   k * dimension_offsets[dims[2]];
                             if(iidx%2==0){
-                                if(stride==1)
+                                if(tuning==0 and stride==1)
                                     std::cout<<"phase 2"<<" "<<i<<" "<<k<<std::endl;
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                     begin_offset +
@@ -2807,7 +2807,7 @@ namespace QoZ {
                             size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                                   begin[dims[2]] * dimension_offsets[dims[2]];
                             if(iidx%2==0 and jjdx%2==0){
-                                if(stride==1)
+                                if(tuning==0 and stride==1)
                                     std::cout<<"phase 4"<<" "<<i<<" "<<j<<std::endl;
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
                                                                         begin_offset +
