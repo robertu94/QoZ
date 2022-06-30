@@ -176,6 +176,7 @@ namespace QoZ {
             lastPdTuning=cfg.GetInteger("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
             crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
+            sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
 
 
 
@@ -322,6 +323,7 @@ namespace QoZ {
         int lastPdTuning=0;
         int abList=0;
         int crossBlock=0;
+        int sampleBlockSampleBlockSize=0;
         
 
     };

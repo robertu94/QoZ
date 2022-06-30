@@ -3492,10 +3492,11 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
             conf.interpBlockSize = (N==2?64:32);
     }
 
-
+    /*
     if(conf.blockwiseSampleBlockSize<=0){
-        conf.blockwiseSampleBlockSize=(N==2?16:8);
+        conf.blockwiseSampleBlockSize=(N==2?32:16);
     }
+    */
 
     int max_interp_level=(int)log2(conf.interpBlockSize)+1;
     if(conf.maxStep>0){
@@ -3512,17 +3513,30 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     if (sampleBlockSize<=0)
         sampleBlockSize=conf.interpBlockSize;
     size_t min_sbs=16;
-    size_t min_bsbs=8;
+    size_t min_sbsbs=8;
+    size_t min_bsbs=4;
     if (sampleBlockSize<min_sbs){
         sampleBlockSize=min_sbs;
 
+    }
+    if(conf.sampleBlockSampleBlockSize==0){
+        conf.sampleBlockSampleBlockSize=sampleBlockSize;
+    }
+
+    if(conf.sampleBlockSampleBlockSize<min_sbsbs){
+        conf.sampleBlockSampleBlockSize=min_sbsbs;
+    }
+    if(conf.blockwiseSampleBlockSize==0){
+        conf.blockwiseSampleBlockSize=conf.interpBlockSize;
     }
     if(conf.blockwiseSampleBlockSize<min_bsbs){
         conf.blockwiseSampleBlockSize=min_bsbs;
     }
 
-    if(conf.blockwiseSampleBlockSize>sampleBlockSize)
-        conf.blockwiseSampleBlockSize=sampleBlockSize;
+    //if(conf.blockwiseSampleBlockSize>sampleBlockSize)
+       // conf.blockwiseSampleBlockSize=sampleBlockSize;
+
+    
     conf.fixBlockSize=conf.interpBlockSize;
 
     size_t num_blocks=0;
@@ -3790,7 +3804,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         cur_block=sampled_blocks[k];
                         //std::cout<<cur_block.size()<<std::endl;
                         size_t tempsize;
-                        SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                        SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.sampleBlockSampleBlockSize,1);
                         //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
 
                         //std::cout<<"step 3.5"<<std::endl;
@@ -3944,7 +3958,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                             cur_block=sampled_blocks[k];
                             size_t tempsize;
 
-                            SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.blockwiseSampleBlockSize,1);
+                            SZ_compress_AutoSelectiveInterp_with_sampling<T,N>(conf,cur_block.data(),tempsize,op_candidates,dir_candidates,conf.sampleBlockSampleBlockSize,1);
                             //SZ_compress_AutoSelectiveInterp<T,N>(conf, cur_block.data(), tempsize,op_candidates,dir_candidates,1);
 
                             block_q_bins.push_back(conf.quant_bins);
