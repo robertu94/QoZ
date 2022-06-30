@@ -1633,7 +1633,7 @@ namespace QoZ {
                         if (begin + i * stride<end){
                             d = data + begin + i * stride;
 
-                            if(0)//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
+                            if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
                                 predict_error+=quantize_tuning(d - data, *d,
                                          interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
                             else if (axis_begin+(i-3)*axis_stride>=0 and (cross_block>0 or i>=3) ){
@@ -1783,7 +1783,7 @@ namespace QoZ {
                             if(mark[begin+i*stride])
                                 std::cout<<"ne3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             d = data + begin + i * stride;
-                            if(0){//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
+                            if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                                 quantize(d - data, *d,
                                          interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                                 if(!mark[begin+(i-3)*stride])
@@ -1962,7 +1962,7 @@ namespace QoZ {
                     
                     if (begin + i * stride<end){
                         d = data + begin + i * stride;
-                        if(0){//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
+                        if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                             //std::cout<<"zunnnihuojia4"<<std::endl;
                             recover(d - data, *d,
                                     interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
