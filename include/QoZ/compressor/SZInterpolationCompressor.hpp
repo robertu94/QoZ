@@ -1764,6 +1764,7 @@ namespace QoZ {
                     }
                     else if (axis_begin+(i-3)*axis_stride>=0){
                         std::cout<<"zunnnihuojia5"<<std::endl;
+                        std::cout<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                         recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
                     }
                     else{
