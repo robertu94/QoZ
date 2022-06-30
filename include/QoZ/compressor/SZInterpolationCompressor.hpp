@@ -1119,7 +1119,7 @@ namespace QoZ {
                     uint8_t best_op=QoZ::INTERP_ALGO_CUBIC;
                     uint8_t best_dir=0;
                     double best_loss=std::numeric_limits<double>::max();
-                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR}//,QoZ::INTERP_ALGO_CUBIC};
+                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR};//,QoZ::INTERP_ALGO_CUBIC};
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
                         for (auto &interp_direction: dir_candidates) {
