@@ -1794,7 +1794,7 @@ namespace QoZ {
                                     std::cout<<"e19 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                                 if(!mark[begin+(i+3)*stride] and tuning==0){
 
-                                    std::cout<<"e20 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                                    
                                     size_t temp=begin;
                                     size_t x =temp/(352*1008);
                                     temp=temp % (352*1008);
@@ -2785,12 +2785,12 @@ namespace QoZ {
                                                                     stride * dimension_offsets[dims[0]], interp_func, pb,tuning,2,begin[dims[0]],stride,dims[0]);
                         }
                     }
-                    size_t iidx=begin[dims[0]] ? 1: 0;
+                   // size_t iidx=begin[dims[0]] ? 1: 0;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                         for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                             size_t begin_offset = i * dimension_offsets[dims[0]] + begin[dims[1]] * dimension_offsets[dims[1]] +
                                                   k * dimension_offsets[dims[2]];
-                            if(iidx%2==0){
+                            if(i%(stride*2)==0){
                                 //if(tuning==0 and stride==1)
                                    // std::cout<<"phase 2"<<" "<<i<<" "<<k<<std::endl;
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
@@ -2809,15 +2809,15 @@ namespace QoZ {
                             }
                            
                         }
-                        iidx++;
+                        //iidx++;
                     }
-                    iidx=begin[dims[0]] ? 1: 0;
-                    size_t jjdx=begin[dims[1]] ? 1: 0;
+                    //iidx=begin[dims[0]] ? 1: 0;
+                    //size_t jjdx=begin[dims[1]] ? 1: 0;
                     for (size_t i = (begin[dims[0]] ? begin[dims[0]] + stride : 0); i <= end[dims[0]]; i += stride) {
                          for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride : 0); j <= end[dims[1]]; j += stride) {
                             size_t begin_offset = i * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
                                                   begin[dims[2]] * dimension_offsets[dims[2]];
-                            if(iidx%2==0 and jjdx%2==0){
+                            if(i%(stride*2)==0 and j%(stride*2)==0){
                                 //if(tuning==0 and stride==1)
                                     //std::cout<<"phase 4"<<" "<<i<<" "<<j<<std::endl;
                                 predict_error += block_interpolation_1d_cross(data, begin_offset,
@@ -2837,10 +2837,10 @@ namespace QoZ {
 
 
                             
-                            jjdx++;
+                            //jjdx++;
 
                         }
-                        iidx++;
+                        //iidx++;
                     }
 
                 }
