@@ -1765,7 +1765,7 @@ namespace QoZ {
                                     std::cout<<"e16 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             }
                             else{
-                                quantize(d - data, *d, *(d - stride), );
+                                quantize(d - data, *d, *(d - stride) );
                                 if(!mark[begin])
                                     std::cout<<"e16.5 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             }
