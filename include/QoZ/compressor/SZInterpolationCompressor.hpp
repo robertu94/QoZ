@@ -1119,7 +1119,7 @@ namespace QoZ {
                     uint8_t best_op=QoZ::INTERP_ALGO_CUBIC;
                     uint8_t best_dir=0;
                     double best_loss=std::numeric_limits<double>::max();
-                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR};//,QoZ::INTERP_ALGO_CUBIC};
+                    std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
                     std::vector<int> dir_candidates={0,QoZ::factorial(N) - 1};
                     for (auto &interp_op:op_candidates) {
                         for (auto &interp_direction: dir_candidates) {
@@ -1713,6 +1713,8 @@ namespace QoZ {
                                 std::cout<<"e4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                         }
                         d = data + begin + stride;
+                        if(mark[begin+stride])
+                                std::cout<<"ne2 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                         if(cross_block and axis_begin >= 2*axis_stride){
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) ){
                                 quantize(d - data, *d,
@@ -1778,6 +1780,8 @@ namespace QoZ {
 
                         mark[begin+stride]=true;
                         if (begin + i * stride<end){
+                            if(mark[begin+i*stride])
+                                std::cout<<"ne3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             d = data + begin + i * stride;
                             if(0){//(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                                 quantize(d - data, *d,
@@ -1842,6 +1846,8 @@ namespace QoZ {
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
+                            if(mark[offfset])
+                                std::cout<<"ne4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
                                 quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
