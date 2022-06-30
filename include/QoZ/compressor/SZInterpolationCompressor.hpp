@@ -1625,10 +1625,28 @@ namespace QoZ {
                         if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
                             predict_error+=quantize_tuning(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)),tuning);
-                        else if (axis_begin+(i-3)*axis_stride>=0)
-                            predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),tuning);
-                        else
-                            predict_error+=quantize_tuning(d - data, *d, interp_linear( *(d - stride), *(d + stride)),tuning);
+                        else if (axis_begin+(i-3)*axis_stride>=0){
+                            if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                                
+                                predict_error+=quantize_tuning(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)),tuning );
+                            }
+                            else{
+                               
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ),tuning );
+                            }
+
+                        }
+                        else{
+                            if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                                
+                                predict_error+=quantize_tuning(d - data, *d, interp_linear( *(d - stride), *(d + stride)),tuning );
+                            }
+                            else{
+                                
+                                predict_error+=quantize_tuning(d - data, *d, *(d - stride),tuning );
+                            }
+
+                        }
 
                         
                         if (n % 2 == 0) {
@@ -1676,6 +1694,8 @@ namespace QoZ {
                                     interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride) ));
                             
                         }
+
+
                         else{
                             if(axis_begin+4*axis_stride<global_dimensions[cur_axis] and (cross_block==2 or begin+4*stride<end) )
                                 quantize(d - data, *d, interp_quad_1(*(d - stride), *(d + stride), *(d + stride3x)) );
@@ -1690,11 +1710,28 @@ namespace QoZ {
                         if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0)
                             quantize(d - data, *d,
                                      interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
-                        else if (axis_begin+(i-3)*axis_stride>=0)
-                            quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
-                        else
-                            quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                        else if (axis_begin+(i-3)*axis_stride>=0){
+                            if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                                
+                                quantize(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                            }
+                            else{
+                               
+                                quantize(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ) );
+                            }
 
+                        }
+                        else{
+                            if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                                
+                                quantize(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                            }
+                            else{
+                                
+                                quantize(d - data, *d, *(d - stride) );
+                            }
+
+                        }
                         //mark[begin+i*stride]=true;
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
@@ -1763,13 +1800,25 @@ namespace QoZ {
                                 interp_cubic(*(d - stride3x), *(d - stride), *(d + stride), *(d + stride3x)) );
                     }
                     else if (axis_begin+(i-3)*axis_stride>=0){
-                        std::cout<<"zunnnihuojia5"<<std::endl;
-                        std::cout<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
-                        recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                        if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                            std::cout<<"zunnnihuojia5"<<std::endl;
+                            recover(d - data, *d, interp_quad_2(*(d - stride3x), *(d - stride), *(d + stride)) );
+                        }
+                        else{
+                            std::cout<<"zunnnihuojia5.25"<<std::endl;
+                            recover(d - data, *d, interp_linear1(*(d - stride3x), *(d - stride) ) );
+                        }
+
                     }
                     else{
-                        std::cout<<"zunnnihuojia5.5"<<std::endl;
-                        recover(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                        if (axis_begin+(i+1)*axis_stride<global_dimensions[cur_axis]){
+                            std::cout<<"zunnnihuojia5.5"<<std::endl;
+                            recover(d - data, *d, interp_linear( *(d - stride), *(d + stride)) );
+                        }
+                        else{
+                            std::cout<<"zunnnihuojia5.75"<<std::endl;
+                            recover(d - data, *d, *(d - stride) );
+                        }
 
                     }
                     if (n % 2 == 0) {
