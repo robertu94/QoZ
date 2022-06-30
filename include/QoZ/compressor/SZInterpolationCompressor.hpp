@@ -2795,8 +2795,9 @@ namespace QoZ {
                                                                     dimension_offsets[dims[1]],
                                                                     stride * dimension_offsets[dims[1]], interp_func, pb,tuning,1,begin[dims[1]],stride,dims[1]);
                             }
-                            iidx++;
+                           
                         }
+                        iidx++;
                     }
                     iidx=begin[dims[0]] ? 1: 0;
                     size_t jjdx=begin[dims[1]] ? 1: 0;
@@ -2822,10 +2823,11 @@ namespace QoZ {
                             }
 
 
-                            iidx++;
+                            
                             jjdx++;
 
                         }
+                        iidx++;
                     }
 
                 }
