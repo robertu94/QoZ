@@ -1846,7 +1846,7 @@ namespace QoZ {
                         if (n % 2 == 0) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
-                            if(mark[offfset])
+                            if(mark[offset])
                                 std::cout<<"ne4 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0){
                                 quantize(d - data, *d,
