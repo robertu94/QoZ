@@ -1665,7 +1665,7 @@ namespace QoZ {
 
 
                         
-                        if (n % 2 == 0 and n>2) {
+                        if (n % 2 == 0 and n>4) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
                             if(cross_block==2 and axis_begin+(n+2)*axis_stride<global_dimensions[cur_axis] and axis_begin+(n-4)*axis_stride>=0)
@@ -1843,7 +1843,7 @@ namespace QoZ {
                             }
                             mark[begin+i*stride]=true;
                         }
-                        if (n % 2 == 0 and n>2) {
+                        if (n % 2 == 0 and n>4) {
                             size_t offset=begin + (n - 1) * stride;
                             d = data + offset;
                             if(mark[offset])
@@ -1993,7 +1993,7 @@ namespace QoZ {
 
                         }
                     }
-                    if (n % 2 == 0 and n>2) {
+                    if (n % 2 == 0 and n>4) {
 
                         size_t offset=begin + (n - 1) * stride;
                         d = data + offset;
