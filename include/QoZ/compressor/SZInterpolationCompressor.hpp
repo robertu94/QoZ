@@ -1789,8 +1789,8 @@ namespace QoZ {
 
                        // mark[begin+stride]=true;
                         if (begin + i * stride<end){
-                            if(mark[begin+i*stride])
-                                std::cout<<"ne3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
+                            //if(mark[begin+i*stride])
+                              //  std::cout<<"ne3 "<<axis_begin<<" "<<i<<" "<<axis_stride<<" "<<global_dimensions[cur_axis]<<std::endl;
                             d = data + begin + i * stride;
                             if(cross_block==2 and axis_begin+(i+3)*axis_stride<global_dimensions[cur_axis] and axis_begin+(i-3)*axis_stride>=0){
                                 quantize(d - data, *d,
