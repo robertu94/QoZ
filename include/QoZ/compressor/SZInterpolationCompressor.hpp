@@ -1059,6 +1059,8 @@ namespace QoZ {
                 auto inter_end = inter_block_range->end();
 
                 size_t blockwiseSampleBlockSize=(level<=2)?conf.blockwiseSampleBlockSize:cur_blocksize;
+                if(blockwiseSampleBlockSize>cur_blocksize)
+                    blockwiseSampleBlockSize=cur_blocksize;
                 //size_t blockwiseSampleBlockSize=cur_blocksize;
 
                 
