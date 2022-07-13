@@ -3122,7 +3122,7 @@ namespace QoZ {
         std::vector<std::array<int, N>> dimension_sequences;
         int direction_sequence_id;
 
-        std::vector<T> prediction_errors;//for test, to delete in final version
+        std::vector<float> prediction_errors;//for test, to delete in final version
         int peTracking=0;//for test, to delete in final version
 
     };
