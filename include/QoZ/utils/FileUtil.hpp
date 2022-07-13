@@ -14,6 +14,7 @@
 #include <cstdio>
 int RW_SCES=0;
 int RW_TERR=1;
+int RW_FERR=2;
 namespace QoZ {
 
     template<typename Type>
@@ -133,33 +134,13 @@ namespace QoZ {
         *status = RW_SCES;
     }
 
-    void writeData(void *data, int dataType, size_t nbEle, char *tgtFilePath, int *status)
-    {
-        int state = RW_SCES;
-        if(dataType == QCAT_FLOAT)
-        {
-            float* dataArray = (float *)data;
-            writeFloatData(dataArray, nbEle, tgtFilePath, &state);
-        }
-        else if(dataType == QCAT_DOUBLE)
-        {
-            double* dataArray = (double *)data;
-            writeDoubleData(dataArray, nbEle, tgtFilePath, &state); 
-        }
-        else
-        {
-            printf("Error: data type cannot be the types other than SZ_FLOAT or SZ_DOUBLE\n");
-            *status = RW_TERR; //wrong type
-            return;
-        }
-        *status = state;
-    }
+
 
     void writeFloatData_inBytes(float *data, size_t nbEle, char* tgtFilePath, int *status)
     {
         size_t i = 0; 
         int state = RW_SCES;
-        lfloat buf;
+        float buf;
         unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(float));
         for(i=0;i<nbEle;i++)
         {
@@ -180,7 +161,7 @@ namespace QoZ {
     {
         size_t i = 0, index = 0; 
         int state = RW_SCES;
-        ldouble buf;
+        double buf;
         unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(double));
         for(i=0;i<nbEle;i++)
         {
