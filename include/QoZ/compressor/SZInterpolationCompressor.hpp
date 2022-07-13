@@ -473,6 +473,8 @@ namespace QoZ {
 
 
 
+
+
             std::vector<uint8_t>interp_ops;
             std::vector<uint8_t>interp_dirs;
             size_t cross_block=conf.crossBlock;
@@ -593,7 +595,7 @@ namespace QoZ {
                     //cur_blocksize=blocksize;
                 //}
                 //else 
-                    if (conf.fixBlockSize>0){
+                if (conf.fixBlockSize>0){
                     cur_blocksize=conf.fixBlockSize;
                 }
                 else{
@@ -717,10 +719,14 @@ namespace QoZ {
                         
 
                         //else{
+                           if(peTracking)
                         
-                        
-                            predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                                interpolators[cur_interpolator], cur_direction, stride,2,cross_block);
+                            else
+                                predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                                 interpolators[cur_interpolator], cur_direction, stride,tuning,cross_block);
+
                         //}
                     
                         
@@ -843,6 +849,9 @@ namespace QoZ {
 //            writefile("pred.dat", preds.data(), num_elements);
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
+            if(peTracking){
+                conf.predictionErrors=prediction_errors;
+            }
             if (tuning){
                
                 
@@ -1080,6 +1089,7 @@ namespace QoZ {
                         if (sample_end_idx[i] > global_dimensions[i] - 1) {
                             sample_end_idx[i] = global_dimensions[i] - 1;
                         }
+                        //addtest
                     }
 
 
@@ -1161,7 +1171,11 @@ namespace QoZ {
 
                     interp_ops.push_back(best_op);
                     interp_dirs.push_back(best_dir);
-                    block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                    if (peTracking)
+                        block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
+                                    interpolators[best_op], best_dir, stride,2,cross_block);
+                    else
+                        block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                     interpolators[best_op], best_dir, stride,0,cross_block);
 
 
@@ -1189,6 +1203,9 @@ namespace QoZ {
 //            writefile("pred.dat", preds.data(), num_elements);
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
+            if(peTracking){
+                conf.predictionErrors=prediction_errors;
+            }
             if (tuning){
                
                 
@@ -1374,6 +1391,11 @@ namespace QoZ {
             do {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));
+
+            if(tuning==0 and conf.peTracking){
+                prediction_errors.resize(num_elements,0);
+                peTracking=1;
+            }
         }
        
         void build_grid(Config &conf, T *data,size_t maxStep,int tuning=0){
@@ -1484,6 +1506,9 @@ namespace QoZ {
             }
             else{
                 double pred_error=fabs(d-pred);
+                if(peTracking)
+                    prediction_errors[idx]=pred_error;
+
                 int q_bin=quantizer.quantize_and_overwrite(d, pred,false);
 
                 //quant_inds.push_back(q_bin);
@@ -3093,6 +3118,10 @@ namespace QoZ {
         std::array<size_t, N> dimension_offsets;
         std::vector<std::array<int, N>> dimension_sequences;
         int direction_sequence_id;
+
+        std::vector<T> prediction_errors;//for test, to delete in final version
+        int peTracking=0;//for test, to delete in final version
+
     };
 
 

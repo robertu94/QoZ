@@ -149,6 +149,11 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     }
     QoZ::writefile(outputFilePath, bytes, outSize);
 
+    if(conf.peTracking){
+        int status;
+        QoZ::writeFloatData_inBytes(conf.predictionErrors.data(), conf.num, "prederror.qoz", status);
+    }
+
     printf("compression ratio = %.2f \n", conf.num * 1.0 * sizeof(T) / outSize);
     printf("compression time = %f\n", compress_time);
     printf("compressed data file = %s\n", outputFilePath);

@@ -177,6 +177,7 @@ namespace QoZ {
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
             crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
             sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
+            peTracking=cfg.GetInteger("AlgoSettings", "peTracking", peTracking);
 
 
 
@@ -324,6 +325,7 @@ namespace QoZ {
         int abList=0;
         int crossBlock=0;
         int sampleBlockSampleBlockSize=0;
+        int peTracking=0;
         
 
     };

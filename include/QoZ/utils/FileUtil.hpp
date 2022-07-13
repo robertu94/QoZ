@@ -11,7 +11,9 @@
 #include <cassert>
 #include <random>
 #include <sstream>
-
+#include <cstdio>
+int RW_SCES=0;
+int RW_TERR=1;
 namespace QoZ {
 
     template<typename Type>
@@ -66,6 +68,138 @@ namespace QoZ {
             std::cout << "Error, unable to open file for output: " << file << std::endl;
             exit(0);
         }
+    }
+
+
+    //temp for test
+    void writeByteData(unsigned char *bytes, size_t byteLength, char *tgtFilePath, int *status)
+    {
+        FILE *pFile = fopen(tgtFilePath, "wb");
+        if (pFile == NULL)
+        {
+            printf("Failed to open input file. 3\n");
+            *status = RW_FERR;
+            return;
+        }
+        
+        fwrite(bytes, 1, byteLength, pFile); //write outSize bytes
+        fclose(pFile);
+        *status = RW_SCES;
+    }
+
+    void writeDoubleData(double *data, size_t nbEle, char *tgtFilePath, int *status)
+    {
+        size_t i = 0;
+        char s[64];
+        FILE *pFile = fopen(tgtFilePath, "wb");
+        if (pFile == NULL)
+        {
+            printf("Failed to open input file. 3\n");
+            *status = RW_FERR;
+            return;
+        }
+        
+        for(i = 0;i<nbEle;i++)
+        {
+            sprintf(s,"%.20G\n",data[i]);
+            fputs(s, pFile);
+        }
+        
+        fclose(pFile);
+        *status = RW_SCES;
+    }
+
+    void writeFloatData(float *data, size_t nbEle, char *tgtFilePath, int *status)
+    {
+        size_t i = 0;
+        char s[64];
+        FILE *pFile = fopen(tgtFilePath, "wb");
+        if (pFile == NULL)
+        {
+            printf("Failed to open input file. 3\n");
+            *status = RW_FERR;
+            return;
+        }
+       
+        for(i = 0;i<nbEle;i++)
+        {
+            //printf("i=%d\n",i);
+            //printf("data[i]=%f\n",data[i]);
+            sprintf(s,"%.30G\n",data[i]);
+            fputs(s, pFile);
+        }
+        
+        fclose(pFile);
+        *status = RW_SCES;
+    }
+
+    void writeData(void *data, int dataType, size_t nbEle, char *tgtFilePath, int *status)
+    {
+        int state = RW_SCES;
+        if(dataType == QCAT_FLOAT)
+        {
+            float* dataArray = (float *)data;
+            writeFloatData(dataArray, nbEle, tgtFilePath, &state);
+        }
+        else if(dataType == QCAT_DOUBLE)
+        {
+            double* dataArray = (double *)data;
+            writeDoubleData(dataArray, nbEle, tgtFilePath, &state); 
+        }
+        else
+        {
+            printf("Error: data type cannot be the types other than SZ_FLOAT or SZ_DOUBLE\n");
+            *status = RW_TERR; //wrong type
+            return;
+        }
+        *status = state;
+    }
+
+    void writeFloatData_inBytes(float *data, size_t nbEle, char* tgtFilePath, int *status)
+    {
+        size_t i = 0; 
+        int state = RW_SCES;
+        lfloat buf;
+        unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(float));
+        for(i=0;i<nbEle;i++)
+        {
+            buf.value = data[i];
+            bytes[i*4+0] = buf.byte[0];
+            bytes[i*4+1] = buf.byte[1];
+            bytes[i*4+2] = buf.byte[2];
+            bytes[i*4+3] = buf.byte[3];                 
+        }
+
+        size_t byteLength = nbEle*sizeof(float);
+        writeByteData(bytes, byteLength, tgtFilePath, &state);
+        free(bytes);
+        *status = state;
+    }
+
+    void writeDoubleData_inBytes(double *data, size_t nbEle, char* tgtFilePath, int *status)
+    {
+        size_t i = 0, index = 0; 
+        int state = RW_SCES;
+        ldouble buf;
+        unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(double));
+        for(i=0;i<nbEle;i++)
+        {
+            index = i*8;
+            buf.value = data[i];
+            bytes[index+0] = buf.byte[0];
+            bytes[index+1] = buf.byte[1];
+            bytes[index+2] = buf.byte[2];
+            bytes[index+3] = buf.byte[3];
+            bytes[index+4] = buf.byte[4];
+            bytes[index+5] = buf.byte[5];
+            bytes[index+6] = buf.byte[6];
+            bytes[index+7] = buf.byte[7];
+        }
+
+        size_t byteLength = nbEle*sizeof(double);
+        writeByteData(bytes, byteLength, tgtFilePath, &state);
+        free(bytes);
+        *status = state;
     }
 
 }
