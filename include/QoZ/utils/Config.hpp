@@ -326,6 +326,7 @@ namespace QoZ {
         int crossBlock=0;
         int sampleBlockSampleBlockSize=0;
         int peTracking=0;
+        std::vector<float> predictionErrors;//for test, to delete in final version.
         
 
     };
