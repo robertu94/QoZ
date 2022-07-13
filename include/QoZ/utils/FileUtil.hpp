@@ -15,6 +15,19 @@
 int RW_SCES=0;
 int RW_TERR=1;
 int RW_FERR=2;
+typedef union ldouble
+{
+    double value;
+    unsigned long lvalue;
+    unsigned char byte[8];
+} ldouble;
+
+typedef union lfloat
+{
+    float value;
+    unsigned int ivalue;
+    unsigned char byte[4];
+} lfloat;
 namespace QoZ {
 
     template<typename Type>
@@ -140,7 +153,7 @@ namespace QoZ {
     {
         size_t i = 0; 
         int state = RW_SCES;
-        float buf;
+        lfloat buf;
         unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(float));
         for(i=0;i<nbEle;i++)
         {
@@ -161,7 +174,7 @@ namespace QoZ {
     {
         size_t i = 0, index = 0; 
         int state = RW_SCES;
-        double buf;
+        ldouble buf;
         unsigned char* bytes = (unsigned char*)malloc(nbEle*sizeof(double));
         for(i=0;i<nbEle;i++)
         {
