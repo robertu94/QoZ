@@ -872,7 +872,7 @@ namespace QoZ {
             //std::cout<<"predict_ended"<<std::endl;
             if(conf.verbose)
                 timer.stop("prediction");
-           
+            timer.start();
             //assert(quant_inds.size() == num_elements);
 
             size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
@@ -917,8 +917,8 @@ namespace QoZ {
             encoder.encode(quant_inds, buffer_pos);
             encoder.postprocess_encode();
             
-            //timer.stop("Coding");
-            //timer.start();
+            timer.stop("Coding");
+            timer.start();
             assert(buffer_pos - buffer < bufferSize);
 
             
@@ -927,7 +927,7 @@ namespace QoZ {
                                                      compressed_size);
             lossless.postcompress_data(buffer);
             
-            //timer.stop("Lossless") ;
+            timer.stop("Lossless") ;
             
 
             compressed_size += interp_compressed_size;
