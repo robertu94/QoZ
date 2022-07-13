@@ -910,18 +910,18 @@ namespace QoZ {
             quantizer.save(buffer_pos);
             quantizer.postcompress_data();
             quantizer.clear();
-            std::cout<<"7"<<std::endl;
+            //std::cout<<"7"<<std::endl;
           
 
            
             encoder.preprocess_encode(quant_inds, 0);
-            std::cout<<"7.1"<<std::endl;
+           // std::cout<<"7.1"<<std::endl;
             encoder.save(buffer_pos);
-            std::cout<<"7.2"<<std::endl;
+           // std::cout<<"7.2"<<std::endl;
             encoder.encode(quant_inds, buffer_pos);
-            std::cout<<"7.3"<<std::endl;
+          //  std::cout<<"7.3"<<std::endl;
             encoder.postprocess_encode();
-            std::cout<<"8"<<std::endl;
+           // std::cout<<"8"<<std::endl;
             
             //timer.stop("Coding");
             //timer.start();
@@ -1519,8 +1519,11 @@ namespace QoZ {
                     prediction_errors[idx]=pred_error;
 
                 int q_bin=quantizer.quantize_and_overwrite(d, pred,false);
-
-                //quant_inds.push_back(q_bin);
+                if(peTracking){
+                    prediction_errors[idx]=pred_error;
+                
+                    quant_inds.push_back(q_bin);
+                }
                 return pred_error;
             }
         }
