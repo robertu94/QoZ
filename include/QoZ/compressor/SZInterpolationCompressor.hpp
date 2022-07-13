@@ -852,6 +852,7 @@ namespace QoZ {
 //            writefile("pred.dat", preds.data(), num_elements);
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
+            std::cout<<"000"<<std::endl;
             if(peTracking){
                 conf.predictionErrors=prediction_errors;
             }
@@ -869,7 +870,7 @@ namespace QoZ {
                 
                 return buffer;
             }
-            //std::cout<<"predict_ended"<<std::endl;
+            std::cout<<"predict_ended"<<std::endl;
             if(conf.verbose)
                 timer.stop("prediction");
             //timer.start();
