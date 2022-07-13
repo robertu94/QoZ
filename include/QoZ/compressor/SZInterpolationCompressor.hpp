@@ -488,7 +488,10 @@ namespace QoZ {
                 conf.decomp_square_error=0.0;
 
             }
-            
+            if(tuning==0 and conf.peTracking){
+                prediction_errors.resize(num_elements,0);
+                peTracking=1;
+            }
             quant_inds.reserve(num_elements);
             size_t interp_compressed_size = 0;
 
@@ -966,7 +969,10 @@ namespace QoZ {
                 conf.decomp_square_error=0.0;
 
             }
-            
+            if(tuning==0 and conf.peTracking){
+                prediction_errors.resize(num_elements,0);
+                peTracking=1;
+            }
             quant_inds.reserve(num_elements);
             size_t interp_compressed_size = 0;
 
@@ -1392,10 +1398,7 @@ namespace QoZ {
                 dimension_sequences.push_back(sequence);
             } while (std::next_permutation(sequence.begin(), sequence.end()));
 
-            if(tuning==0 and conf.peTracking){
-                prediction_errors.resize(num_elements,0);
-                peTracking=1;
-            }
+            
         }
        
         void build_grid(Config &conf, T *data,size_t maxStep,int tuning=0){
