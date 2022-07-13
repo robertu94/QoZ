@@ -852,7 +852,7 @@ namespace QoZ {
 //            writefile("pred.dat", preds.data(), num_elements);
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
-            std::cout<<"000"<<std::endl;
+            ///std::cout<<"000"<<std::endl;
             if(peTracking){
                 conf.predictionErrors=prediction_errors;
             }
@@ -870,31 +870,31 @@ namespace QoZ {
                 
                 return buffer;
             }
-            std::cout<<"predict_ended"<<std::endl;
+            //std::cout<<"predict_ended"<<std::endl;
             if(conf.verbose)
                 timer.stop("prediction");
             //timer.start();
             //assert(quant_inds.size() == num_elements);
-             std::cout<<"1"<<std::endl;
+             //std::cout<<"1"<<std::endl;
             size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
-            std::cout<<"2"<<std::endl;
+            //std::cout<<"2"<<std::endl;
             write(global_dimensions.data(), N, buffer_pos);
             write(blocksize, buffer_pos);
             
-            std::cout<<"3"<<std::endl;
+            //std::cout<<"3"<<std::endl;
             write(interpolator_id, buffer_pos);
             write(direction_sequence_id, buffer_pos);
             write(alpha,buffer_pos);
             write(beta,buffer_pos);
-            std::cout<<"4"<<std::endl;
+            //std::cout<<"4"<<std::endl;
             write(maxStep,buffer_pos);
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
             write(cross_block,buffer_pos);
-            std::cout<<"5"<<std::endl;
+            //std::cout<<"5"<<std::endl;
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
                 write(ops_num,buffer_pos);
@@ -906,11 +906,11 @@ namespace QoZ {
                 write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
-           std::cout<<"6"<<std::endl;
+           //std::cout<<"6"<<std::endl;
             quantizer.save(buffer_pos);
             quantizer.postcompress_data();
             quantizer.clear();
-            std::cout<<"7"<<std::endl;
+           // std::cout<<"7"<<std::endl;
           
 
            
