@@ -872,28 +872,28 @@ namespace QoZ {
             //std::cout<<"predict_ended"<<std::endl;
             if(conf.verbose)
                 timer.stop("prediction");
-            timer.start();
+            //timer.start();
             //assert(quant_inds.size() == num_elements);
-
+             std::cout<<"1"<<std::endl;
             size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
-
+            std::cout<<"2"<<std::endl;
             write(global_dimensions.data(), N, buffer_pos);
             write(blocksize, buffer_pos);
             
-
+            std::cout<<"3"<<std::endl;
             write(interpolator_id, buffer_pos);
             write(direction_sequence_id, buffer_pos);
             write(alpha,buffer_pos);
             write(beta,buffer_pos);
-           
+            std::cout<<"4"<<std::endl;
             write(maxStep,buffer_pos);
             write(levelwise_predictor_levels,buffer_pos);
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
             write(cross_block,buffer_pos);
-
+            std::cout<<"5"<<std::endl;
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
                 write(ops_num,buffer_pos);
@@ -905,10 +905,11 @@ namespace QoZ {
                 write(conf.interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
-           
+           std::cout<<"6"<<std::endl;
             quantizer.save(buffer_pos);
             quantizer.postcompress_data();
             quantizer.clear();
+            std::cout<<"7"<<std::endl;
           
 
            
@@ -916,9 +917,10 @@ namespace QoZ {
             encoder.save(buffer_pos);
             encoder.encode(quant_inds, buffer_pos);
             encoder.postprocess_encode();
+            std::cout<<"8"<<std::endl;
             
-            timer.stop("Coding");
-            timer.start();
+            //timer.stop("Coding");
+            //timer.start();
             assert(buffer_pos - buffer < bufferSize);
 
             
@@ -927,7 +929,7 @@ namespace QoZ {
                                                      compressed_size);
             lossless.postcompress_data(buffer);
             
-            timer.stop("Lossless") ;
+            //timer.stop("Lossless") ;
             
 
             compressed_size += interp_compressed_size;
