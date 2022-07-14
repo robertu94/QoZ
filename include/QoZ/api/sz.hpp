@@ -52,8 +52,8 @@ char *compressedData = SZ_compress(conf, data, outSize);
  */
 
 template<class T>
-char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
-    QoZ::Config conf(config);
+char *SZ_compress(const QoZ::Config &conf, const T *data, size_t &outSize) {
+    //QoZ::Config conf(config);//move back after test
     std::vector<T> inData(data, data + conf.num);
     char *cmpData;
     if (conf.N == 1) {
@@ -133,9 +133,9 @@ char *SZ_compress(const QoZ::Config &config, T *data, size_t &outSize) {
 
  */
 template<class T>
-void SZ_decompress(QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
+void SZ_decompress(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *&decData) {
     //QoZ::Timer timer(true);
-    QoZ::Config conf(config);
+    //QoZ::Config conf(config);//move back after test
     {
         //load config
         int confSize;
