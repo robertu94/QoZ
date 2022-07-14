@@ -1217,6 +1217,7 @@ namespace QoZ {
             quantizer.set_eb(eb);
             if(peTracking){
                 std::cout<<quant_inds.size()<<std::endl;
+                std::cout<<prediction_errors.size()<<std::endl;
                 conf.predictionErrors=prediction_errors;
             }
             if (tuning){
