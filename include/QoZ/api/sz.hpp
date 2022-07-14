@@ -52,8 +52,8 @@ char *compressedData = SZ_compress(conf, data, outSize);
  */
 
 template<class T>
-char *SZ_compress( QoZ::Config &conf, const T *data, size_t &outSize) {
-    //QoZ::Config conf(config);//move back after test
+char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
+    QoZ::Config conf(config);
     std::vector<T> inData(data, data + conf.num);
     char *cmpData;
     if (conf.N == 1) {
@@ -80,6 +80,17 @@ char *SZ_compress( QoZ::Config &conf, const T *data, size_t &outSize) {
         QoZ::write(int(newSize - outSize), cmpDataPos);
         outSize = (char *) cmpDataPos - cmpData;
     }
+
+    if(conf.peTracking){
+        //int status;
+        //printf("wad\n");
+        //QoZ::writeFloatData_inBytes(conf.predictionErrors.data(), conf.num, "prederror.qoz", &status);
+        //printf("%d\n",conf.predictionErrors.size());
+        //printf("%d\n",conf.num);
+        QoZ::writefile<float>("prederror.qoz", conf.predictionErrors.data(), conf.num);
+    }
+
+
     return cmpData;
 }
 
@@ -133,9 +144,9 @@ char *SZ_compress(const QoZ::Config &config, T *data, size_t &outSize) {
 
  */
 template<class T>
-void SZ_decompress(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *&decData) {
+void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
     //QoZ::Timer timer(true);
-    //QoZ::Config conf(config);//move back after test
+    QoZ::Config conf(config);
     {
         //load config
         int confSize;
