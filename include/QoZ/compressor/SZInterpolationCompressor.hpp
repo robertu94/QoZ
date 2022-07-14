@@ -1215,8 +1215,8 @@ namespace QoZ {
 //            writefile("pred.dat", preds.data(), num_elements);
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
-            std::cout<<quant_inds.size()<<std::endl;
-            std::cout<<prediction_errors.size()<<std::endl;
+            //std::cout<<quant_inds.size()<<std::endl;
+            //std::cout<<prediction_errors.size()<<std::endl;
             if(peTracking){
 
                 conf.predictionErrors=prediction_errors;

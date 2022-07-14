@@ -153,6 +153,8 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
         //int status;
         //printf("wad\n");
         //QoZ::writeFloatData_inBytes(conf.predictionErrors.data(), conf.num, "prederror.qoz", &status);
+        std::cout<<conf.predictionErrors<<std::endl;
+        std::cout<<conf.num<<std::endl;
         QoZ::writefile<float>("prederror.qoz", conf.predictionErrors.data(), conf.num);
     }
 
