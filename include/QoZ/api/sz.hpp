@@ -52,7 +52,7 @@ char *compressedData = SZ_compress(conf, data, outSize);
  */
 
 template<class T>
-char *SZ_compress(const QoZ::Config &conf, const T *data, size_t &outSize) {
+char *SZ_compress( QoZ::Config &conf, const T *data, size_t &outSize) {
     //QoZ::Config conf(config);//move back after test
     std::vector<T> inData(data, data + conf.num);
     char *cmpData;
