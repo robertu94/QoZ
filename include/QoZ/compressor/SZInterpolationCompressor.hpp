@@ -1430,6 +1430,9 @@ namespace QoZ {
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
 
                         quantizer.insert_unpred(*(data+x*conf.dims[1]+y));
+                        if(peTracking){
+                            prediction_errors[x*dimension_offsets[0]+y]=*(data+x*dimension_offsets[0]+y);
+                        }
                         //quant_inds.push_back(0);
                     }
                 }
@@ -1438,7 +1441,10 @@ namespace QoZ {
                 for (size_t x=maxStep*(tuning==1);x<conf.dims[0];x+=maxStep){
                     for (size_t y=maxStep*(tuning==1);y<conf.dims[1];y+=maxStep){
                         for(size_t z=maxStep*(tuning==1);z<conf.dims[2];z+=maxStep){
-                            quantizer.insert_unpred(*(data+x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z) );
+                            quantizer.insert_unpred(*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z) );
+                            if(peTracking){
+                                prediction_errors[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=*(data+x*dimension_offsets[0]+y*dimension_offsets[1]+z);
+                            }
                             //if(tuning==0)
                                 //mark[x*conf.dims[1]*conf.dims[2]+y*conf.dims[2]+z]=true;
 
@@ -1464,7 +1470,7 @@ namespace QoZ {
                 for (size_t x=0;x<global_dimensions[0];x+=maxStep){
                     for (size_t y=0;y<global_dimensions[1];y+=maxStep){
 
-                        decData[x*global_dimensions[1]+y]=quantizer.recover_unpred();
+                        decData[x*dimension_offsets[0]+y]=quantizer.recover_unpred();
                         //quant_index++;
                     }
                 }
@@ -1473,7 +1479,7 @@ namespace QoZ {
                 for (size_t x=0;x<global_dimensions[0];x+=maxStep){
                     for (size_t y=0;y<global_dimensions[1];y+=maxStep){
                         for(size_t z=0;z<global_dimensions[2];z+=maxStep){
-                            decData[x*global_dimensions[1]*global_dimensions[2]+y*global_dimensions[2]+z]=quantizer.recover_unpred();
+                            decData[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=quantizer.recover_unpred();
                             //quant_index++;
 
                         }
