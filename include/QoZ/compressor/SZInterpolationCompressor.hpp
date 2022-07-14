@@ -725,7 +725,7 @@ namespace QoZ {
                            if(peTracking)
                         
                                 predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                                interpolators[cur_interpolator], cur_direction, stride,2,cross_block);
+                                                interpolators[cur_interpolator], cur_direction, stride,3,cross_block);
                             else
                                 predict_error+=block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                                 interpolators[cur_interpolator], cur_direction, stride,tuning,cross_block);
@@ -1185,7 +1185,7 @@ namespace QoZ {
                     interp_dirs.push_back(best_dir);
                     if (peTracking)
                         block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
-                                    interpolators[best_op], best_dir, stride,2,cross_block);
+                                    interpolators[best_op], best_dir, stride,3,cross_block);
                     else
                         block_interpolation(data, start_idx, end_idx, PB_predict_overwrite,
                                     interpolators[best_op], best_dir, stride,0,cross_block);
@@ -1513,17 +1513,32 @@ namespace QoZ {
                 return (d-orig)*(d-orig);
 
             }
-            else{
+            else if (mode==2){
                 double pred_error=fabs(d-pred);
+                /*
                 if(peTracking)
                     prediction_errors[idx]=pred_error;
-
+                */
                 int q_bin=quantizer.quantize_and_overwrite(d, pred,false);
+                /*
                 if(peTracking){
                     prediction_errors[idx]=pred_error;
                 
                     quant_inds.push_back(q_bin);
                 }
+                */
+                return pred_error;
+            }
+            else{
+                double pred_error=fabs(d-pred);
+               
+                int q_bin=quantizer.quantize_and_overwrite(d, pred,false);
+                
+              
+                prediction_errors[idx]=pred_error;
+                
+                quant_inds.push_back(q_bin);
+                
                 return pred_error;
             }
         }

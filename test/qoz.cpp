@@ -150,8 +150,8 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     QoZ::writefile(outputFilePath, bytes, outSize);
 
     if(conf.peTracking){
-        int status;
-        printf("wad\n");
+        //int status;
+        //printf("wad\n");
         //QoZ::writeFloatData_inBytes(conf.predictionErrors.data(), conf.num, "prederror.qoz", &status);
         QoZ::writefile<float>("prederror.qoz", conf.predictionErrors.data(), conf.num);
     }
