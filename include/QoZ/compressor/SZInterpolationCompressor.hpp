@@ -1216,6 +1216,7 @@ namespace QoZ {
 //            writefile("quant.dat", quant_inds.data(), num_elements);
             quantizer.set_eb(eb);
             if(peTracking){
+                std::cout<<quant_inds.size()<<std::endl;
                 conf.predictionErrors=prediction_errors;
             }
             if (tuning){
