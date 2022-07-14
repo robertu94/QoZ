@@ -855,6 +855,7 @@ namespace QoZ {
             ///std::cout<<"000"<<std::endl;
             if(peTracking){
                 conf.predictionErrors=prediction_errors;
+
             }
             if (tuning){
                
@@ -1220,6 +1221,8 @@ namespace QoZ {
             if(peTracking){
 
                 conf.predictionErrors=prediction_errors;
+                conf.interp_ops=interp_ops;
+                conf.interp_dirs=interp_dirs;
             }
             if (tuning){
                

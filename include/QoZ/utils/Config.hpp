@@ -327,6 +327,9 @@ namespace QoZ {
         int sampleBlockSampleBlockSize=0;
         int peTracking=0;
         std::vector<float> predictionErrors;//for test, to delete in final version.
+        std::vector<uint8_t> interp_ops;//for test, to delete in final version.
+        std::vector<uint8_t> interp_dirs;//for test, to delete in final version.
+
         
 
     };
