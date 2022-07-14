@@ -1535,7 +1535,7 @@ namespace QoZ {
             else{
                 double pred_error=fabs(d-pred);
                
-                int q_bin=quantizer.quantize_and_overwrite(d, pred,false);
+                int q_bin=quantizer.quantize_and_overwrite(d, pred);
                 
               
                 prediction_errors[idx]=pred_error;
