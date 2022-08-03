@@ -1542,7 +1542,7 @@ namespace QoZ {
                 return pred_error;
             }
             else{
-                double pred_error=fabs(d-pred);
+                double pred_error=pred-d;
                
                 int q_bin=quantizer.quantize_and_overwrite(d, pred);
                 
