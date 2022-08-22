@@ -3145,7 +3145,7 @@ namespace QoZ {
 
 
 
-        block_interpolation_block3d(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
+        double block_interpolation_block3d(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
                             const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
