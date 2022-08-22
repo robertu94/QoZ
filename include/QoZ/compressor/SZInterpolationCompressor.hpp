@@ -2828,7 +2828,7 @@ namespace QoZ {
 
                 const std::array<int, N> dims = dimension_sequences[direction];
 
-                if (cross_block==0){
+                //if (cross_block==0){
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
                         for (size_t k = (begin[dims[2]] ? begin[dims[2]] + stride2x : 0); k <= end[dims[2]]; k += stride2x) {
                             size_t begin_offset = begin[dims[0]] * dimension_offsets[dims[0]] + j * dimension_offsets[dims[1]] +
@@ -2862,7 +2862,8 @@ namespace QoZ {
                                                                     stride * dimension_offsets[dims[2]], interp_func, pb,tuning);
                         }
                     }
-                }
+                //}
+                    /*
                 else{
 
                     for (size_t j = (begin[dims[1]] ? begin[dims[1]] + stride2x : 0); j <= end[dims[1]]; j += stride2x) {
@@ -2936,6 +2937,12 @@ namespace QoZ {
                     }
 
                 }
+                */
+            
+
+
+
+
             //}
             /*
             else{
