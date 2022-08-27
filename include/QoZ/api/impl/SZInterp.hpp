@@ -3,6 +3,7 @@
 
 #include "QoZ/compressor/SZInterpolationCompressor.hpp"
 #include "QoZ/compressor/deprecated/SZBlockInterpolationCompressor.hpp"
+#include "QoZ/preprocessor/Wavelet.hpp"
 #include "QoZ/quantizer/IntegerQuantizer.hpp"
 #include "QoZ/lossless/Lossless_zstd.hpp"
 #include "QoZ/utils/Iterator.hpp"
@@ -88,6 +89,11 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     else{
         //std::cout<<"block decomp"<<std::endl;
         sz.decompress_block(cmpDataPos, cmpSize, decData);
+    }
+    if(conf.wavelet){
+        QoZ::Wavelet wlt;
+        wlt.postProcess(decData,conf.num);
+
     }
     
 }
@@ -3258,6 +3264,11 @@ double Tuning(QoZ::Config &conf, T *data){
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
+    if(conf.wavelet){
+        QoZ::Wavelet wlt;
+        wlt.preProcess(data,conf.num);
+
+    }
     if(conf.verbose)
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
     QoZ::Timer timer(true);

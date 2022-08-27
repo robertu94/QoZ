@@ -178,6 +178,7 @@ namespace QoZ {
             crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
             sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
             peTracking=cfg.GetInteger("AlgoSettings", "peTracking", peTracking);
+            wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
 
 
 
@@ -218,6 +219,7 @@ namespace QoZ {
             write(blockwiseSampleBlockSize, c);
             write(QoZ, c);
             write(crossBlock, c);
+            write(wavelet, c);
 
             
         };
@@ -257,6 +259,7 @@ namespace QoZ {
             read(blockwiseSampleBlockSize, c);
             read(QoZ, c);
             read(crossBlock, c);
+            read(wavelet, c);
         }
 
         void print() {
@@ -326,6 +329,7 @@ namespace QoZ {
         int crossBlock=0;
         int sampleBlockSampleBlockSize=0;
         int peTracking=0;
+        int wavelet=0;
         std::vector<float> predictionErrors;//for test, to delete in final version.
         std::vector<uint8_t> interp_ops;//for test, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for test, to delete in final version.

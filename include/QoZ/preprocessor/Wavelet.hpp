@@ -11,7 +11,7 @@ namespace QoZ {
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
     public:
-        void preprocess(T *data, size_t n) {
+        void preProcess(T *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
             m |= m >> 2;
