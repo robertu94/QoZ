@@ -10,7 +10,7 @@ extern "C" {
 
 
    
-        
+        extern "C" {
         void preProcess_t(float *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -49,7 +49,9 @@ extern "C" {
 
         
         
+    }
 
+    extern "C" {
        
 
 
@@ -92,7 +94,7 @@ extern "C" {
         
     
 
-       
+    }
 
 
 
