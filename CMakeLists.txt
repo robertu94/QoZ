@@ -54,6 +54,7 @@ endif()
 find_package(GSL)
 if (GSL_FOUND)
   message("GSL found.")
+  target_link_libraries(${PROJECT_NAME} INTERFACE GSL::gsl)
   target_compile_definitions(${PROJECT_NAME} INTERFACE -DENABLE_GSL="TRUE")
 endif()
 
