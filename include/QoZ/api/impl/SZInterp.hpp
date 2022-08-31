@@ -3,8 +3,9 @@
 
 #include "QoZ/compressor/SZInterpolationCompressor.hpp"
 #include "QoZ/compressor/deprecated/SZBlockInterpolationCompressor.hpp"
-extern "C"{
+
 #include "QoZ/preprocessor/Wavelet.hpp"
+extern "C"{
 #include "QoZ/preprocessor/Wavelet2.hpp"
 }
 #include "QoZ/quantizer/IntegerQuantizer.hpp"
