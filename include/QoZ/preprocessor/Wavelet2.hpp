@@ -1,5 +1,5 @@
-#ifndef SZ3_WAVELET_HPP
-#define SZ3_WAVELET_HPP
+#ifndef SZ3_WAVELET2_HPP
+#define SZ3_WAVELET2_HPP
 
 #ifdef ENABLE_GSL 
 
@@ -97,4 +97,4 @@ extern "C" {
 
 
 #endif
-#endif //SZ3_WAVELET_HPP
+#endif //SZ3_WAVELET2_HPP
