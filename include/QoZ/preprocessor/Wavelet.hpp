@@ -5,13 +5,14 @@
 
 #include "QoZ/preprocessor/PreProcessor.hpp"
 #include <gsl/gsl_wavelet.h>
-extern "C"{
+
 
 namespace QoZ {
     template<class T, uint N>
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
     public:
+        extern "C"{
         void preProcess(T *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -48,6 +49,7 @@ namespace QoZ {
 
         }
 
+
         void postProcess(T *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -83,9 +85,11 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
+        
+        }
     };
 }
 
-}
+
 #endif
 #endif //SZ3_WAVELET_HPP
