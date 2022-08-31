@@ -1,16 +1,17 @@
+extern "C" {
 #ifndef SZ3_WAVELET2_HPP
 #define SZ3_WAVELET2_HPP
 
 #ifdef ENABLE_GSL 
 
-extern "C" {
+
     #include <gsl/gsl_wavelet.h>
-}
+
 
 
 
    
-        extern "C" {
+      
         void preProcess_t(float *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -49,9 +50,9 @@ extern "C" {
 
         
         
-    }
+    
 
-    extern "C" {
+ 
        
 
 
@@ -95,9 +96,11 @@ extern "C" {
         
     
 
-    }
+    
 
 
 
 #endif
 #endif //SZ3_WAVELET2_HPP
+
+    }
