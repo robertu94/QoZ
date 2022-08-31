@@ -95,7 +95,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     if(conf.wavelet){
         //QoZ::Wavelet<T,N> wlt;
         //wlt.postProcess(decData,conf.num);
-        postProcess_t(decData,conf.num);
+        postProcess_t(reinterpret_cast<float *>decData,conf.num);
 
     }
     
@@ -3272,7 +3272,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet){
        // QoZ::Wavelet<T,N> wlt;
         //wlt.preProcess(data,conf.num);
-        preProcess_t(data,conf.num);
+        preProcess_t(reinterpret_cast<float *>data,conf.num);
 
     }
     
