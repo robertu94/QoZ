@@ -16,7 +16,6 @@ namespace QoZ {
     public:
         
 
-        extern "C" {
         
         void preProcess(T *data, size_t n) {
             size_t m = n - 1;
@@ -55,10 +54,9 @@ namespace QoZ {
         }
 
         
-        }
-
-        extern "C" {
         
+
+       
 
 
         void postProcess(T *data, size_t n) {
@@ -97,7 +95,7 @@ namespace QoZ {
 
         }
         
-        }
+        
     
 
        
