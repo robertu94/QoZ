@@ -5,6 +5,7 @@
 
 #include "QoZ/preprocessor/PreProcessor.hpp"
 #include <gsl/gsl_wavelet.h>
+extern "C"{
 
 namespace QoZ {
     template<class T, uint N>
@@ -85,5 +86,6 @@ namespace QoZ {
     };
 }
 
+}
 #endif
 #endif //SZ3_WAVELET_HPP
