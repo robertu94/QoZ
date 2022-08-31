@@ -4,9 +4,8 @@
 #ifdef ENABLE_GSL 
 #include "QoZ/preprocessor/PreProcessor.hpp"
 
-extern "C" {
-    #include <gsl/gsl_wavelet.h>
-}
+#include <gsl/gsl_wavelet.h>
+
 
 
 namespace QoZ {

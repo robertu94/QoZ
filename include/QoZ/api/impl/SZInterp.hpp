@@ -5,9 +5,7 @@
 #include "QoZ/compressor/deprecated/SZBlockInterpolationCompressor.hpp"
 
 #include "QoZ/preprocessor/Wavelet.hpp"
-extern "C"{
-#include "QoZ/preprocessor/Wavelet2.hpp"
-}
+
 #include "QoZ/quantizer/IntegerQuantizer.hpp"
 #include "QoZ/lossless/Lossless_zstd.hpp"
 #include "QoZ/utils/Iterator.hpp"
@@ -96,12 +94,12 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     }
     
     if(conf.wavelet){
-        //QoZ::Wavelet<T,N> wlt;
-        //wlt.postProcess(decData,conf.num);
+        QoZ::Wavelet<T,N> wlt;
+        wlt.postProcess(decData,conf.num);
        
 
-        postProcess_t(reinterpret_cast<float *>(decData),conf.num);
-        
+       
+
 
 
     }
@@ -3277,10 +3275,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     
     if(conf.wavelet){
-       // QoZ::Wavelet<T,N> wlt;
-        //wlt.preProcess(data,conf.num);
+        QoZ::Wavelet<T,N> wlt;
+        wlt.preProcess(data,conf.num);
         
-        preProcess_t(reinterpret_cast<float *>(data),conf.num);
         
 
     }
