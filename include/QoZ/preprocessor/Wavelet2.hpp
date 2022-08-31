@@ -20,7 +20,7 @@ extern "C" {
             m |= m >> 16;
             m++;
 
-            std::vector<double> dwtdata(m, 0);
+            double * dwtdata=(double *) calloc (m,sizeof(double));
             gsl_wavelet *w;
             gsl_wavelet_workspace *work;
 
@@ -41,7 +41,7 @@ extern "C" {
             for (size_t i = 0; i < n; i++) {
                 data[i] = dwtdata[i];
             }
-
+            free(dwtdata);
             gsl_wavelet_free(w);
             gsl_wavelet_workspace_free(work);
 
@@ -64,7 +64,7 @@ extern "C" {
             m |= m >> 16;
             m++;
 
-            std::vector<double> dwtdata(m, 0);
+            double * dwtdata=(double *) calloc (n,sizeof(double));
             gsl_wavelet *w;
             gsl_wavelet_workspace *work;
 
@@ -84,7 +84,8 @@ extern "C" {
 
             for (size_t i = 0; i < n; i++) {
                 data[i] = dwtdata[i];
-            }
+            } 
+            free(dwtdata);
 
             gsl_wavelet_free(w);
             gsl_wavelet_workspace_free(work);
