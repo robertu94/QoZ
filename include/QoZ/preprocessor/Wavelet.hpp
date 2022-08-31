@@ -52,6 +52,14 @@ namespace QoZ {
 
         }
 
+        #ifdef __cplusplus
+        }  // end extern "C"
+        #endif
+
+        #ifdef __cplusplus
+        extern "C" {
+        #endif
+
 
         void postProcess(T *data, size_t n) {
             size_t m = n - 1;
