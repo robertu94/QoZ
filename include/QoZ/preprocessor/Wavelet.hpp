@@ -3,8 +3,9 @@
 
 #ifdef ENABLE_GSL 
 #include "QoZ/preprocessor/PreProcessor.hpp"
+
 extern "C" {
-#include <gsl/gsl_wavelet.h>
+    #include <gsl/gsl_wavelet.h>
 }
 
 
@@ -15,7 +16,7 @@ namespace QoZ {
     public:
         
 
-      
+        extern "C" {
         
         void preProcess(T *data, size_t n) {
             size_t m = n - 1;
@@ -54,7 +55,9 @@ namespace QoZ {
         }
 
         
-       
+        }
+
+        extern "C" {
         
 
 
@@ -93,7 +96,8 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
-       
+        
+        }
     
 
        
