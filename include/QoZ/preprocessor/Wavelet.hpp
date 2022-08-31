@@ -12,7 +12,10 @@ namespace QoZ {
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
     public:
-        extern "C"{
+        #ifdef __cplusplus
+        extern "C" {
+        #endif
+        
         void preProcess(T *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -85,8 +88,12 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
+
+        #ifdef __cplusplus
+        }  // end extern "C"
+        #endif
+
         
-        }
     };
 }
 
