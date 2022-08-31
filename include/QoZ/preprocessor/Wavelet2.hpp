@@ -31,7 +31,7 @@ extern "C" {
                 dwtdata[i] = data[i];
             }
 
-            int status = gsl_wavelet_transform_forward(w, dwtdata.data(), 1, m, work);
+            int status = gsl_wavelet_transform_forward(w, dwtdata, 1, m, work);
 
             if (status != GSL_SUCCESS) {
                 printf("Error: wavelets transform failed.\n");
@@ -75,7 +75,7 @@ extern "C" {
                 dwtdata[i] = data[i];
             }
 
-            int status = gsl_wavelet_transform_inverse(w, dwtdata.data(), 1, m, work);
+            int status = gsl_wavelet_transform_inverse(w, dwtdata, 1, m, work);
 
             if (status != GSL_SUCCESS) {
                 printf("Error: wavelets transform failed.\n");
