@@ -4,20 +4,20 @@
 #ifdef ENABLE_GSL ///temporarily removed.
 
 #include "QoZ/preprocessor/PreProcessor.hpp"
-#ifdef __cplusplus
-        extern "C" {
-        #endif
+
 #include <gsl/gsl_wavelet.h>
-#ifdef __cplusplus
-        }  // end extern "C"
-        #endif
+
 
 namespace QoZ {
     template<class T, uint N>
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
     public:
-        
+        {
+
+        #ifdef __cplusplus
+        extern "C" {
+        #endif
         
         void preProcess(T *data, size_t n) {
             size_t m = n - 1;
@@ -56,7 +56,12 @@ namespace QoZ {
         }
 
         
-
+        #ifdef __cplusplus
+        }  // end extern "C"
+        #endif
+        #ifdef __cplusplus
+        extern "C" {
+        #endif
         
 
 
@@ -95,6 +100,10 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
+        #ifdef __cplusplus
+        }  // end extern "C"
+        #endif
+    }
 
        
 
