@@ -16,6 +16,26 @@
 
 #include <cmath>
 
+enum class RTNType {
+  Good = 0,
+  WrongDims,
+  BitstreamWrongLen,
+  IOError,
+  InvalidParam,
+  QzLevelTooBig,  // a very specific type of invalid param
+  EmptyStream,    // a condition but not sure if it's an error
+  BitBudgetMet,
+  VersionMismatch,
+  ZSTDMismatch,
+  ZSTDError,
+  SliceVolumeMismatch,
+  QzModeMismatch,
+  SetBPPBeforeDims,
+  DataRangeNotSet,
+  CompModeUnknown,
+  Error
+};
+
 
 using vecd_type = std::vector<double>;
 using vec8_type = std::vector<uint8_t>;
