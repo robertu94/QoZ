@@ -142,7 +142,7 @@ namespace QoZ {
 
         void postProcess_cdf97(T *data, std::vector<size_t> dims) {
             size_t n=1;
-            size_t m_dims=std::array<size_t,3>{1,1,1};
+            std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
             for (size_t i=0;i<N;i++){
                 n*=dims[i];
                 m_dims[N-1-i]=dims[i];
