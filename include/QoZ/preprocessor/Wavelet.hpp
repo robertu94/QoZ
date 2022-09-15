@@ -3,7 +3,7 @@
 
 #ifdef ENABLE_GSL 
 #include "QoZ/preprocessor/PreProcessor.hpp"
-
+#include "QoZ/preprocessor/CDF97.h"
 #include <gsl/gsl_wavelet.h>
 
 
