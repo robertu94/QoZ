@@ -42,6 +42,42 @@ using vec8_type = std::vector<uint8_t>;
 using dims_type = std::array<size_t, 3>;
 constexpr auto max_size = std::numeric_limits<size_t>::max();
 constexpr auto max_d = std::numeric_limits<double>::max();
+auto num_of_xforms(size_t len) -> size_t
+{
+  assert(len > 0);
+  // I decide 8 is the minimal length to do one level of xform.
+  const auto f = std::log2(double(len) / 8.0);
+  const auto num = f < 0.0 ? size_t{0} : static_cast<size_t>(f) + 1;
+  // I also decide that no matter what the input size is,
+  // six (6) is the maxinum number of transforms to do.
+  return std::min(num, size_t{6});
+}
+
+auto num_of_partitions(size_t len) -> size_t
+{
+  size_t num_of_parts = 0;  // Num. of partitions we can do
+  while (len > 1) {
+    num_of_parts++;
+    len -= len / 2;
+  }
+
+  return num_of_parts;
+}
+
+auto calc_approx_detail_len(size_t orig_len, size_t lev) -> std::array<size_t, 2>
+{
+  size_t low_len = orig_len;
+  size_t high_len = 0;
+  for (size_t i = 0; i < lev; i++) {
+    high_len = low_len / 2;
+    low_len -= high_len;
+  }
+
+  return {low_len, high_len};
+}
+
+
+
 class CDF97 {
  public:
   //
