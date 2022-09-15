@@ -16,8 +16,12 @@
 
 #include <cmath>
 
-namespace sperr {
 
+using vecd_type = std::vector<double>;
+using vec8_type = std::vector<uint8_t>;
+using dims_type = std::array<size_t, 3>;
+constexpr auto max_size = std::numeric_limits<size_t>::max();
+constexpr auto max_d = std::numeric_limits<double>::max();
 class CDF97 {
  public:
   //
@@ -148,6 +152,6 @@ class CDF97 {
   //
 };
 
-};  // namespace sperr
+
 
 #endif
