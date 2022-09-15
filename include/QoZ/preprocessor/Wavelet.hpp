@@ -88,6 +88,7 @@ namespace QoZ {
             for (size_t i = 0; i < n; i++) {
                 data[i] = dwtdata[i];
             }
+        }
 
 
 
