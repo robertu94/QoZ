@@ -91,7 +91,7 @@ namespace QoZMETA {
 
     void
     encode_regression_coefficients(const int *reg_params_type, const float *reg_unpredictable_data, size_t reg_count,
-                                    size_t reg_unpredictable_count, SZ::HuffmanEncoder<int> &reg_huffman, unsigned char *&compressed_pos) {
+                                    size_t reg_unpredictable_count, QoZ::HuffmanEncoder<int> &reg_huffman, unsigned char *&compressed_pos) {
         QoZ::write(reg_unpredictable_count, compressed_pos);
         QoZ::write(reg_unpredictable_data, reg_unpredictable_count, compressed_pos);
 
