@@ -32,16 +32,16 @@ namespace QoZ {
     }
 
     template<class T>
-    void calAbsErrorBound(QoZ::Config &conf, const T *data) {
+    void calAbsErrorBound(QoZ::Config &conf, const T *data,T range = 0 ) {
         if (conf.errorBoundMode != EB_ABS) {
             if (conf.errorBoundMode == EB_REL) {
                 conf.errorBoundMode = EB_ABS;
-                double rng=QoZ::data_range(data, conf.num);
+                double rng= (range > 0) ? range : QoZ::data_range(data, conf.num);
                 conf.rng=rng;
                 conf.absErrorBound = conf.relErrorBound * rng;
             } else if (conf.errorBoundMode == EB_PSNR) {
                 conf.errorBoundMode = EB_ABS;
-                double rng=QoZ::data_range(data, conf.num);
+                double rng=(range > 0) ? range : QoZ::data_range(data, conf.num);
                 conf.rng=rng;
                 conf.absErrorBound = computeABSErrBoundFromPSNR(conf.psnrErrorBound, 0.99, rng);
                 conf.relErrorBound=conf.absErrorBound/rng;
@@ -50,12 +50,12 @@ namespace QoZ {
                 conf.absErrorBound = sqrt(3.0 / conf.num) * conf.l2normErrorBound;
             } else if (conf.errorBoundMode == EB_ABS_AND_REL) {
                 conf.errorBoundMode = EB_ABS;
-                double rng=QoZ::data_range(data, conf.num);
+                double rng=(range > 0) ? range : QoZ::data_range(data, conf.num);
                 conf.rng=rng;
                 conf.absErrorBound = std::min(conf.absErrorBound, conf.relErrorBound * rng);
             } else if (conf.errorBoundMode == EB_ABS_OR_REL) {
                 conf.errorBoundMode = EB_ABS;
-                double rng=QoZ::data_range(data, conf.num);
+                double rng=(range > 0) ? range : QoZ::data_range(data, conf.num);
                 conf.rng=rng;
                 conf.absErrorBound = std::max(conf.absErrorBound, conf.relErrorBound *rng);
             } else {
