@@ -101,6 +101,10 @@ namespace QoZ {
          */
         void preprocess_encode(const T *bins, size_t num_bin, int stateNum) {
             nodeCount = 0;
+            if (num_bin == 0) {
+                printf("Huffman bins should not be empty\n");
+                exit(0);
+            }
             init(bins, num_bin);
             for (int i = 0; i < huffmanTree->stateNum; i++)
                 if (huffmanTree->code[i]) nodeCount++;
@@ -292,7 +296,7 @@ namespace QoZ {
     private:
         HuffmanTree *huffmanTree = NULL;
         node treeRoot;
-        unsigned int nodeCount;
+        unsigned int nodeCount = 0 ;
         uchar sysEndianType; //0: little endian, 1: big endian
         bool loaded = false;
         T offset;
@@ -519,9 +523,7 @@ namespace QoZ {
          * @param size_t length (input)
          * */
         void init(const T *s, size_t length) {
-            if (length == 0) {
-                return;
-            }
+            
             T max = s[0];
             offset = s[0]; //offset is min
 
