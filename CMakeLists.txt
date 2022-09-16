@@ -56,6 +56,9 @@ if (GSL_FOUND)
   message("GSL found.")
   target_link_libraries(${PROJECT_NAME} INTERFACE GSL::gsl)
   target_compile_definitions(${PROJECT_NAME} INTERFACE -DENABLE_GSL="TRUE")
+else()
+	
+  message("GSL not found.")
 endif()
 
 add_subdirectory(test)
