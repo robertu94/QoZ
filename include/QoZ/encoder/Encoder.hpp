@@ -26,6 +26,12 @@ namespace QoZ {
 
             virtual void load(const uchar *&c, size_t &remaining_length) = 0;
 
+            virtual size_t size_est() {
+                return 0;
+            }
+
+            
+
         };
     }
 }

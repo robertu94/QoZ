@@ -65,12 +65,8 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
     } else if (conf.N == 4) {
         cmpData = SZ_compress_impl<T, 4>(conf, inData.data(), outSize);
     } else {
-        for (int i = 4; i < conf.N; i++) {
-            conf.dims[3] *= conf.dims[i];
-        }
-        conf.dims.resize(4);
-        conf.N = 4;
-        cmpData = SZ_compress_impl<T, 4>(conf, inData.data(), outSize);
+        printf("Data dimension higher than 4 is not supported.\n");
+        exit(0);
     }
     {
         //save config
@@ -175,7 +171,8 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
     } else if (conf.N == 4) {
         SZ_decompress_impl<T, 4>(conf, cmpData, cmpSize, decData);
     } else {
-        SZ_decompress_impl<T, 4>(conf, cmpData, cmpSize, decData);
+       printf("Data dimension higher than 4 is not supported.\n");
+        exit(0);
     }
     //timer.stop("decomp");
 }

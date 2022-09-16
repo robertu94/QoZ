@@ -592,7 +592,7 @@ namespace QoZ {
                     }
                 //}
                 
-                uint stride = 1U << (level - 1);
+                size_t stride = 1U << (level - 1);
                 size_t cur_blocksize;
                 //if (conf.blockwiseTuning){
                     //cur_blocksize=blocksize;
@@ -877,7 +877,8 @@ namespace QoZ {
             //timer.start();
             //assert(quant_inds.size() == num_elements);
              //std::cout<<"1"<<std::endl;
-            size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
+            encoder.preprocess_encode(quant_inds, 0);
+            size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
             //std::cout<<"2"<<std::endl;
@@ -915,7 +916,7 @@ namespace QoZ {
           
 
            
-            encoder.preprocess_encode(quant_inds, 0);
+            
            // std::cout<<"7.1"<<std::endl;
             encoder.save(buffer_pos);
            // std::cout<<"7.2"<<std::endl;
@@ -1067,7 +1068,7 @@ namespace QoZ {
                 int cur_direction;
                 
                 
-                uint stride = 1U << (level - 1);
+                size_t stride = 1U << (level - 1);
                 size_t cur_blocksize=blocksize;
                
                
@@ -1494,7 +1495,7 @@ namespace QoZ {
             }
 
         }
-
+        /*
         inline void quantize1(size_t idx, T &d, T pred) {
             if (idx >= 2 * 449 * 449 * 235 && idx < 3 * 449 * 449 * 235 &&
                 fabs(d - pred) > max_error) {
@@ -1504,7 +1505,7 @@ namespace QoZ {
 //            quant_inds.push_back(quant);
             quant_inds[idx] = quant;
         }
-
+        */
         inline void quantize(size_t idx, T &d, T pred) {
 
 //            preds[idx] = pred;
@@ -2745,7 +2746,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 1, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {
+                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {
             return block_interpolation_1d(data, begin[0], end[0], stride, interp_func, pb,tuning);
         }
 
@@ -2753,7 +2754,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 2, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {
+                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
 
@@ -2819,7 +2820,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 3, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;
@@ -3065,7 +3066,7 @@ namespace QoZ {
         template<uint NN = N>
         typename std::enable_if<NN == 4, double>::type
         block_interpolation(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {
+                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {
             double predict_error = 0;
             size_t stride2x = stride * 2;
             max_error = 0;
@@ -3146,7 +3147,7 @@ namespace QoZ {
 
 
         double block_interpolation_block3d(T *data, std::array<size_t, N> begin, std::array<size_t, N> end, const PredictorBehavior pb,
-                            const std::string &interp_func, const int direction, uint stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
+                            const std::string &interp_func, const int direction, size_t stride = 1,int tuning=0,size_t cross_block=0) {//cross block: 0 or conf.num
 
             double predict_error = 0;
             size_t stride2x = stride * 2;

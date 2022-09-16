@@ -9,7 +9,7 @@
 
 namespace QoZ {
     template<class T>
-    T data_range(T *data, size_t num) {
+    T data_range(const T *data, size_t num) {
 
         T max = data[0];
         T min = data[0];
@@ -32,7 +32,7 @@ namespace QoZ {
     }
 
     template<class T>
-    void calAbsErrorBound(QoZ::Config &conf, T *data) {
+    void calAbsErrorBound(QoZ::Config &conf, const T *data) {
         if (conf.errorBoundMode != EB_ABS) {
             if (conf.errorBoundMode == EB_REL) {
                 conf.errorBoundMode = EB_ABS;
