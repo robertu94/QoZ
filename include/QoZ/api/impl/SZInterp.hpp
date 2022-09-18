@@ -83,9 +83,9 @@ char *SZ_compress_NewInterp(QoZ::Config &conf, T *data, size_t &outSize) {
 template<class T, QoZ::uint N>
 void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP);
-
+    QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
     if (!conf.wavelet){
-        QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
+        
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                 QoZ::LinearQuantizer<T>(),
                 QoZ::HuffmanEncoder<int>(),
