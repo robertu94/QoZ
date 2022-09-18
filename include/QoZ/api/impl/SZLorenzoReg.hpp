@@ -9,6 +9,7 @@
 #include "QoZ/predictor/LorenzoPredictor.hpp"
 #include "QoZ/predictor/RegressionPredictor.hpp"
 #include "QoZ/predictor/PolyRegressionPredictor.hpp"
+#include "QoZ/predictor/ZeroPredictor.hpp"
 #include "QoZ/lossless/Lossless_zstd.hpp"
 #include "QoZ/utils/Iterator.hpp"
 #include "QoZ/utils/Statistic.hpp"
