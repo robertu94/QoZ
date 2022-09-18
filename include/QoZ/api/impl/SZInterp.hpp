@@ -3346,7 +3346,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     T rng=QoZ::data_range<T>(data,conf.num);
     double rel_bound=conf.absErrorBound/rng;
-    uchar * compress_output;
+    char * compress_output;
     //conf.cmprAlgo =QoZ::ALGO_INTERP;
   
     
