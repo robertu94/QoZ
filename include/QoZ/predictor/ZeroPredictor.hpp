@@ -14,7 +14,8 @@ namespace QoZ {
     template<class T, uint N>
     class ZeroPredictor : public concepts::PredictorInterface<T, N> {
     public:
-        
+        using Range = multi_dimensional_range<T, N>;
+        using iterator = typename multi_dimensional_range<T, N>::iterator;
 
         ZeroPredictor() {
             
