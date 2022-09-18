@@ -132,6 +132,7 @@ namespace QoZ {
             relErrorBound = cfg.GetReal("GlobalSettings", "RelErrorBound", relErrorBound);
             psnrErrorBound = cfg.GetReal("GlobalSettings", "PSNRErrorBound", psnrErrorBound);
             l2normErrorBound = cfg.GetReal("GlobalSettings", "L2NormErrorBound", l2normErrorBound);
+            //prewave_absErrorBound= cfg.GetReal("GlobalSettings", "prewave_absErrorBound", prewave_absErrorBound);
             alpha = cfg.GetReal("AlgoSettings", "alpha", alpha);
             beta = cfg.GetReal("AlgoSettings", "beta", beta);
             autoTuningRate = cfg.GetReal("AlgoSettings", "autoTuningRate", autoTuningRate);
@@ -224,6 +225,8 @@ namespace QoZ {
             write(QoZ, c);
             write(crossBlock, c);
             write(wavelet, c);
+            write(firstSize, c);
+            //write(prewave_absErrorBound, c);
 
             
         };
@@ -264,6 +267,8 @@ namespace QoZ {
             read(QoZ, c);
             read(crossBlock, c);
             read(wavelet, c);
+            read(firstSize, c);
+            //read(prewave_absErrorBound, c);
         }
 
         void print() {
@@ -280,6 +285,7 @@ namespace QoZ {
         double relErrorBound=-1.0;
         double psnrErrorBound;
         double l2normErrorBound;
+        //double prewave_absErrorBound;
         double rng=-1;
         double alpha=-1;
         double beta=-1;
@@ -334,6 +340,7 @@ namespace QoZ {
         int sampleBlockSampleBlockSize=0;
         int peTracking=0;
         int wavelet=0;
+        size_t firstSize;
         std::vector<float> predictionErrors;//for test, to delete in final version.
         std::vector<uint8_t> interp_ops;//for test, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for test, to delete in final version.

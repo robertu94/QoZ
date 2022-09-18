@@ -6,7 +6,7 @@
 #define SZ_PREPROCESSOR_HPP
 
 #include "QoZ/def.hpp"
-#include "QoZ/preprocessor/CDF97.h"
+
 
 namespace QoZ {
     namespace concepts {
