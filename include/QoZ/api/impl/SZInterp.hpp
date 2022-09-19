@@ -3545,7 +3545,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         std::cout<<"s1"<<std::endl;
         T *decData =new T [conf.num];
         std::cout<<"s2"<<std::endl;
+        conf.wavelet=0;
         SZ_decompress_Interp<T,N>(conf,compress_output,outSize,decData);
+        conf.wavelet=1;
         std::cout<<"s3"<<std::endl;
         for(size_t i=0;i<conf.num;i++){
             decData[i]=data[i]-decData[i];
