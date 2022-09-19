@@ -69,14 +69,14 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
         exit(0);
     }
     {
-        std::cout<<"c1"<<std::endl;
+        
         //save config
         QoZ::uchar *cmpDataPos = (QoZ::uchar *) cmpData + outSize;
         conf.save(cmpDataPos);
-        std::cout<<"c2"<<std::endl;
+        
         size_t newSize = (char *) cmpDataPos - cmpData;
         QoZ::write(int(newSize - outSize), cmpDataPos);
-        std::cout<<"c3"<<std::endl;
+       
 
         
         
