@@ -3321,6 +3321,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     double prewave_absErrorBound=0.0;
     QoZ::calAbsErrorBound(conf, data);
+    T *origdata;
+
+
 
     if (conf.rng<0)
         conf.rng=QoZ::data_range<T>(data,conf.num);
@@ -3331,7 +3334,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     
     if(conf.wavelet){
-        
+        origdata=new T[conf.num];
+        memcpy(origdata,data,conf.num*sizeof(T));
         
        
         prewave_absErrorBound=conf.absErrorBound;
@@ -3353,7 +3357,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
     QoZ::Timer timer(true);
         
-    QoZ::calAbsErrorBound(conf, data);
+    
 
     double best_lorenzo_ratio=Tuning<T,N>(conf,data);
 
@@ -3563,9 +3567,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.wavelet=0;
         SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
         conf.wavelet=1;
+        QoZ::Wavelet<T,N> wlt;
+        wlt.postProcess_cdf97(decData,conf.dims);
        // std::cout<<"s3"<<std::endl;
         for(size_t i=0;i<conf.num;i++){
-            decData[i]=data[i]-decData[i];
+            decData[i]=origdata[i]-decData[i];
         }
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
