@@ -3575,6 +3575,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
+        std::cout<<newconf.absErrorBound<<std::endl;
         //newconf.blockSize=32768;
         auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
