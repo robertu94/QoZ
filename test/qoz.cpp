@@ -149,6 +149,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
         strcpy(outputFilePath, cmpPath);
     }
     std::cout<<"c2"<<std::endl;
+    std::cout<<outSize<<std::endl;
     QoZ::writefile(outputFilePath, bytes, outSize);
      std::cout<<"c3"<<std::endl;
 
