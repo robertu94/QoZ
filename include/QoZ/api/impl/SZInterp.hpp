@@ -3542,8 +3542,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     if(conf.wavelet){
         conf.firstSize=outSize;
+        std::cout<<"s1"<<std::endl;
         T *decData =new T [conf.num];
+        std::cout<<"s2"<<std::endl;
         SZ_decompress_Interp<T,N>(conf,compress_output,outSize,decData);
+        std::cout<<"s3"<<std::endl;
         for(size_t i=0;i<conf.num;i++){
             decData[i]=data[i]-decData[i];
         }
@@ -3553,20 +3556,25 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                    QoZ::Lossless_zstd());
-        
+        std::cout<<"s4"<<std::endl;
         size_t outlier_outSize=0;
    
         char * outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        std::cout<<"s5"<<std::endl;
 
         size_t totalsize=outSize+outlier_outSize;
 
         char * final_output=new char[totalsize];
+        std::cout<<"s6"<<std::endl;
         memcpy(final_output,compress_output,outSize);
+        std::cout<<"s7"<<std::endl;
         memcpy(final_output+(outSize/sizeof(char)),outlier_compress_output,outlier_outSize);
+        std::cout<<"s8"<<std::endl;
 
         delete [] compress_output;
         delete [] outlier_compress_output;
         delete []decData;
+        std::cout<<"s9"<<std::endl;
         return final_output;
     }
     else{
