@@ -3320,6 +3320,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     double prewave_absErrorBound=0.0;
     QoZ::calAbsErrorBound(conf, data);
+
     if (conf.rng<0)
         conf.rng=QoZ::data_range<T>(data,conf.num);
     
@@ -3333,11 +3334,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
        
         prewave_absErrorBound=conf.absErrorBound;
+        std::cout<<conf.absErrorBound<<std::endl;
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
         conf.errorBoundMode = QoZ::EB_REL;
         QoZ::calAbsErrorBound(conf, data);
+        std::cout<<conf.absErrorBound<<std::endl;
         
         
 
