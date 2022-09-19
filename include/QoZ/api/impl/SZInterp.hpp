@@ -3549,7 +3549,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     if(conf.wavelet){
         conf.firstSize=outSize;
-        size_t tempSize=conf.outSize;
+        size_t tempSize=outSize;
        // std::cout<<"s1"<<std::endl;
         T *decData =new T [conf.num];
        // std::cout<<"s2"<<std::endl;
