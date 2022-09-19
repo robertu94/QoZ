@@ -607,8 +607,9 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
 template<class T, QoZ::uint N>
 double Tuning(QoZ::Config &conf, T *data){
    
-    double rel_bound = conf.relErrorBound;
+    
     T rng=conf.rng;
+    double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;;
     //QoZ::Timer timer(true);
     
     //timer.stop("")
@@ -3356,8 +3357,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     double best_lorenzo_ratio=Tuning<T,N>(conf,data);
 
-    T rng=QoZ::data_range<T>(data,conf.num);
-    double rel_bound=conf.absErrorBound/rng;
+   
+    
     char * compress_output;
     //conf.cmprAlgo =QoZ::ALGO_INTERP;
   
