@@ -3339,15 +3339,14 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
        
         prewave_absErrorBound=conf.absErrorBound;
-        std::cout<<conf.absErrorBound<<std::endl;
+       
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
         conf.errorBoundMode = QoZ::EB_REL;
+        conf.relErrorBound/=10.0;
         QoZ::calAbsErrorBound(conf, data);
-        std::cout<<conf.rng<<std::endl;
-        std::cout<<conf.relErrorBound<<std::endl;
-        std::cout<<conf.absErrorBound<<std::endl;
+        
         
         
 
