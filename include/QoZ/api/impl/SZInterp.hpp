@@ -3427,7 +3427,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
             
             compress_output = SZ_compress_Interp<T, N>(conf, data, outSize);
-            std::cout<<outSize<<std::endl;
+          
         }
         else {
             std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
