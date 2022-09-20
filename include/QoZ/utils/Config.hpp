@@ -137,6 +137,7 @@ namespace QoZ {
             beta = cfg.GetReal("AlgoSettings", "beta", beta);
             autoTuningRate = cfg.GetReal("AlgoSettings", "autoTuningRate", autoTuningRate);
             predictorTuningRate = cfg.GetReal("AlgoSettings", "predictorTuningRate", predictorTuningRate);
+            wavelet_rel_coeff = cfg.GetReal("AlgoSettings", "wavelet_rel_coeff", wavelet_rel_coeff);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
             lorenzo = cfg.GetBoolean("AlgoSettings", "Lorenzo", lorenzo);
@@ -340,6 +341,7 @@ namespace QoZ {
         int sampleBlockSampleBlockSize=0;
         int peTracking=0;
         int wavelet=0;
+        double wavelet_rel_coeff = 10.0;
         size_t firstSize;
         std::vector<float> predictionErrors;//for test, to delete in final version.
         std::vector<uint8_t> interp_ops;//for test, to delete in final version.
