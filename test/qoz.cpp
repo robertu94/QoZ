@@ -140,7 +140,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     QoZ::Timer timer(true);
     char *bytes = SZ_compress<T>(conf, data, outSize);
     double compress_time = timer.stop();
-    std::cout<<"c1"<<std::endl;
+   
 
     char outputFilePath[1024];
     if (cmpPath == nullptr) {
@@ -148,10 +148,9 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     } else {
         strcpy(outputFilePath, cmpPath);
     }
-    std::cout<<"c2"<<std::endl;
-    std::cout<<outSize<<std::endl;
+   
     QoZ::writefile(outputFilePath, bytes, outSize);
-     std::cout<<"c3"<<std::endl;
+    
 
     
 
