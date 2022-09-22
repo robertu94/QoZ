@@ -3413,7 +3413,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
-        QoZ::writefile<double>("waved.qoz", data, conf.num);
+        QoZ::writefile<T>("waved.qoz", data, conf.num);
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
