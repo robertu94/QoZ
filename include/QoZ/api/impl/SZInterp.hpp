@@ -133,16 +133,17 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         
 
         QoZ::Config newconf(conf.num);
+
         //newconf.blockSize=32768;
 
         if (conf.offsetPredictor ==0){
             auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto 2sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+            auto sz2 = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
            
             
        
-            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+             sz2->decompress(cmpDataPos+first,second,offsets);
         }
 
         else if (conf.offsetPredictor ==1){
@@ -159,16 +160,16 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
            
             
        
-            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+              sz2->decompress(cmpDataPos+first,second,offsets);
         }
         else if (conf.offsetPredictor == 2){
-            newconf.setDims(conf.dims);
+            newconf.setDims(conf.dims.begin(),conf.dims.end());
             newconf.lorenzo = true;
             newconf.lorenzo2 = true;
             newconf.regression = false;
             newconf.regression2 = false;
             newconf.openmp = false;
-            newconf.blockSize = 5;/
+            newconf.blockSize = 5;
             newconf.quantbinCnt = 65536 * 2;
 
             auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
@@ -190,12 +191,12 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz2.decompress(cmpDataPos+first,second,offsets);
+            sz2.decompress(cmpDataPos+first,second,offsets);
         }
 
         else if (conf.offsetPredictor == 4){
             
-            newconf.setDims(conf.dims);
+            newconf.setDims(conf.dims.begin(),conf.dims.end());
             newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
             newconf.interpDirection=0;
            
@@ -205,7 +206,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz2.decompress(cmpDataPos+first,second,offsets);
+            sz2.decompress(cmpDataPos+first,second,offsets);
         }
 
 
@@ -3676,13 +3677,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
         }
         else if (conf.offsetPredictor == 2){
-            newconf.setDims(conf.dims);
+            newconf.setDims(conf.dims.begin(),conf.dims.end());
             newconf.lorenzo = true;
             newconf.lorenzo2 = true;
             newconf.regression = false;
             newconf.regression2 = false;
             newconf.openmp = false;
-            newconf.blockSize = 5;/
+            newconf.blockSize = 5;
             newconf.quantbinCnt = 65536 * 2;
 
             auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
@@ -3709,7 +3710,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         else if (conf.offsetPredictor == 4){
             
-            newconf.setDims(conf.dims);
+            newconf.setDims(conf.dims.begin(),conf.dims.end());
             newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
             newconf.interpDirection=0;
            
