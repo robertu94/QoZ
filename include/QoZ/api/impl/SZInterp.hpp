@@ -184,13 +184,13 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             newconf.interpDirection=0;
 
            
-            auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            auto sz2 = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
             QoZ::LinearQuantizer<T>(newconf.absErrorBound),
             QoZ::HuffmanEncoder<int>(),
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+            outlier_compress_output =  (char *)sz2.decompress(cmpDataPos+first,second,offsets);
         }
 
         else if (conf.offsetPredictor == 4){
@@ -199,13 +199,13 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
             newconf.interpDirection=0;
            
-            auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            auto sz2 = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
             QoZ::LinearQuantizer<T>(newconf.absErrorBound),
             QoZ::HuffmanEncoder<int>(),
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+            outlier_compress_output =  (char *)sz2.decompress(cmpDataPos+first,second,offsets);
         }
 
 
@@ -3413,7 +3413,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
-        QoZ::writefile<float>("waved.qoz", data, conf.num);
+        QoZ::writefile<double>("waved.qoz", data, conf.num);
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
@@ -3704,7 +3704,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+            outlier_compress_output =  (char *)sz.compress(newconf,decData,outlier_outSize);
         }
 
         else if (conf.offsetPredictor == 4){
@@ -3719,7 +3719,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             QoZ::Lossless_zstd());
             
        
-            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+            outlier_compress_output =  (char *)sz.compress(newconf,decData,outlier_outSize);
         }
 
 
