@@ -134,11 +134,82 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
         QoZ::Config newconf(conf.num);
         //newconf.blockSize=32768;
-        auto quantizer = QoZ::LinearQuantizer<T>();
-        auto sz2 = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
-                                                                   QoZ::Lossless_zstd());
+
+        if (conf.offsetPredictor ==0){
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto 2sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+                                                                       QoZ::Lossless_zstd());
+           
+            
        
-        sz2->decompress(cmpDataPos+first,second,offsets);
+            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+        }
+
+        else if (conf.offsetPredictor ==1){
+            newconf.lorenzo = true;
+            newconf.lorenzo2 = true;
+            newconf.regression = false;
+            newconf.regression2 = false;
+            newconf.openmp = false;
+            newconf.blockSize = 16;//original 5
+            newconf.quantbinCnt = 65536 * 2;
+
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto sz2 = make_lorenzo_regression_compressor<T, 1>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+           
+            
+       
+            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+        }
+        else if (conf.offsetPredictor == 2){
+            newconf.setDims(conf.dims);
+            newconf.lorenzo = true;
+            newconf.lorenzo2 = true;
+            newconf.regression = false;
+            newconf.regression2 = false;
+            newconf.openmp = false;
+            newconf.blockSize = 5;/
+            newconf.quantbinCnt = 65536 * 2;
+
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto sz2 = make_lorenzo_regression_compressor<T, N>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+           
+            
+       
+            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+        }
+
+        else if (conf.offsetPredictor == 3){
+            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpDirection=0;
+
+           
+            auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
+            QoZ::HuffmanEncoder<int>(),
+            QoZ::Lossless_zstd());
+            
+       
+            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+        }
+
+        else if (conf.offsetPredictor == 4){
+            
+            newconf.setDims(conf.dims);
+            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpDirection=0;
+           
+            auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
+            QoZ::HuffmanEncoder<int>(),
+            QoZ::Lossless_zstd());
+            
+       
+            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+        }
+
+
+        
        
 
         for(size_t i=0;i<conf.num;i++)
@@ -3342,6 +3413,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
+        QoZ::writefile<float>("waved.qoz", data, conf.num);
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
@@ -3575,13 +3647,84 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         newconf.absErrorBound=prewave_absErrorBound;
       
         //newconf.blockSize=32768;
-        auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
-                                                                   QoZ::Lossless_zstd());
-       
         size_t outlier_outSize=0;
-   
-        char * outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        char * outlier_compress_output;
+        if (conf.offsetPredictor ==0){
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+                                                                       QoZ::Lossless_zstd());
+           
+            
+       
+            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        }
+
+        else if (conf.offsetPredictor ==1){
+            newconf.lorenzo = true;
+            newconf.lorenzo2 = true;
+            newconf.regression = false;
+            newconf.regression2 = false;
+            newconf.openmp = false;
+            newconf.blockSize = 16;//original 5
+            newconf.quantbinCnt = 65536 * 2;
+
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto sz = make_lorenzo_regression_compressor<T, 1>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+           
+            
+       
+            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        }
+        else if (conf.offsetPredictor == 2){
+            newconf.setDims(conf.dims);
+            newconf.lorenzo = true;
+            newconf.lorenzo2 = true;
+            newconf.regression = false;
+            newconf.regression2 = false;
+            newconf.openmp = false;
+            newconf.blockSize = 5;/
+            newconf.quantbinCnt = 65536 * 2;
+
+            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
+            auto sz = make_lorenzo_regression_compressor<T, N>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+           
+            
+       
+            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        }
+
+        else if (conf.offsetPredictor == 3){
+            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpDirection=0;
+
+           
+            auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
+            QoZ::HuffmanEncoder<int>(),
+            QoZ::Lossless_zstd());
+            
+       
+            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        }
+
+        else if (conf.offsetPredictor == 4){
+            
+            newconf.setDims(conf.dims);
+            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+            newconf.interpDirection=0;
+           
+            auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
+            QoZ::HuffmanEncoder<int>(),
+            QoZ::Lossless_zstd());
+            
+       
+            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+        }
+
+
+
+
         
 
         size_t totalsize=outSize+outlier_outSize;

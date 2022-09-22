@@ -75,6 +75,9 @@ namespace QoZ {
             dims = std::vector<size_t>(begin, end);
             N = dims.size();
             num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<size_t>());
+            blockSize = (N == 1 ? 128 : (N == 2 ? 16 : 6));
+            pred_dim = N;
+            stride = blockSize;
             return num;
         }
 
@@ -181,6 +184,7 @@ namespace QoZ {
             sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
             peTracking=cfg.GetInteger("AlgoSettings", "peTracking", peTracking);
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
+            offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
 
 
 
@@ -227,6 +231,7 @@ namespace QoZ {
             write(crossBlock, c);
             write(wavelet, c);
             write(firstSize, c);
+            write(offsetPredictor, c);
             //write(prewave_absErrorBound, c);
 
             
@@ -269,6 +274,7 @@ namespace QoZ {
             read(crossBlock, c);
             read(wavelet, c);
             read(firstSize, c);
+            read(offsetPredictor, c);
             //read(prewave_absErrorBound, c);
         }
 
@@ -343,6 +349,7 @@ namespace QoZ {
         int wavelet=0;
         double wavelet_rel_coeff = 10.0;
         size_t firstSize;
+        int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
         std::vector<float> predictionErrors;//for test, to delete in final version.
         std::vector<uint8_t> interp_ops;//for test, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for test, to delete in final version.
