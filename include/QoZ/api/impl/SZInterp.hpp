@@ -177,7 +177,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
            
             
        
-            outlier_compress_output =  (char *)sz2->decompress(cmpDataPos+first,second,offsets);
+            sz2->decompress(cmpDataPos+first,second,offsets);
         }
 
         else if (conf.offsetPredictor == 3){
