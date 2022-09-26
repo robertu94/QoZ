@@ -11,6 +11,7 @@
 #include "QoZ/lossless/Lossless_zstd.hpp"
 #include "QoZ/utils/Iterator.hpp"
 #include "QoZ/utils/Sample.hpp"
+#include "QoZ/utils/Transform.hpp"
 #include "QoZ/utils/Statistic.hpp"
 #include "QoZ/utils/Extraction.hpp"
 #include "QoZ/utils/QuantOptimizatioin.hpp"
@@ -121,7 +122,14 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         }
        
 
-
+        if(conf.transformation==1){
+            for(size_t i=0;i<conf.num;i++)
+                decData[i]=QoZ::logit(decData[i]);
+        }
+        else if(conf.transformation==2){
+            for(size_t i=0;i<conf.num;i++)
+                decData[i]=QoZ::arctanh(decData[i]);
+        } 
 
 
         QoZ::Wavelet<T,N> wlt;
@@ -3414,10 +3422,22 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
-        QoZ::writefile<T>("waved.qoz", data, conf.num);
+       // QoZ::writefile<T>("waved.qoz", data, conf.num);
+        if(conf.transformation==1){
+            for(size_t i=0;i<conf.num;i++)
+                data[i]=QoZ::sigmoid(data[i]);
+        }
+        else if(conf.transformation==2){
+            for(size_t i=0;i<conf.num;i++)
+                data[i]=QoZ::tanh(data[i]);
+        } 
+
+
+
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
+        }
         
         
         
@@ -3638,6 +3658,17 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.wavelet=0;
         SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
         conf.wavelet=1;
+
+        if(conf.transformation==1){
+            for(size_t i=0;i<conf.num;i++)
+                decData[i]=QoZ::logit(decData[i]);
+        }
+        else if(conf.transformation==2){
+            for(size_t i=0;i<conf.num;i++)
+                decData[i]=QoZ::arctanh(decData[i]);
+        } 
+
+
         QoZ::Wavelet<T,N> wlt;
         wlt.postProcess_cdf97(decData,conf.dims);
        

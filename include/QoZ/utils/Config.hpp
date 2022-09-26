@@ -75,9 +75,11 @@ namespace QoZ {
             dims = std::vector<size_t>(begin, end);
             N = dims.size();
             num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<size_t>());
+            //added
             blockSize = (N == 1 ? 128 : (N == 2 ? 16 : 6));
             pred_dim = N;
             stride = blockSize;
+            //added end 
             return num;
         }
 
@@ -163,28 +165,29 @@ namespace QoZ {
             levelwisePredictionSelection=cfg.GetInteger("AlgoSettings", "levelwisePredictionSelection", levelwisePredictionSelection);
             exhaustiveTuning=cfg.GetInteger("AlgoSettings", "exhaustiveTuning", exhaustiveTuning);
             testLorenzo=cfg.GetInteger("AlgoSettings", "testLorenzo", testLorenzo);
-            linearReduce=cfg.GetInteger("AlgoSettings", "linearReduce", linearReduce);
-            train=cfg.GetInteger("AlgoSettings", "train", train);
-            useCoeff=cfg.GetInteger("AlgoSettings", "useCoeff", useCoeff);
+            linearReduce=cfg.GetBoolean("AlgoSettings", "linearReduce", linearReduce);
+            train=cfg.GetBoolean("AlgoSettings", "train", train);
+            useCoeff=cfg.GetBoolean("AlgoSettings", "useCoeff", useCoeff);
             regSampleStep=cfg.GetInteger("AlgoSettings", "regSampleStep", regSampleStep);
             multiDimInterp=cfg.GetInteger("AlgoSettings", "multiDimInterp", multiDimInterp);
             profiling=cfg.GetInteger("AlgoSettings", "profiling", profiling);
             SSIMBlockSize=cfg.GetInteger("AlgoSettings", "SSIMBlockSize", SSIMBlockSize);
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
-            verbose=cfg.GetInteger("AlgoSettings", "verbose", verbose);
-            QoZ=cfg.GetInteger("AlgoSettings", "QoZ", QoZ);
+            verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
+            QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
             blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
-            pdTuningRealComp=cfg.GetInteger("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
+            pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
             pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
             pdAlpha=cfg.GetReal("AlgoSettings", "pdAlpha", pdAlpha);
             pdBeta=cfg.GetReal("AlgoSettings", "pdBeta", pdBeta);
-            lastPdTuning=cfg.GetInteger("AlgoSettings", "lastPdTuning", lastPdTuning);
+            lastPdTuning=cfg.GetBoolean("AlgoSettings", "lastPdTuning", lastPdTuning);
             abList=cfg.GetInteger("AlgoSettings", "abList", abList);
             crossBlock=cfg.GetInteger("AlgoSettings", "crossBlock", crossBlock);
             sampleBlockSampleBlockSize=cfg.GetInteger("AlgoSettings", "sampleBlockSampleBlockSize", sampleBlockSampleBlockSize);
-            peTracking=cfg.GetInteger("AlgoSettings", "peTracking", peTracking);
+            peTracking=cfg.GetBoolean("AlgoSettings", "peTracking", peTracking);
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
             offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
+            transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
 
 
 
@@ -232,6 +235,7 @@ namespace QoZ {
             write(wavelet, c);
             write(firstSize, c);
             write(offsetPredictor, c);
+            write(transformation, c);
             //write(prewave_absErrorBound, c);
 
             
@@ -275,6 +279,7 @@ namespace QoZ {
             read(wavelet, c);
             read(firstSize, c);
             read(offsetPredictor, c);
+            read(transformation, c);
             //read(prewave_absErrorBound, c);
         }
 
@@ -321,38 +326,39 @@ namespace QoZ {
         double decomp_square_error;
         std::vector<size_t> quant_bin_counts;
         int sampleBlockSize=0;
-        int blockwiseTuning=0;
+        bool blockwiseTuning=0;
         int stride; //not used now
         int pred_dim; // not used now
-        int linearReduce=0;
-        int train=0;
-        int useCoeff=0;
+        bool linearReduce=0;
+        bool train=0;
+        bool useCoeff=0;
         int regSampleStep=6;
         int multiDimInterp=0;
-        int profiling=0;
+        int profiling=0;//since there may be multiple ways of profiling set it to int
         int SSIMBlockSize=8;
         int fixBlockSize=0;
         int blockwiseSampleBlockSize=0;
         std::vector<double> lorenzo1_coeffs;
         std::vector<double> lorenzo2_coeffs;
-        int verbose=1;
-        int QoZ=0;
-        int pdTuningRealComp=0;
+        bool verbose=1;
+        bool QoZ=0;
+        bool pdTuningRealComp=0;
         int pdTuningAbConf=0;
         double pdAlpha=-1;
         double pdBeta=-1;
-        int lastPdTuning=0;
+        bool lastPdTuning=0;
         int abList=0;
         int crossBlock=0;
         int sampleBlockSampleBlockSize=0;
-        int peTracking=0;
-        int wavelet=0;
+        bool peTracking=0;
+        int wavelet=0; //may have different wavelets
         double wavelet_rel_coeff = 10.0;
         size_t firstSize;
         int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
-        std::vector<float> predictionErrors;//for test, to delete in final version.
-        std::vector<uint8_t> interp_ops;//for test, to delete in final version.
-        std::vector<uint8_t> interp_dirs;//for test, to delete in final version.
+        int transformation = 0; //0: no trans; 1: sigmoid 2: tanh
+        std::vector<float> predictionErrors;//for debug, to delete in final version.
+        std::vector<uint8_t> interp_ops;//for debug, to delete in final version.
+        std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
 
         
 
