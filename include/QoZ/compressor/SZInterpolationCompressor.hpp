@@ -99,7 +99,9 @@ namespace QoZ {
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
+            std::cout<<"a2.1"<<std::endl;
             quant_inds = encoder.decode(buffer_pos, num_elements);
+            std::cout<<"a2.2"<<std::endl;
 
             encoder.postprocess_decode();
 
