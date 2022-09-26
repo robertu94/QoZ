@@ -3423,11 +3423,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
        // QoZ::writefile<T>("waved.qoz", data, conf.num);
-        //std::cout<<conf.transformation<<std::endl;
+        std::cout<<conf.transformation<<std::endl;
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
                 data[i]=QoZ::sigmoid(data[i]);
-            //std::cout<<"transed"<<std::endl;
+            std::cout<<"transed"<<std::endl;
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
