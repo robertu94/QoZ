@@ -19,8 +19,7 @@ namespace QoZ {
     inline T logit(T x){
         return log( x /( (double)(1.0)-x ) );
     }
-    \
-    }
+   
     template<class T>
     inline T tanh(T x){
         if(x>=0){
