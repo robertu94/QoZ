@@ -12,24 +12,14 @@ namespace QoZ {
         }
         else{
             double t=exp(x);
-            return t/(t+(double)(1.0))
+            return t/(t+(double)(1.0));
         }
     }
     template<class T>
     inline T logit(T x){
-        return log( x /( (double)(1.0)-x ) )
+        return log( x /( (double)(1.0)-x ) );
     }
-    template<class T>
-    inline T tanh(T x){
-        if(x>=0){
-            double t=exp(-2*x);
-            return ((double)(1.0)-t)/((double)(1.0)+t);
-        }
-        else{
-            double t=exp(2*x);
-            return (t-(double)(1.0))/(t+(double)(1.0));
-        }
-
+    \
     }
     template<class T>
     inline T tanh(T x){
