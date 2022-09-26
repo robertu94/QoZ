@@ -3657,14 +3657,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
        
         T *decData =new T [conf.num];
 
-        std::cout<<"p0"<<std::endl;
+       
       
         conf.wavelet=0;
         SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
-        conf.wavelet=1;
-
-        std::cout<<"p1"<<std::endl;
-
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
                 decData[i]=QoZ::logit(decData[i]);
@@ -3673,8 +3669,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             for(size_t i=0;i<conf.num;i++)
                 decData[i]=QoZ::arctanh(decData[i]);
         } 
+        conf.wavelet=1;
 
-        std::cout<<"p2"<<std::endl;
+       
+
+        
+
+      
 
 
         QoZ::Wavelet<T,N> wlt;
