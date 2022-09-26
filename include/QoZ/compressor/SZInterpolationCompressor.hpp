@@ -51,6 +51,7 @@ namespace QoZ {
             int fixBlockSize;
             //size_t maxStep;
 
+            std::cout<<"a0"<<std::endl;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
            
@@ -71,7 +72,7 @@ namespace QoZ {
             read(blockwiseTuning,buffer_pos);
 
             read(fixBlockSize,buffer_pos);
-            
+            std::cout<<"a1"<<std::endl;
             size_t cross_block=0;
             read(cross_block,buffer_pos);
             if(blockwiseTuning){
@@ -93,7 +94,7 @@ namespace QoZ {
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
             
-          
+            std::cout<<"a2"<<std::endl;
             init();
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
@@ -106,7 +107,7 @@ namespace QoZ {
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
-         
+            std::cout<<"a3"<<std::endl;
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
             }
@@ -122,8 +123,10 @@ namespace QoZ {
             }
             size_t op_index=0;
 
+            std::cout<<"a4"<<std::endl;
+    
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
-              
+                std::cout<<level<<std::endl;
                 if (alpha<0) {
                     if (level >= 3) {
                         quantizer.set_eb(eb * eb_ratio);
