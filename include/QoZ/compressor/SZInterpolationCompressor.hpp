@@ -44,7 +44,7 @@ namespace QoZ {
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
-            int blockwiseTuning;
+            bool blockwiseTuning;
             uchar const *buffer_pos = buffer;
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
@@ -295,7 +295,7 @@ namespace QoZ {
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
-            int blockwiseTuning;
+            bool blockwiseTuning;
             uchar const *buffer_pos = buffer;
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
