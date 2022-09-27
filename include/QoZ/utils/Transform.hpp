@@ -18,7 +18,7 @@ namespace QoZ {
     template<class T>
     inline T logit(T x){
         if(x>=1)
-            x=1-1e-10;
+            x=1-(1e-10);
         else if (x<=0)
             x=1e-10;
         return log( x /( (double)(1.0)-x ) );
@@ -40,9 +40,9 @@ namespace QoZ {
     template<class T>
     inline T arctanh(T x){
         if(x>=1)
-            x=1-1e-10;
+            x=1-(1e-10);
         else if (x<=-1)
-            x=-1+1e-10;
+            x=-1+(1e-10);
 
         return 0.5* ( log ( ( (double)(1.0)+x )/( (double)(1.0)-x ) ) );
     }
