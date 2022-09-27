@@ -67,21 +67,21 @@ namespace QoZ {
            
             read(maxStep,buffer_pos,remaining_length);
            
-            read(levelwise_predictor_levels,buffer_pos);
+            read(levelwise_predictor_levels,buffer_pos, remaining_length);
             
-            read(blockwiseTuning,buffer_pos);
+            read(blockwiseTuning,buffer_pos, remaining_length);
 
-            read(fixBlockSize,buffer_pos);
+            read(fixBlockSize,buffer_pos, remaining_length);
             std::cout<<"a1"<<std::endl;
             size_t cross_block=0;
-            read(cross_block,buffer_pos);
+            read(cross_block,buffer_pos, remaining_length);
             if(blockwiseTuning){
                 size_t ops_num;
-                read(ops_num,buffer_pos);
+                read(ops_num,buffer_pos, remaining_length);
                 interpAlgo_list=std::vector <uint8_t>(ops_num,0);
                 interpDirection_list=std::vector <uint8_t>(ops_num,0);
-                read(interpAlgo_list.data(),ops_num,buffer_pos);
-                read(interpDirection_list.data(),ops_num,buffer_pos);
+                read(interpAlgo_list.data(),ops_num,buffer_pos, remaining_length);
+                read(interpDirection_list.data(),ops_num,buffer_pos, remaining_length);
 
 
 
@@ -90,12 +90,13 @@ namespace QoZ {
             else if(levelwise_predictor_levels>0){
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
-                read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
-                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+                read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
             }
             
             std::cout<<"a2"<<std::endl;
             init();
+             std::cout<<"a2.0.5"<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             encoder.load(buffer_pos, remaining_length);
@@ -304,21 +305,21 @@ namespace QoZ {
            
             read(maxStep,buffer_pos,remaining_length);
            
-            read(levelwise_predictor_levels,buffer_pos);
+            read(levelwise_predictor_levels,buffer_pos, remaining_length);
             
-            read(blockwiseTuning,buffer_pos);
+            read(blockwiseTuning,buffer_pos, remaining_length);
 
-            read(fixBlockSize,buffer_pos);
+            read(fixBlockSize,buffer_pos, remaining_length);
             size_t cross_block=0;
-            read(cross_block,buffer_pos);
+            read(cross_block,buffer_pos, remaining_length);
            // std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
-                read(ops_num,buffer_pos);
+                read(ops_num,buffer_pos, remaining_length);
                 interpAlgo_list=std::vector <uint8_t>(ops_num,0);
                 interpDirection_list=std::vector <uint8_t>(ops_num,0);
-                read(interpAlgo_list.data(),ops_num,buffer_pos);
-                read(interpDirection_list.data(),ops_num,buffer_pos);
+                read(interpAlgo_list.data(),ops_num,buffer_pos, remaining_length);
+                read(interpDirection_list.data(),ops_num,buffer_pos, remaining_length);
                 
 
 
@@ -328,8 +329,8 @@ namespace QoZ {
             else if(levelwise_predictor_levels>0){
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
-                read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos);
-                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
+                read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_po, remaining_length);
             }
 
             //std::cout<<cross_block<<std::endl;
