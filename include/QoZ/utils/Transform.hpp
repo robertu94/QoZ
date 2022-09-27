@@ -17,10 +17,10 @@ namespace QoZ {
     }
     template<class T>
     inline T logit(T x){
-        if(x>=1)
-            x=1-(1e-10);
-        else if (x<=0)
-            x=1e-10;
+        if(x>=1.0-1e-20)
+            return log(1e20);
+        else if (x<=1e-20)
+            return log(1e-20);
         return log( x /( (double)(1.0)-x ) );
     }
    
@@ -39,10 +39,10 @@ namespace QoZ {
     }
     template<class T>
     inline T arctanh(T x){
-        if(x>=1)
-            x=1-(1e-10);
-        else if (x<=-1)
-            x=-1+(1e-10);
+        if(x>=1.0-1e-20)
+           return 0.5*log(2e20);
+        else if (x<=-1.0+1e-20)
+            return 0.5*log(0.5e-20);
 
         return 0.5* ( log ( ( (double)(1.0)+x )/( (double)(1.0)-x ) ) );
     }

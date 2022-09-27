@@ -124,11 +124,11 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::logit<T>(decData[i]);
+                decData[i]=QoZ::logit<double>(decData[i]);
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::arctanh<T>(decData[i]);
+                decData[i]=QoZ::arctanh<double>(decData[i]);
         } 
 
 
@@ -3438,12 +3438,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<conf.transformation<<std::endl;
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                data[i]=QoZ::sigmoid<T>(data[i]);
+                data[i]=QoZ::sigmoid<double>(data[i]);
             //std::cout<<"transed"<<std::endl;
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                data[i]=QoZ::tanh<T>(data[i]);
+                data[i]=QoZ::tanh<double>(data[i]);
         } 
 
         QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);
@@ -3686,11 +3686,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::logit<T>(decData[i]);
+                decData[i]=QoZ::logit<double>(decData[i]);
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::arctanh<T>(decData[i]);
+                decData[i]=QoZ::arctanh<double>(decData[i]);
         } 
 
         QoZ::writefile<T>("waved.qoz.cmp.logit", decData, conf.num);
