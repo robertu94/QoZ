@@ -124,11 +124,11 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::logit(decData[i]);
+                decData[i]=QoZ::logit<T>(decData[i]);
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::arctanh(decData[i]);
+                decData[i]=QoZ::arctanh<T>(decData[i]);
         } 
 
 
@@ -3398,6 +3398,14 @@ double Tuning(QoZ::Config &conf, T *data){
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
+
+    std::cout<<exp(2)<<std::endl;
+    std::cout<<log(2.718)<<std::endl;
+    std::cout<<QoZ::logit<double>(QoZ::sigmoid<double>(2.0))<<std::endl;
+    std::cout<<QoZ::logit<double>(QoZ::sigmoid<double>(-2.0))<<std::endl;
+    std::cout<<QoZ::arctanh<double>(QoZ::tanh<double>(2.0))<<std::endl;
+    std::cout<<QoZ::arctanh<double>(QoZ::tanh<double>(-2.0))<<std::endl;
+
     double prewave_absErrorBound=0.0;
     QoZ::calAbsErrorBound(conf, data);
     T *origdata;
@@ -3426,12 +3434,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<conf.transformation<<std::endl;
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                data[i]=QoZ::sigmoid(data[i]);
+                data[i]=QoZ::sigmoid<T>(data[i]);
             //std::cout<<"transed"<<std::endl;
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                data[i]=QoZ::tanh(data[i]);
+                data[i]=QoZ::tanh<T>(data[i]);
         } 
 
         QoZ::writefile<T>("waved.qoz", data, conf.num);
@@ -3669,11 +3677,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::logit(decData[i]);
+                decData[i]=QoZ::logit<T>(decData[i]);
         }
         else if(conf.transformation==2){
             for(size_t i=0;i<conf.num;i++)
-                decData[i]=QoZ::arctanh(decData[i]);
+                decData[i]=QoZ::arctanh<T>(decData[i]);
         } 
 
      
