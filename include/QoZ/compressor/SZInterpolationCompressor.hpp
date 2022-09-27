@@ -51,7 +51,7 @@ namespace QoZ {
             int fixBlockSize;
             //size_t maxStep;
 
-            std::cout<<"a0"<<std::endl;
+          
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
             
@@ -70,13 +70,12 @@ namespace QoZ {
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
             
             read(blockwiseTuning,buffer_pos, remaining_length);
-            std::cout<<blockwiseTuning<<std::endl;
+            
             read(fixBlockSize,buffer_pos, remaining_length);
-            std::cout<<fixBlockSize<<std::endl;
-            std::cout<<"a1"<<std::endl;
+            
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
-            std::cout<<cross_block<<std::endl;
+           
             if(blockwiseTuning){
                 size_t ops_num;
                 read(ops_num,buffer_pos, remaining_length);
@@ -93,27 +92,20 @@ namespace QoZ {
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                std::cout<<(int)interpAlgo_list[0]<<std::endl;
-                std::cout<<(int)interpAlgo_list[1]<<std::endl;
-                std::cout<<(int)interpAlgo_list[2]<<std::endl;
-                std::cout<<(int)interpAlgo_list[3]<<std::endl;
+                
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                std::cout<<(int)interpDirection_list[0]<<std::endl;
-                std::cout<<(int)interpDirection_list[1]<<std::endl;
-                std::cout<<(int)interpDirection_list[2]<<std::endl;
-                std::cout<<(int)interpDirection_list[3]<<std::endl;
+               
             }
             
-            std::cout<<"a2"<<std::endl;
-            init();
-             std::cout<<"a2.0.5"<<std::endl;
+           
+            init();   
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
-            std::cout<<"a2.0.75"<<std::endl;
+            
             encoder.load(buffer_pos, remaining_length);
-            std::cout<<"a2.1"<<std::endl;
+           
             quant_inds = encoder.decode(buffer_pos, num_elements);
-            std::cout<<"a2.2"<<std::endl;
+          
 
             encoder.postprocess_decode();
 
@@ -121,7 +113,7 @@ namespace QoZ {
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
-            std::cout<<"a3"<<std::endl;
+            
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
             }

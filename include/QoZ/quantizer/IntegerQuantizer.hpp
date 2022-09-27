@@ -157,32 +157,32 @@ namespace QoZ {
             c += 1;
             // std::cout << "saving eb = " << this->error_bound << ", unpred_num = "  << unpred.size() << std::endl;
             *reinterpret_cast<double *>(c) = this->error_bound;
-            std::cout<<this->error_bound<<std::endl;
+            
             c += sizeof(double);
             *reinterpret_cast<int *>(c) = this->radius;
-            std::cout<<this->radius<<std::endl;
+           
             c += sizeof(int);
             *reinterpret_cast<size_t *>(c) = unpred.size();
-            std::cout<<unpred.size()<<std::endl;
+           
             c += sizeof(size_t);
             memcpy(c, unpred.data(), unpred.size() * sizeof(T));
             c += unpred.size() * sizeof(T);
         };
 
         void load(const unsigned char *&c, size_t &remaining_length) {
-            std::cout<<remaining_length<<std::endl;
+            
             assert(remaining_length > (sizeof(uint8_t) + sizeof(T) + sizeof(int)));
             c += sizeof(uint8_t);
             remaining_length -= sizeof(uint8_t);
             this->error_bound = *reinterpret_cast<const double *>(c);
-            std::cout<<this->error_bound<<std::endl;
+           
             this->error_bound_reciprocal = 1.0 / this->error_bound;
             c += sizeof(double);
             this->radius = *reinterpret_cast<const int *>(c);
-            std::cout<<this->radius<<std::endl;
+            
             c += sizeof(int);
             size_t unpred_size = *reinterpret_cast<const size_t *>(c);
-            std::cout<<unpred_size<<std::endl;
+            
             c += sizeof(size_t);
             this->unpred = std::vector<T>(reinterpret_cast<const T *>(c), reinterpret_cast<const T *>(c) + unpred_size);
             c += unpred_size * sizeof(T);
