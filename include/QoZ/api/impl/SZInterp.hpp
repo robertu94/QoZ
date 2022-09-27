@@ -132,8 +132,14 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         } 
 
 
+
+         QoZ::writefile<T>("waved.qoz.dec.coeff", decData, conf.num);
         QoZ::Wavelet<T,N> wlt;
+
         wlt.postProcess_cdf97(decData,conf.dims);
+        QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
+
+
         
        
        
@@ -216,6 +222,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
        
             sz2.decompress(cmpDataPos+first,second,offsets);
         }
+        oZ::writefile<T>("waved.qoz.dec.offset", offsets, conf.num);
 
 
         
@@ -3425,6 +3432,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);
+
+         QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         
         //std::cout<<conf.transformation<<std::endl;
         if(conf.transformation==1){
@@ -3437,7 +3446,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 data[i]=QoZ::tanh<T>(data[i]);
         } 
 
-        QoZ::writefile<T>("waved.qoz", data, conf.num);
+        QoZ::writefile<T>("waved.qoz.ori.coeff", data, conf.num);
 
 
 
@@ -3669,9 +3678,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
         conf.wavelet=1;
       
-        QoZ::writefile<T>("waved.qoz.out", decData, conf.num);
+        QoZ::writefile<T>("waved.qoz.cmp.coeff", decData, conf.num);
 
-        std::cout<<outSize<<std::endl;
+        //std::cout<<outSize<<std::endl;
 
       
 
@@ -3688,10 +3697,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         QoZ::Wavelet<T,N> wlt;
         wlt.postProcess_cdf97(decData,conf.dims);
+
+        QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
        
         for(size_t i=0;i<conf.num;i++){
             decData[i]=origdata[i]-decData[i];
         }
+        QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
       
@@ -3706,7 +3718,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
        
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-            std::cout<<outlier_outSize<<std::endl;
+            //std::cout<<outlier_outSize<<std::endl;
         }
 
         else if (conf.offsetPredictor ==1){
