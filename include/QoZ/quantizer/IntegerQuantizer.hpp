@@ -163,7 +163,7 @@ namespace QoZ {
             std::cout<<this->radius<<std::endl;
             c += sizeof(int);
             *reinterpret_cast<size_t *>(c) = unpred.size();
-            std::cout<<unpred_size<<std::endl;
+            std::cout<<unpred.size()<<std::endl;
             c += sizeof(size_t);
             memcpy(c, unpred.data(), unpred.size() * sizeof(T));
             c += unpred.size() * sizeof(T);
