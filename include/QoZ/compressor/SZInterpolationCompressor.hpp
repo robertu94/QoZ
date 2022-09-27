@@ -129,10 +129,10 @@ namespace QoZ {
             }
             size_t op_index=0;
 
-            std::cout<<"a4"<<std::endl;
+            
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
-                std::cout<<level<<std::endl;
+               
                 if (alpha<0) {
                     if (level >= 3) {
                         quantizer.set_eb(eb * eb_ratio);
