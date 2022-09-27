@@ -3560,7 +3560,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //size_t sampling_num, sampling_block;
             
             sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);
-            lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
+           
             
             lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
             lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
@@ -3572,9 +3572,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             lorenzo_config.blockSize = 5;//why?
             lorenzo_config.quantbinCnt = 65536 * 2;
             
+       
             
-            
-            if(conf.autoTuningRate>0 or conf.predictorTuningRate){
+            if(conf.autoTuningRate>0 or conf.predictorTuningRate>0){
                 auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);
                 delete[]cmprData;
                 ratio = sampling_num * 1.0 * sizeof(T) / sampleOutSize;
@@ -3583,7 +3583,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 best_lorenzo_ratio = ratio;
             }
         
-       
+      
         
         //further tune lorenzo
         if (N == 3 and !conf.useCoeff) {
@@ -3614,8 +3614,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
         }
 
-        
-
+      
         lorenzo_config.setDims(conf.dims.begin(), conf.dims.end());
         conf = lorenzo_config;
 
@@ -3663,7 +3662,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             std::cout << "Tuning time = " << tuning_time << "s" << std::endl;
             std::cout << "====================================== END TUNING ======================================" << std::endl;
         }
+
+      
         compress_output = SZ_compress_LorenzoReg<T, N>(conf, data, outSize);
+
+
     }
 
     if(conf.wavelet){
@@ -3672,10 +3675,17 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
        
         T *decData =new T [conf.num];
 
-       
-      
         conf.wavelet=0;
-        SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
+        if(conf.cmprAlgo == QoZ::ALGO_INTERP){
+            
+            SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
+            
+
+        }
+        else{
+            SZ_decompress_LorenzoReg<T, N>(conf, compress_output, tempSize,decData);
+
+        }
         conf.wavelet=1;
       
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
