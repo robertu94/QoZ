@@ -157,10 +157,13 @@ namespace QoZ {
             c += 1;
             // std::cout << "saving eb = " << this->error_bound << ", unpred_num = "  << unpred.size() << std::endl;
             *reinterpret_cast<double *>(c) = this->error_bound;
+            std::cout<<this->error_bound<<std::endl;
             c += sizeof(double);
             *reinterpret_cast<int *>(c) = this->radius;
+            std::cout<<this->radius<<std::endl;
             c += sizeof(int);
             *reinterpret_cast<size_t *>(c) = unpred.size();
+            std::cout<<unpred_size<<std::endl;
             c += sizeof(size_t);
             memcpy(c, unpred.data(), unpred.size() * sizeof(T));
             c += unpred.size() * sizeof(T);
