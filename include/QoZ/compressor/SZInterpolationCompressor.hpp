@@ -54,21 +54,21 @@ namespace QoZ {
             std::cout<<"a0"<<std::endl;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
-           
+            std::cout<<global_dimensions[N-1]<<std::endl;
             read(blocksize, buffer_pos, remaining_length);
-            
+            std::cout<<blocksize<<std::endl;
             read(interpolator_id, buffer_pos, remaining_length);
-            
+            std::cout<<interpolator_id<<std::endl;
             read(direction_sequence_id, buffer_pos, remaining_length);
-           
+            std::cout<<direction_sequence_id<<std::endl;
             read(alpha,buffer_pos,remaining_length);
             
             read(beta,buffer_pos,remaining_length);
-           
+            std::cout<<beta<<std::endl;
             read(maxStep,buffer_pos,remaining_length);
            
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
-            
+            std::cout<<levelwise_predictor_levels<<std::endl;
             read(blockwiseTuning,buffer_pos, remaining_length);
 
             read(fixBlockSize,buffer_pos, remaining_length);
@@ -91,7 +91,9 @@ namespace QoZ {
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                std::cout<<interpAlgo_list[0]<<std::endl;
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);\
+                std::cout<<interpDirection_list[0]<<std::endl;
             }
             
             std::cout<<"a2"<<std::endl;
