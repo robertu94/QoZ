@@ -3444,8 +3444,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
-        std::cout<<conf.absErrorBound<<std::endl;
-        std::cout<<conf.relErrorBound<<std::endl;
+
         
         
         
@@ -3669,6 +3668,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.wavelet=0;
         SZ_decompress_Interp<T,N>(conf,compress_output,tempSize,decData);
         conf.wavelet=1;
+
+        QoZ::writefile<T>("waved.qoz.out", decData, conf.num);
 
       
 
