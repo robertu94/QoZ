@@ -330,7 +330,7 @@ namespace QoZ {
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
-                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_po, remaining_length);
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
             }
 
             //std::cout<<cross_block<<std::endl;
