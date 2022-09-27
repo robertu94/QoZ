@@ -167,6 +167,7 @@ namespace QoZ {
         };
 
         void load(const unsigned char *&c, size_t &remaining_length) {
+            std::cout<<remaining_length<<std::endl;
             assert(remaining_length > (sizeof(uint8_t) + sizeof(T) + sizeof(int)));
             c += sizeof(uint8_t);
             remaining_length -= sizeof(uint8_t);
@@ -176,6 +177,7 @@ namespace QoZ {
             this->radius = *reinterpret_cast<const int *>(c);
             c += sizeof(int);
             size_t unpred_size = *reinterpret_cast<const size_t *>(c);
+            std::cout<<unpred_size<<std::endl;
             c += sizeof(size_t);
             this->unpred = std::vector<T>(reinterpret_cast<const T *>(c), reinterpret_cast<const T *>(c) + unpred_size);
             c += unpred_size * sizeof(T);
