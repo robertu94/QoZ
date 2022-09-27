@@ -222,7 +222,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
        
             sz2.decompress(cmpDataPos+first,second,offsets);
         }
-        oZ::writefile<T>("waved.qoz.dec.offset", offsets, conf.num);
+        QoZ::writefile<T>("waved.qoz.dec.offset", offsets, conf.num);
 
 
         
