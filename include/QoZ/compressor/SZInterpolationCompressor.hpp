@@ -94,7 +94,10 @@ namespace QoZ {
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
                 std::cout<<(int)interpAlgo_list[0]<<std::endl;
-                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);\
+                std::cout<<(int)interpAlgo_list[1]<<std::endl;
+                std::cout<<(int)interpAlgo_list[2]<<std::endl;
+                std::cout<<(int)interpAlgo_list[3]<<std::endl;
+                read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
                 std::cout<<(int)interpDirection_list[0]<<std::endl;
                 std::cout<<(int)interpDirection_list[1]<<std::endl;
                 std::cout<<(int)interpDirection_list[2]<<std::endl;
