@@ -120,7 +120,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             //std::cout<<"block decomp"<<std::endl;
             sz.decompress_block(cmpDataPos, first, decData);
         }
-        oZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
+        QoZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
 
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
