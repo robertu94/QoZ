@@ -3399,12 +3399,7 @@ template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
 
-    std::cout<<exp(2)<<std::endl;
-    std::cout<<log(2.718)<<std::endl;
-    std::cout<<QoZ::logit<double>(QoZ::sigmoid<double>(2.0))<<std::endl;
-    std::cout<<QoZ::logit<double>(QoZ::sigmoid<double>(-2.0))<<std::endl;
-    std::cout<<QoZ::arctanh<double>(QoZ::tanh<double>(2.0))<<std::endl;
-    std::cout<<QoZ::arctanh<double>(QoZ::tanh<double>(-2.0))<<std::endl;
+
 
     double prewave_absErrorBound=0.0;
     QoZ::calAbsErrorBound(conf, data);
@@ -3449,6 +3444,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.errorBoundMode = QoZ::EB_REL;
         conf.relErrorBound/=conf.wavelet_rel_coeff;
         QoZ::calAbsErrorBound(conf, data);
+        std::cout<<conf.absErrorBound<<std::endl;
+        std::cout<<conf.relErrorBound<<std::endl;
         
         
         
