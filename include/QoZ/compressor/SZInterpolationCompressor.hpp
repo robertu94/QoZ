@@ -472,6 +472,9 @@ namespace QoZ {
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
             timer.start();
+            if (conf.trimToZero){
+                quantizer.setTrimToZero(true);
+            }
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;
             
@@ -962,6 +965,10 @@ namespace QoZ {
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
             timer.start();
+            if (conf.trimToZero){
+                quantizer.setTrimToZero(true);
+            }
+            
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;
             

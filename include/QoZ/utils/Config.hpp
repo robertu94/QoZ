@@ -150,6 +150,7 @@ namespace QoZ {
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             
+            
             auto interpAlgoStr = cfg.Get("AlgoSettings", "InterpolationAlgo", "");
             if (interpAlgoStr == INTERP_ALGO_STR[INTERP_ALGO_LINEAR]) {
                 interpAlgo = INTERP_ALGO_LINEAR;
@@ -188,6 +189,7 @@ namespace QoZ {
             wavelet=cfg.GetInteger("AlgoSettings", "wavelet", wavelet);
             offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
             transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
+            trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
 
 
 
@@ -359,6 +361,7 @@ namespace QoZ {
         std::vector<float> predictionErrors;//for debug, to delete in final version.
         std::vector<uint8_t> interp_ops;//for debug, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
+        int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
 
         
 

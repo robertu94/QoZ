@@ -30,8 +30,15 @@ namespace QoZ {
             error_bound_reciprocal = 1.0 / eb;
         }
 
+        void setTrimToZero(bool ttz=true){
+            trimToZero=ttz;
+        }
+
         // quantize the data with a prediction value, and returns the quantization index
         int quantize(T data, T pred) {
+            if(this->trimToZero and fabs(data)<=this->error_bound){
+                return 0;
+            }
             T diff = data - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -59,6 +66,13 @@ namespace QoZ {
         // quantize the data with a prediction value, and returns the quantization index and the decompressed data
         // int quantize(T data, T pred, T& dec_data);
         int quantize_and_overwrite(T &data, T pred,bool save_unpred=true) {
+
+            if(this->trimToZero and fabs(data)<=this->error_bound){
+                if(save_unpred)
+                    unpred.push_back(0);
+                return 0;
+            }
+
             T diff = data - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -89,6 +103,13 @@ namespace QoZ {
         }
 
         int quantize_and_overwrite(T ori, T pred, T &dest,bool save_unpred=true) {
+
+            if(this->trimToZero and fabs(ori)<=this->error_bound){
+                if(save_unpred)
+                    unpred.push_back(0);
+                dest = ori;
+                return 0;
+            }
             T diff = ori - pred;
             int quant_index = (int) (fabs(diff) * this->error_bound_reciprocal) + 1;
             if (quant_index < this->radius * 2) {
@@ -219,6 +240,7 @@ namespace QoZ {
         double error_bound;
         double error_bound_reciprocal;
         int radius; // quantization interval radius
+        bool trimToZero=false;
     };
 
 }
