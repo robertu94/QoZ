@@ -7,5 +7,8 @@ if(@ZSTD_FOUND@ AND NOT @QoZ_USE_BUNDLED_ZSTD@)
   find_package(PkgConfig)
   pkg_search_module(ZSTD IMPORTED_TARGET libzstd)
 endif()
+if(@GSL_FOUND@)
+  find_package(GSL)
+endif()
 check_required_components(QoZ)
 
