@@ -3435,7 +3435,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
 
-        //QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
+        QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         
         //std::cout<<conf.transformation<<std::endl;
         if(conf.transformation==1){
@@ -3720,7 +3720,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         QoZ::Wavelet<T,N> wlt;
         wlt.postProcess_cdf97(decData,conf.dims);
 
-        //QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+        QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
        
         for(size_t i=0;i<conf.num;i++){
             decData[i]=origdata[i]-decData[i];
