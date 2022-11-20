@@ -137,16 +137,16 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.external_wave){
-            QoZ::writefile("dec_wave_coeffs_dec.dat", decData, conf.num);
+            QoZ::writefile("external_dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            char command[100] = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            char command[100] = "python coeff_idwt.py external_dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
 
           
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("dec_deccoeff_idwt.dat", conf.num, decData);
+            QoZ::readfile<T>("external_dec_deccoeff_idwt.dat", conf.num, decData);
         }
         else{
             QoZ::Wavelet<T,N> wlt;
@@ -3763,9 +3763,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //run system()
             //read back the decdata
 
-            QoZ::writefile("wave_coeffs_dec.dat", decData, conf.num);
+            QoZ::writefile("external_wave_coeffs_dec.dat", decData, conf.num);
 
-            char command[100] = "python coeff_idwt.py wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            char command[100] = "python coeff_idwt.py external_wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
 
@@ -3776,7 +3776,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             conf.dims=orig_dims;
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("input_deccoeff_idwt.dat", conf.num, decData);
+            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
 
 
 
