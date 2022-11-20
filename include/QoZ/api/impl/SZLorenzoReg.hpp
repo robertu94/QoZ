@@ -106,7 +106,8 @@ char *SZ_compress_LorenzoReg(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
 template<class T, QoZ::uint N>
-void SZ_decompress_LorenzoReg(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData) {
+void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t cmpSize, T *decData) {
+    QoZ::Config conf(theconf)
     assert(conf.cmprAlgo == QoZ::ALGO_LORENZO_REG);
     QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
     QoZ::LinearQuantizer<T> quantizer;
@@ -167,7 +168,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &conf, char *cmpData, size_t cmp
             std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
-           conf.setDims(conf.ori_dims.begin(),conf.ori_dims.end());
+           conf.setDims(ori_dims.begin(),ori_dims.end());
           
             delete []decData;
             decData=new T[conf.num];
