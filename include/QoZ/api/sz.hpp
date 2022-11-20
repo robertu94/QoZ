@@ -164,7 +164,10 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
     //timer.stop("load config");
     //timer.start();
     if (decData == nullptr) {
-        decData = new T[conf.num];
+        if(conf.wavelet and conf.external_wave)
+            decData = new T[conf.coeffs_num];
+        else
+            decData = new T[conf.num];
     }
     //timer.stop("alloc memory");
     //timer.start();

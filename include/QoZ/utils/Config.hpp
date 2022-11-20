@@ -63,8 +63,10 @@ namespace QoZ {
         template<class ... Dims>
         Config(Dims ... args) {
             dims = std::vector<size_t>{static_cast<size_t>(std::forward<Dims>(args))...};
+            coeffs_dims=dims;
             N = dims.size();
             num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<size_t>());
+            coeffs_num = num;
             blockSize = (N == 1 ? 128 : (N == 2 ? 16 : 6));
             pred_dim = N;
             stride = blockSize;
@@ -73,8 +75,10 @@ namespace QoZ {
         template<class Iter>
         size_t setDims(Iter begin, Iter end) {
             dims = std::vector<size_t>(begin, end);
+            coeffs_dims=dims;
             N = dims.size();
             num = std::accumulate(dims.begin(), dims.end(), (size_t) 1, std::multiplies<size_t>());
+            coeffs_num = num;
             //added
             blockSize = (N == 1 ? 128 : (N == 2 ? 16 : 6));
             pred_dim = N;
@@ -149,6 +153,7 @@ namespace QoZ {
             lorenzo2 = cfg.GetBoolean("AlgoSettings", "Lorenzo2ndOrder", lorenzo2);
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
+            external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
             auto interpAlgoStr = cfg.Get("AlgoSettings", "InterpolationAlgo", "");
@@ -238,6 +243,9 @@ namespace QoZ {
             write(firstSize, c);
             write(offsetPredictor, c);
             write(transformation, c);
+            write(external_wave, c);
+            write(coeffs_dims.data(), coeffs_dims.size(), c);
+            write(coeffs_num, c);
             //write(prewave_absErrorBound, c);
 
             
@@ -282,6 +290,9 @@ namespace QoZ {
             read(firstSize, c);
             read(offsetPredictor, c);
             read(transformation, c);
+            read(external_wave, c);
+            read(coeffs_dims.data(), N, c);
+            read(coeffs_num, c);
             //read(prewave_absErrorBound, c);
         }
 
@@ -354,8 +365,12 @@ namespace QoZ {
         int sampleBlockSampleBlockSize=0;
         bool peTracking=0;
         int wavelet=0; //may have different wavelets
-        double wavelet_rel_coeff = 10.0;
+        bool external_wave=0;
+        std::vector<size_t> coeffs_dims;
+        size_t coeffs_num=0;
+        double wavelet_rel_coeff = 25.0;
         size_t firstSize;
+
         int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
         int transformation = 0; //0: no trans; 1: sigmoid 2: tanh
         std::vector<float> predictionErrors;//for debug, to delete in final version.
