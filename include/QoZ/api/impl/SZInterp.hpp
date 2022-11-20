@@ -3489,9 +3489,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
 
-            conf.errorBoundMode = QoZ::EB_REL;
-            conf.relErrorBound/=conf.wavelet_rel_coeff;
-            QoZ::calAbsErrorBound(conf, data);
+        conf.errorBoundMode = QoZ::EB_REL;
+        conf.relErrorBound/=conf.wavelet_rel_coeff;
+        QoZ::calAbsErrorBound(conf, data);
             /*
             if(conf.trimToZero==2){
                 for(size_t i=0;i<conf.num;i++){
@@ -3501,14 +3501,14 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 }
             }
             */
-        }
-
-        
-        
-        
-        
-
     }
+
+        
+        
+        
+        
+
+    
     
     if(conf.verbose)
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
