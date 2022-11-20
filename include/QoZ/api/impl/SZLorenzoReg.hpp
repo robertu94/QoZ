@@ -165,7 +165,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
         if(conf.external_wave){
             QoZ::writefile("dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            char * command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            char command[100] = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
            conf.setDims(ori_dims.begin(),ori_dims.end());
