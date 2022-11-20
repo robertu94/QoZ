@@ -128,9 +128,9 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &conf, char *cmpData, size_t cmp
     else{
         std::vector<size_t> ori_dims=conf.dims;
         size_t ori_num=conf.num;
-        if(conf.external_wavelet){
-            conf.dims=conf.coeffs_dims;
-            conf.num=conf.coeffs_num;
+        if(conf.external_wave){
+            conf.setDims(conf.coeffs_dims.begin(),conf.coeffs_dims.end());
+            
         }
 
         size_t first =conf.firstSize;
@@ -161,14 +161,13 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &conf, char *cmpData, size_t cmp
 
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
-        if(conf.external_wavelet){
+        if(conf.external_wave){
             QoZ::writefile("dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat"//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
-            conf.num=ori_num;
-            conf.dims=ori_dims;
+           conf.setDims(conf.ori_dims.begin(),conf.ori_dims.end());
           
             delete []decData;
             decData=new T[conf.num];

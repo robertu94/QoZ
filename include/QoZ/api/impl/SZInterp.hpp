@@ -139,7 +139,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.external_wave){
             QoZ::writefile("dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat"//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
 
 
@@ -3445,29 +3445,29 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet){
 
 
-        else{
-            origdata=new T[conf.num];
-            memcpy(origdata,data,conf.num*sizeof(T));
+       
+        origdata=new T[conf.num];
+        memcpy(origdata,data,conf.num*sizeof(T));
             
            
-            prewave_absErrorBound=conf.absErrorBound;
+        prewave_absErrorBound=conf.absErrorBound;
            
-            if(conf.external_wave){
-                //read a coeff array and a size information array
-                coeffs_size=new size_t[N];
-                QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
-                conf.setDims(coeffs_size.begin(),coeffs_size.end());
-                delete []data;//is this correct?
-                data=new T[conf.num];//is this correct?
-                QoZ::readfile<T>("wave_coeffs.dat", conf.num, data);
+        if(conf.external_wave){
+            //read a coeff array and a size information array
+            coeffs_size.resize(N);
+            QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
+            conf.setDims(coeffs_size.begin(),coeffs_size.end());
+            delete []data;//is this correct?
+            data=new T[conf.num];//is this correct?
+            QoZ::readfile<T>("wave_coeffs.dat", conf.num, data);
 
-            }
+        }
 
 
-            else{
-                QoZ::Wavelet<T,N> wlt;
-                wlt.preProcess_cdf97(data,conf.dims);
-            }
+        else{
+            QoZ::Wavelet<T,N> wlt;
+            wlt.preProcess_cdf97(data,conf.dims);
+        }
 
 
 
@@ -3769,7 +3769,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             system(command);
 
 
-            //conf.coeffs_dims=conf.dims;
+            conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
 
             conf.num=orig_num;
