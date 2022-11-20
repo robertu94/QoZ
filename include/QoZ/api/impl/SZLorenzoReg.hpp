@@ -107,7 +107,7 @@ char *SZ_compress_LorenzoReg(QoZ::Config &conf, T *data, size_t &outSize) {
 
 template<class T, QoZ::uint N>
 void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t cmpSize, T *decData) {
-    QoZ::Config conf(theconf)
+    QoZ::Config conf(theconf);
     assert(conf.cmprAlgo == QoZ::ALGO_LORENZO_REG);
     QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
     QoZ::LinearQuantizer<T> quantizer;
