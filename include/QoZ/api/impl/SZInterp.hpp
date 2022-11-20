@@ -139,8 +139,8 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.external_wave){
             QoZ::writefile("dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            std::string command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
-            system((char *)command);
+            char * command = "python coeff_idwt.py dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            system(command);
 
 
           
@@ -3765,8 +3765,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             QoZ::writefile("wave_coeffs_dec.dat", decData, conf.num);
 
-            std::string command = "python coeff_idwt.py wave_coeffs_dec.dat "//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
-            system((char *)command);
+            char * command = "python coeff_idwt.py wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            system(command);
 
 
             conf.coeffs_dims=conf.dims;
