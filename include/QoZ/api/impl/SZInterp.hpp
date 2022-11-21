@@ -3818,6 +3818,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
        
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
+            std::cout<<"p6"<<std::endl;
             //std::cout<<outlier_outSize<<std::endl;
         }
 
@@ -3902,10 +3903,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         memcpy(final_output+outSize,outlier_compress_output,outlier_outSize);
        
         outSize=totalsize;
+        std::cout<<"p7"<<std::endl;
         delete [] compress_output;
         delete [] outlier_compress_output;
         delete []decData;
-       
+        std::cout<<"p8"<<std::endl;
         return final_output;
     }
     else{
