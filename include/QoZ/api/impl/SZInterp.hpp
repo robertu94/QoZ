@@ -146,7 +146,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
           
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("external_dec_deccoeff_idwt.dat", conf.num, decData);
+            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
         }
         else{
             QoZ::Wavelet<T,N> wlt;
@@ -3459,7 +3459,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             delete []data;//is this correct?
             data=new T[conf.num];//is this correct?
-            QoZ::readfile<T>("wave_coeffs.dat", conf.num, data);
+            QoZ::readfile<T>("external_wave_coeffs.dat", conf.num, data);
 
         }
 

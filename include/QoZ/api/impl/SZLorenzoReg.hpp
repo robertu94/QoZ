@@ -172,7 +172,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
           
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("external_dec_deccoeff_idwt.dat", conf.num, decData);
+            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
         }
 
         else{
