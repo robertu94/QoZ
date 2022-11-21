@@ -3725,8 +3725,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.firstSize=outSize;
         size_t tempSize=outSize;
         
-
-
+        for(size_t i=0;i<N;i++)
+            std::cout<<conf.dims[i]<<std::endl;
+        std::cout<<conf.num<<std::endl;
        
         T *decData =new T [conf.num];
 
