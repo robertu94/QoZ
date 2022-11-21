@@ -108,18 +108,20 @@ namespace QoZ {
             std::cout<<"d3"<<std::endl;
            
             init();   
+            std::cout<<num_elements<<std::endl;
             std::cout<<"d4"<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
-            
+            std::cout<<"d4.1"<<std::endl;
             encoder.load(buffer_pos, remaining_length);
-           
+            std::cout<<"d4.2"<<std::endl;
             quant_inds = encoder.decode(buffer_pos, num_elements);
           
-
+            std::cout<<"d4.3"<<std::endl;
             encoder.postprocess_decode();
 
             lossless.postdecompress_data(buffer);
+             std::cout<<"d4.4"<<std::endl;
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
