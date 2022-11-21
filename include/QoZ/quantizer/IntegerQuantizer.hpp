@@ -205,7 +205,7 @@ namespace QoZ {
             
             c += sizeof(int);
             size_t unpred_size = *reinterpret_cast<const size_t *>(c);
-            std::cout<<this->unpred_size<<std::endl;
+            std::cout<<unpred_size<<std::endl;
             
             c += sizeof(size_t);
             this->unpred = std::vector<T>(reinterpret_cast<const T *>(c), reinterpret_cast<const T *>(c) + unpred_size);
