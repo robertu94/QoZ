@@ -3723,6 +3723,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet){
         conf.firstSize=outSize;
         size_t tempSize=outSize;
+        for(size_t i=0;i<N;i++)
+            std::cout<<conf.dims[i]<<std::endl;
+        std::cout<<conf.num<<std::endl;
 
 
        
@@ -3740,6 +3743,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         }
         conf.wavelet=1;
+
+        std::cout<<"p2"<<std::endl;
       
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
 
@@ -3767,6 +3772,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             char command[100] = "python coeff_idwt.py external_wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
+            std::cout<<"p3"<<std::endl;
 
 
             conf.coeffs_dims=conf.dims;
@@ -3774,9 +3780,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             conf.num=orig_num;
             conf.dims=orig_dims;
+            for(size_t i=0;i<N;i++)
+                std::cout<<conf.dims[i]<<std::endl;
+            std::cout<<conf.num<<std::endl;
             delete []decData;
             decData=new T[conf.num];
             QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
+            std::cout<<"p4"<<std::endl;
 
 
 
@@ -3792,6 +3802,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         for(size_t i=0;i<conf.num;i++){
             decData[i]=origdata[i]-decData[i];
         }
+        std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
