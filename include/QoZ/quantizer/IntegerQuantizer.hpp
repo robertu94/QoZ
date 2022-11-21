@@ -196,13 +196,16 @@ namespace QoZ {
             c += sizeof(uint8_t);
             remaining_length -= sizeof(uint8_t);
             this->error_bound = *reinterpret_cast<const double *>(c);
+            std::cout<<this->error_bound<<std::endl;
            
             this->error_bound_reciprocal = 1.0 / this->error_bound;
             c += sizeof(double);
             this->radius = *reinterpret_cast<const int *>(c);
+            std::cout<<this->radius<<std::endl;
             
             c += sizeof(int);
             size_t unpred_size = *reinterpret_cast<const size_t *>(c);
+            std::cout<<this->unpred_size<<std::endl;
             
             c += sizeof(size_t);
             this->unpred = std::vector<T>(reinterpret_cast<const T *>(c), reinterpret_cast<const T *>(c) + unpred_size);
