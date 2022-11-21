@@ -40,7 +40,7 @@ namespace QoZ {
         }
 
         T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) {
-
+            std::cout<<"d1"<<std::endl;
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
@@ -51,7 +51,7 @@ namespace QoZ {
             int fixBlockSize;
             //size_t maxStep;
 
-          
+            std::cout<<"d2"<<std::endl;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
             
@@ -75,6 +75,8 @@ namespace QoZ {
             
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
+
+
            
             if(blockwiseTuning){
                 size_t ops_num;
@@ -96,9 +98,10 @@ namespace QoZ {
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
                
             }
-            
+            std::cout<<"d3"<<std::endl;
            
             init();   
+            std::cout<<"d4"<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
             
@@ -113,6 +116,8 @@ namespace QoZ {
             //timer.stop("decode");
             //timer.start();
             double eb = quantizer.get_eb();
+
+            std::cout<<"d5"<<std::endl;
             
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
@@ -129,9 +134,11 @@ namespace QoZ {
             }
             size_t op_index=0;
 
-            
+            std::cout<<"d6"<<std::endl;
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
+
+                std::cout<<level<<std::endl;
                
                 if (alpha<0) {
                     if (level >= 3) {
@@ -277,7 +284,7 @@ namespace QoZ {
             }
             quantizer.postdecompress_data();
            
-            
+            std::cout<<"d8"<<std::endl;
 
             return decData;
         }
