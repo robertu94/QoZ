@@ -482,6 +482,9 @@ namespace QoZ {
             if (conf.trimToZero){
                 quantizer.setTrimToZero(true);
             }
+            for(size_t i=0;i<N;i++)
+                std::cout<<conf.dims[i]<<std::endl;
+            std::cout<<conf.num<<std::endl;
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;
             
