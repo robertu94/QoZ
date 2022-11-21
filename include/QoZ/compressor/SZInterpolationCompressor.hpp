@@ -951,6 +951,8 @@ namespace QoZ {
            // std::cout<<"7.1"<<std::endl;
             encoder.save(buffer_pos);
            // std::cout<<"7.2"<<std::endl;
+            std::cout<<quant_inds.size()<<std::endl;
+            std::cout<<num_elements<<std::endl;
             encoder.encode(quant_inds, buffer_pos);
           //  std::cout<<"7.3"<<std::endl;
             encoder.postprocess_encode();
@@ -1472,7 +1474,7 @@ namespace QoZ {
                         if(peTracking){
                             prediction_errors[x*dimension_offsets[0]+y]=*(data+x*dimension_offsets[0]+y);
                         }
-                        //quant_inds.push_back(0);
+                        quant_inds.push_back(0);
                     }
                 }
             }
@@ -1489,7 +1491,7 @@ namespace QoZ {
 
 
 
-                            //quant_inds.push_back(0);
+                            quant_inds.push_back(0);
 
                         }
 
@@ -1510,7 +1512,7 @@ namespace QoZ {
                     for (size_t y=0;y<global_dimensions[1];y+=maxStep){
 
                         decData[x*dimension_offsets[0]+y]=quantizer.recover_unpred();
-                        //quant_index++;
+                        quant_index++;
                     }
                 }
             }
@@ -1519,7 +1521,7 @@ namespace QoZ {
                     for (size_t y=0;y<global_dimensions[1];y+=maxStep){
                         for(size_t z=0;z<global_dimensions[2];z+=maxStep){
                             decData[x*dimension_offsets[0]+y*dimension_offsets[1]+z]=quantizer.recover_unpred();
-                            //quant_index++;
+                            quant_index++;
 
                         }
 
