@@ -3514,9 +3514,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
     QoZ::Timer timer(true);
         
-    for(size_t i=0;i<N;i++)
-            std::cout<<conf.dims[i]<<std::endl;
-        std::cout<<conf.num<<std::endl;
+    
 
     double best_lorenzo_ratio=Tuning<T,N>(conf,data);
 
@@ -3584,9 +3582,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         if (conf.predictorTuningRate<1){
            
    
-            for(size_t i=0;i<N;i++)
-                std::cout<<conf.dims[i]<<std::endl;
-            std::cout<<conf.num<<std::endl;
+            
+
             
             
             compress_output = SZ_compress_Interp<T, N>(conf, data, outSize);
@@ -3727,9 +3724,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet){
         conf.firstSize=outSize;
         size_t tempSize=outSize;
-        for(size_t i=0;i<N;i++)
-            std::cout<<conf.dims[i]<<std::endl;
-        std::cout<<conf.num<<std::endl;
+        
 
 
        

@@ -54,27 +54,32 @@ namespace QoZ {
             std::cout<<"d2"<<std::endl;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
-            
+            std::cout<<global_dimensions[N-1]<<std::endl;
             read(blocksize, buffer_pos, remaining_length);
-           
+            std::cout<<blocksize<<std::endl;
             read(interpolator_id, buffer_pos, remaining_length);
             
             read(direction_sequence_id, buffer_pos, remaining_length);
            
             read(alpha,buffer_pos,remaining_length);
-            
+            std::cout<<alpha<<std::endl;         
             read(beta,buffer_pos,remaining_length);
-           
+            std::cout<<beta<<std::endl;       
             read(maxStep,buffer_pos,remaining_length);
+            std::cout<<maxStep<<std::endl;  
            
             read(levelwise_predictor_levels,buffer_pos, remaining_length);
-            
+            std::cout<<levelwise_predictor_levels<<std::endl; 
             read(blockwiseTuning,buffer_pos, remaining_length);
+            std::cout<<blockwiseTuning<<std::endl; 
+
             
             read(fixBlockSize,buffer_pos, remaining_length);
+            std::cout<<fixBlockSize<<std::endl; 
             
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
+            std::cout<<cross_block<<std::endl; 
 
 
            
@@ -94,8 +99,10 @@ namespace QoZ {
                 interpAlgo_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 interpDirection_list=std::vector <uint8_t>(levelwise_predictor_levels,0);
                 read(interpAlgo_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                std::cout<<(uint)(interpAlgo_list[1])<<std::endl; 
                 
                 read(interpDirection_list.data(),levelwise_predictor_levels,buffer_pos, remaining_length);
+                std::cout<<(uint)(interpDirection_list[1])<<std::endl; 
                
             }
             std::cout<<"d3"<<std::endl;
@@ -482,9 +489,7 @@ namespace QoZ {
             if (conf.trimToZero){
                 quantizer.setTrimToZero(true);
             }
-            for(size_t i=0;i<N;i++)
-                std::cout<<conf.dims[i]<<std::endl;
-            std::cout<<conf.num<<std::endl;
+
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;
             
