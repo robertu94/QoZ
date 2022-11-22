@@ -139,7 +139,9 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.external_wave){
-            QoZ::writefile("external_dec_wave_coeffs_dec.dat", decData, conf.num);
+           
+            QoZ::writefile("external_dec_wave_coeffs_dec.dat", decData, conf.coeffs_num);
+            
 
             char command[100] = "python coeff_idwt.py external_dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
