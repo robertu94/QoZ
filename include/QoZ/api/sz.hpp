@@ -68,6 +68,7 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
         printf("Data dimension higher than 4 is not supported.\n");
         exit(0);
     }
+    std::cout<<"szcf"<<std::endl;
     {
         
         //save config
@@ -96,7 +97,7 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
         }
     }
 
-
+    std::cout<<"szce"<<std::endl;
     return cmpData;
 }
 

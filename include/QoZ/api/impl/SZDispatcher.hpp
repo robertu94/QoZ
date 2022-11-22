@@ -23,6 +23,7 @@ char *SZ_compress_dispatcher(QoZ::Config &conf, T *data, size_t &outSize) {
     } else if (conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO) {
         cmpData = (char *) SZ_compress_Interp_lorenzo<T, N>(conf, data, outSize);
     }
+
     /*
     else if (conf.cmprAlgo == QoZ::ALGO_NEWINTERP) {
         cmpData = (char *) SZ_compress_NewInterp<T, N>(conf, data, outSize);
@@ -32,6 +33,7 @@ char *SZ_compress_dispatcher(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<"111"<<std::endl;
         cmpData = (char *) SZ_compress_Interp_blocked<T, N>(conf, data, outSize);
     }
+    std::cout<<"disp"<<std::endl;
     return cmpData;
 }
 

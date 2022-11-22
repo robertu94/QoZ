@@ -3822,7 +3822,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
        
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-            std::cout<<"p6"<<std::endl;
+            //std::cout<<"p6"<<std::endl;
             //std::cout<<outlier_outSize<<std::endl;
         }
 
