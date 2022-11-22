@@ -3461,7 +3461,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //read a coeff array and a size information array
 
             coeffs_size.resize(N);
-            QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
+            QoZ::readfile<size_t>("external_coeffs_size.dat",N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             //std::cout<<"coeffdatanew"<<std::endl;
             coeffData =new T[conf.num];
@@ -3478,6 +3478,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
         else{
+  
            // std::cout<<"origdatanew"<<std::endl;
             origdata=new T[conf.num];
             memcpy(origdata,data,conf.num*sizeof(T));
