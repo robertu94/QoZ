@@ -15,7 +15,9 @@ char *SZ_compress_impl(QoZ::Config &conf, const T *data, size_t &outSize) {
         return SZ_compress_OMP<T, N>(conf, data, outSize);
     } else {
         std::vector<T> dataCopy(data, data + conf.num);
-        return SZ_compress_dispatcher<T, N>(conf, dataCopy.data(), outSize);
+        char * output=SZ_compress_dispatcher<T, N>(conf, dataCopy.data(), outSize);
+        std::cout<<"impl"<<std::endl;
+        return output;
     }
 }
 
