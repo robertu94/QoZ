@@ -3522,10 +3522,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.verbose)
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
     QoZ::Timer timer(true);
-        
-    
+    double best_lorenzo_ratio=1.0
+    if(conf.wavelet and conf.external_wave)
 
-    double best_lorenzo_ratio=Tuning<T,N>(conf,data);
+        best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
+    else
+        best_lorenzo_ratio=Tuning<T,N>(conf,data);
 
    
     
