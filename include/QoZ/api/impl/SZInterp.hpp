@@ -3468,6 +3468,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             data=new T[conf.num];//is this correct?
             */
             QoZ::readfile<T>("external_wave_coeffs.dat", conf.num, coeffData);
+            conf.errorBoundMode = QoZ::EB_REL;
+            conf.relErrorBound/=conf.wavelet_rel_coeff;
+            QoZ::calAbsErrorBound(conf, Coeffdata);
 
         }
 
@@ -3477,6 +3480,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             memcpy(origdata,data,conf.num*sizeof(T));
             QoZ::Wavelet<T,N> wlt;
             wlt.preProcess_cdf97(data,conf.dims);
+            conf.errorBoundMode = QoZ::EB_REL;
+            conf.relErrorBound/=conf.wavelet_rel_coeff;
+            QoZ::calAbsErrorBound(conf, data);
         }
 
 
@@ -3499,9 +3505,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
 
-        conf.errorBoundMode = QoZ::EB_REL;
-        conf.relErrorBound/=conf.wavelet_rel_coeff;
-        QoZ::calAbsErrorBound(conf, data);
+        
             /*
             if(conf.trimToZero==2){
                 for(size_t i=0;i<conf.num;i++){
