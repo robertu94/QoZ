@@ -3836,10 +3836,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
 
         //QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
-       
-        for(size_t i=0;i<conf.num;i++){
-            decData[i]=origdata[i]-decData[i];
-        }
+ 
         
         //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
