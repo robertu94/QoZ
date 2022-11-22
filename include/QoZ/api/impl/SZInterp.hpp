@@ -3461,7 +3461,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             coeffs_size.resize(N);
             QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
-            std::cout<<"baba"<<conf.num<<std::endl;
+           
             coeffData =new T[conf.num];
             /*
             delete []data;//is this correct?
@@ -3529,11 +3529,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     QoZ::Timer timer(true);
     double best_lorenzo_ratio=1.0;
     if(conf.wavelet and conf.external_wave){
-        std::cout<<"wodebaba"<<std::endl;
+        
         best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
     }
     else{
-        std::cout<<"nidebaba"<<std::endl;
+        
         best_lorenzo_ratio=Tuning<T,N>(conf,data);
     }
 
