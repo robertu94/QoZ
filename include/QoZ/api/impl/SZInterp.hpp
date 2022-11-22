@@ -101,7 +101,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     }
     
     else{
-        std::cout<<"x1"<<std::endl;
+        //std::cout<<"x1"<<std::endl;
         size_t first =conf.firstSize;
         size_t second=cmpSize-conf.firstSize;
        
@@ -122,7 +122,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             //std::cout<<"block decomp"<<std::endl;
             sz.decompress_block(cmpDataPos, first, decData);
         }
-        std::cout<<"x2"<<std::endl;
+        //std::cout<<"x2"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
         /*
         if(conf.transformation==1){
@@ -158,7 +158,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
             wlt.postProcess_cdf97(decData,conf.dims);
         }
-        std::cout<<"x3"<<std::endl;
+        //std::cout<<"x3"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
 
 
@@ -249,7 +249,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
         
        
-        std::cout<<"x4"<<std::endl;
+        //std::cout<<"x4"<<std::endl;
         for(size_t i=0;i<conf.num;i++)
             decData[i]+=offsets[i];
       
@@ -3463,7 +3463,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             coeffs_size.resize(N);
             QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
-            std::cout<<"coeffdatanew"<<std::endl;
+            //std::cout<<"coeffdatanew"<<std::endl;
             coeffData =new T[conf.num];
             /*
             delete []data;//is this correct?
@@ -3478,7 +3478,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
         else{
-            std::cout<<"origdatanew"<<std::endl;
+           // std::cout<<"origdatanew"<<std::endl;
             origdata=new T[conf.num];
             memcpy(origdata,data,conf.num*sizeof(T));
             QoZ::Wavelet<T,N> wlt;
@@ -3756,7 +3756,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //for(size_t i=0;i<N;i++)
            //std::cout<<conf.dims[i]<<std::endl;
         //std::cout<<conf.num<<std::endl;
-        std::cout<<"decdatanew"<<std::endl;
+        //std::cout<<"decdatanew"<<std::endl;
         T *decData =new T [conf.num];
 
         conf.wavelet=0;
@@ -3772,7 +3772,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         conf.wavelet=1;
 
-        std::cout<<"p2"<<std::endl;
+        //std::cout<<"p2"<<std::endl;
       
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
 
@@ -3795,13 +3795,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //save data to file
             //run system()
             //read back the decdata
-            std::cout<<"coeffdatadel"<<std::endl;
+            //std::cout<<"coeffdatadel"<<std::endl;
             delete []coeffData;
             QoZ::writefile("external_wave_coeffs_dec.dat", decData, conf.num);
 
             char command[100] = "python coeff_idwt.py external_wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
-            std::cout<<"p3"<<std::endl;
+            //std::cout<<"p3"<<std::endl;
 
 
             conf.coeffs_dims=conf.dims;
@@ -3812,12 +3812,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //for(size_t i=0;i<N;i++)
                 //std::cout<<conf.dims[i]<<std::endl;
             //std::cout<<conf.num<<std::endl;
-            std::cout<<"decdatadel"<<std::endl;
+            //std::cout<<"decdatadel"<<std::endl;
             delete []decData;
-            std::cout<<"decdatanew"<<std::endl;
+            //std::cout<<"decdatanew"<<std::endl;
             decData=new T[conf.num];
             QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
-            std::cout<<"p4"<<std::endl;
+            //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=data[i]-decData[i];
             }
@@ -3833,7 +3833,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
             }
-            std::cout<<"origdatadel"<<std::endl;
+            //std::cout<<"origdatadel"<<std::endl;
             delete []origdata;
         }
 
@@ -3856,7 +3856,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
        
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-            std::cout<<"p6"<<std::endl;
+            //std::cout<<"p6"<<std::endl;
             //std::cout<<outlier_outSize<<std::endl;
         }
 
@@ -3931,7 +3931,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         size_t totalsize=outSize+outlier_outSize;
         
 
-        std::cout<<"fonew"<<std::endl;
+        //std::cout<<"fonew"<<std::endl;
         char * final_output=new char[totalsize+1000];
         //for(size_t i=0;i<totalsize;i++)
             //final_output[i]=0;
@@ -3941,13 +3941,13 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         memcpy(final_output+outSize,outlier_compress_output,outlier_outSize);
        
         outSize=totalsize;
-        std::cout<<"p7"<<std::endl;
+        //std::cout<<"p7"<<std::endl;
 
         delete [] compress_output;
         delete [] outlier_compress_output;
-        std::cout<<"decdatadel"<<std::endl;
+        //std::cout<<"decdatadel"<<std::endl;
         delete [] decData;
-        std::cout<<"p8"<<std::endl;
+        //std::cout<<"p8"<<std::endl;
         return final_output;
     }
     else{
