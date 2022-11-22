@@ -150,12 +150,13 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             decData=new T[conf.num];
             QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
         }
-        std::cout<<"x3"<<std::endl;
+        
         else{
             QoZ::Wavelet<T,N> wlt;
 
             wlt.postProcess_cdf97(decData,conf.dims);
         }
+        std::cout<<"x3"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
 
 
