@@ -108,7 +108,7 @@ namespace QoZ {
             //std::cout<<"d3"<<std::endl;
            
             init();   
-            std::cout<<num_elements<<std::endl;
+            //std::cout<<num_elements<<std::endl;
            // std::cout<<"d4"<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
