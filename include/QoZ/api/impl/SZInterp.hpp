@@ -3470,7 +3470,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             QoZ::readfile<T>("external_wave_coeffs.dat", conf.num, coeffData);
             conf.errorBoundMode = QoZ::EB_REL;
             conf.relErrorBound/=conf.wavelet_rel_coeff;
-            QoZ::calAbsErrorBound(conf, Coeffdata);
+            QoZ::calAbsErrorBound(conf, coeffData);
 
         }
 
