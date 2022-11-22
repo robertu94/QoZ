@@ -3816,16 +3816,23 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             decData=new T[conf.num];
             QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
             std::cout<<"p4"<<std::endl;
+            for(size_t i=0;i<conf.num;i++){
+                decData[i]=data[i]-decData[i];
+            }
 
 
 
 
         }
         else{
-            std::cout<<"origdatadel"<<std::endl;
-            delete []origdata;
+            
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(decData,conf.dims);
+            for(size_t i=0;i<conf.num;i++){
+                decData[i]=origdata[i]-decData[i];
+            }
+            std::cout<<"origdatadel"<<std::endl;
+            delete []origdata;
         }
 
         //QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
@@ -3834,7 +3841,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             decData[i]=origdata[i]-decData[i];
         }
         
-        std::cout<<"p5"<<std::endl;
+        //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
