@@ -3461,7 +3461,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             coeffs_size.resize(N);
             QoZ::readfile<size_t>("coeffs_size.dat",N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
-            std::cout<<"baba"<<conf.num>>std::endl;
+            std::cout<<"baba"<<conf.num<<std::endl;
             coeffData =new T[conf.num];
             /*
             delete []data;//is this correct?
