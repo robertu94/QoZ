@@ -5,6 +5,7 @@
 #include "QoZ/api/impl/SZDispatcher.hpp"
 #include "QoZ/api/impl/SZImplOMP.hpp"
 #include <cmath>
+#include <iostream>
 
 template<class T, QoZ::uint N>
 char *SZ_compress_impl(QoZ::Config &conf, const T *data, size_t &outSize) {
