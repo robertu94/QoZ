@@ -154,6 +154,7 @@ namespace QoZ {
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
+            coeffTracking = cfg.GetBoolean("AlgoSettings", "coeffTracking", coeffTracking);
             
             
             auto interpAlgoStr = cfg.Get("AlgoSettings", "InterpolationAlgo", "");
@@ -370,6 +371,7 @@ namespace QoZ {
         size_t coeffs_num=0;
         double wavelet_rel_coeff = 25.0;
         size_t firstSize;
+        bool coeffTracking=0;
 
         int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
         int transformation = 0; //0: no trans; 1: sigmoid 2: tanh

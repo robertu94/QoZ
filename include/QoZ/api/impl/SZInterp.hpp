@@ -3490,8 +3490,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
 
 
-
-            //QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
+        if(conf.coeffTracking)
+            QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
             
             //std::cout<<conf.transformation<<std::endl;
             /*
@@ -3751,6 +3751,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     
 
     if(conf.wavelet){
+        if(conf.coeffTracking)
+            std::cout<<"Coeff CR = "<<(conf.num*1.0*sizeof(T))/outSize<<std::endl;
+        
         conf.firstSize=outSize;
         size_t tempSize=outSize;
         
@@ -3818,6 +3821,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //std::cout<<"decdatanew"<<std::endl;
             decData=new T[conf.num];
             QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
+            if(conf.coeffTracking)
+                QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=data[i]-decData[i];
@@ -3831,6 +3836,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(decData,conf.dims);
+            if(conf.coeffTracking)
+                QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
             }
@@ -3838,7 +3845,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             delete []origdata;
         }
 
-        //QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+        
  
         
         //std::cout<<"p5"<<std::endl;
