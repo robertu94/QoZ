@@ -3489,7 +3489,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //conf.relErrorBound/=conf.wavelet_rel_coeff;
             //QoZ::calAbsErrorBound(conf, data);
         }
-        conf.absErrorBound*=conf.wavelet_rel_coeff
+        conf.absErrorBound*=conf.wavelet_rel_coeff;
 
 
         if(conf.coeffTracking)
