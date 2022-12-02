@@ -142,7 +142,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.external_wave){
             char s1[100]="";
             std::sprintf(s1,"%d",conf.pid);
-            std::cout<<s1<<std::endl;
+            //std::cout<<s1<<std::endl;
             char s2[]="_external_dec_wave_coeffs_dec.tmp";
             strcat(s1,s2);
             QoZ::writefile(s1, decData, conf.coeffs_num);
