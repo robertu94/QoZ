@@ -3474,7 +3474,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             char s1[100]="";
             std::sprintf(s1,"%d",conf.pid);
             char s2[]="_external_coeffs_size.tmp";
-            strcat(s1,s2)
+            strcat(s1,s2);
             QoZ::readfile<size_t>(s1,N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             //std::cout<<"coeffdatanew"<<std::endl;
@@ -3486,7 +3486,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             char s3[100]="";
             std::sprintf(s3,"%d",conf.pid);
             char s4[]="_external_wave_coeffs.tmp";
-            strcat(s3,s4)
+            strcat(s3,s4);
             QoZ::readfile<T>(s3, conf.num, coeffData);
             //conf.errorBoundMode = QoZ::EB_REL;
             //conf.relErrorBound/=conf.wavelet_rel_coeff;
