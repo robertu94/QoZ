@@ -20,6 +20,7 @@
 #include "QoZ/utils/CoeffRegression.hpp"
 #include "QoZ/utils/ExtractRegData.hpp"
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
+//#include <cunistd>
 #include <cmath>
 #include <memory>
 #include <limits>
@@ -139,18 +140,24 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.external_wave){
-           
-            QoZ::writefile("external_dec_wave_coeffs_dec.dat", decData, conf.coeffs_num);
+            char s1[100]=itoa(conf.pid);
+            char s2[]="_external_dec_wave_coeffs_dec.tmp";
+            strcat(s1,s2);
+            QoZ::writefile(s1, decData, conf.coeffs_num);
             
 
-            char command[100] = "python coeff_idwt.py external_dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            char command[120] = "python coeff_idwt.py ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            strcat(command,s1);
             system(command);
 
 
           
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
+            char s3[100]=itoa(conf.pid);
+            char s4[]="_external_deccoeff_idwt.tmp";
+            strcat(s3,s4);
+            QoZ::readfile<T>(s3, conf.num, decData);
         }
         
         else{
@@ -3461,7 +3468,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //read a coeff array and a size information array
 
             coeffs_size.resize(N);
-            QoZ::readfile<size_t>("external_coeffs_size.dat",N, coeffs_size.data());
+            char s1[100]=itoa(conf.pid);
+            char s2[]="_external_coeffs_size.tmp";
+            strcat(s1,s2)
+            QoZ::readfile<size_t>(s1,N, coeffs_size.data());
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             //std::cout<<"coeffdatanew"<<std::endl;
             coeffData =new T[conf.num];
@@ -3469,7 +3479,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             delete []data;//is this correct?
             data=new T[conf.num];//is this correct?
             */
-            QoZ::readfile<T>("external_wave_coeffs.dat", conf.num, coeffData);
+            char s3[100]=itoa(conf.pid);
+            char s4[]="_external_wave_coeffs.tmp";
+            strcat(s3,s4)
+            QoZ::readfile<T>(s3, conf.num, coeffData);
             //conf.errorBoundMode = QoZ::EB_REL;
             //conf.relErrorBound/=conf.wavelet_rel_coeff;
             //QoZ::calAbsErrorBound(conf, coeffData);
@@ -3782,8 +3795,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
       
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
 
-        //std::cout<<outSize<<std::endl;
-
+  
         /*
 
         if(conf.transformation==1){
@@ -3803,9 +3815,14 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //read back the decdata
             //std::cout<<"coeffdatadel"<<std::endl;
             delete []coeffData;
-            QoZ::writefile("external_wave_coeffs_dec.dat", decData, conf.num);
+            char s1[100]=itoa(conf.pid);
+            char s2[]="_external_wave_coeffs_dec.tmp";
+            strcat(s1,s2);
 
-            char command[100] = "python coeff_idwt.py external_wave_coeffs_dec.dat ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+
+            QoZ::writefile(s1, decData, conf.num);
+            char command[120] = "python coeff_idwt.py ";
+            strcat(command,s1);//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
             system(command);
             //std::cout<<"p3"<<std::endl;
 
@@ -3822,7 +3839,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             delete []decData;
             //std::cout<<"decdatanew"<<std::endl;
             decData=new T[conf.num];
-            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
+            char s3[100]=itoa(conf.pid);
+            char s4[]="_external_deccoeff_idwt.tmp";
+            strcat(s3,s4);
+            QoZ::readfile<T>(s3, conf.num, decData);
             if(conf.coeffTracking)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             //std::cout<<"p4"<<std::endl;

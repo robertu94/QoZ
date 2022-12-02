@@ -163,16 +163,24 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.external_wave){
-            QoZ::writefile("external_dec_wave_coeffs_dec.dat", decData, conf.num);
 
-            char command[100] = "python coeff_idwt.py external_dec_wave_coeffs_dec.dat";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            char s1[100]=itoa(conf.pid);
+            char s2[]="_external_dec_wave_coeffs_dec.tmp";
+            strcat(s1,s2);
+            QoZ::writefile(s1, decData, conf.num);
+
+            char command[120] = "python coeff_idwt.py ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
+            strcat(command,s1);
             system(command);
 
            conf.setDims(ori_dims.begin(),ori_dims.end());
           
             delete []decData;
             decData=new T[conf.num];
-            QoZ::readfile<T>("external_deccoeff_idwt.dat", conf.num, decData);
+            char s3[100]=itoa(conf.pid);
+            char s4[]="_external_deccoeff_idwt.tmp";
+            strcat(s3,s4);
+            QoZ::readfile<T>(s3, conf.num, decData);
         }
 
         else{

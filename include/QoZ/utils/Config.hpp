@@ -196,6 +196,7 @@ namespace QoZ {
             offsetPredictor=cfg.GetInteger("AlgoSettings", "offsetPredictor", offsetPredictor);
             transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
             trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
+            pid = cfg.GetInteger("AlgoSettings", "pid", pid);
 
 
 
@@ -247,6 +248,7 @@ namespace QoZ {
             write(external_wave, c);
             write(coeffs_dims.data(), coeffs_dims.size(), c);
             write(coeffs_num, c);
+            write(pid, c);
             //write(prewave_absErrorBound, c);
 
             
@@ -294,6 +296,7 @@ namespace QoZ {
             read(external_wave, c);
             read(coeffs_dims.data(), N, c);
             read(coeffs_num, c);
+            read(pid, c);
             //read(prewave_absErrorBound, c);
         }
 
@@ -372,6 +375,7 @@ namespace QoZ {
         double wavelet_rel_coeff = 1.0;
         size_t firstSize;
         bool coeffTracking=0;
+        int pid=0;
 
         int offsetPredictor=0;//0:zeropredictor 1: 1D lorenzo 2: MD lorenzo 3:1D interp 4: MD interp
         int transformation = 0; //0: no trans; 1: sigmoid 2: tanh
