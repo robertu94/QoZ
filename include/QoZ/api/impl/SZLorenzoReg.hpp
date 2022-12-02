@@ -164,7 +164,8 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.external_wave){
 
-            char s1[100]=std::to_string(conf.pid);
+            char s1[100]="";
+            s1=std::to_string(conf.pid);
             char s2[]="_external_dec_wave_coeffs_dec.tmp";
             strcat(s1,s2);
             QoZ::writefile(s1, decData, conf.num);
@@ -177,7 +178,8 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
           
             delete []decData;
             decData=new T[conf.num];
-            char s3[100]=std::to_string(conf.pid);
+            char s3[100]="";
+            s3=std::to_string(conf.pid);
             char s4[]="_external_deccoeff_idwt.tmp";
             strcat(s3,s4);
             QoZ::readfile<T>(s3, conf.num, decData);
