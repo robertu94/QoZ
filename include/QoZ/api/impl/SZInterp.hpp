@@ -3821,7 +3821,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //std::cout<<"coeffdatadel"<<std::endl;
             delete []coeffData;
             char s1[100]="";
-            s1=std::to_string(conf.pid);
+            std::sprintf(s1,"%d",conf.pid);
             char s2[]="_external_wave_coeffs_dec.tmp";
             strcat(s1,s2);
 
@@ -3846,7 +3846,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //std::cout<<"decdatanew"<<std::endl;
             decData=new T[conf.num];
             char s3[100]="";
-            s3=std::to_string(conf.pid);
+            std::sprintf(s3,"%d",conf.pid);
             char s4[]="_external_deccoeff_idwt.tmp";
             strcat(s3,s4);
             QoZ::readfile<T>(s3, conf.num, decData);
