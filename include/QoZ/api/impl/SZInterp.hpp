@@ -3533,17 +3533,17 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
     }
 
-    if(conf.preTrim){
+    if(conf.preTrim>0){
         if(conf.wavelet and conf.external_wave){
             for(size_t i=0;i<conf.num;i++){
-                if(fabs(data[i])<=conf.absErrorBound)
+                if(fabs(data[i])<=conf.preTrim*conf.absErrorBound)
                     coeffData[i]=0;
 
             }
         }
         else{
             for(size_t i=0;i<conf.num;i++){
-                if(fabs(data[i])<=conf.absErrorBound)
+                if(fabs(data[i])<=conf.preTrim*conf.absErrorBound)
                     data[i]=0;
 
             }
