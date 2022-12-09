@@ -82,6 +82,7 @@ namespace QoZ {
             read(cross_block,buffer_pos, remaining_length);
             read(trimToZero,buffer_pos, remaining_length);
            // std::cout<<cross_block<<std::endl; 
+            std::cout<<trimToZero<<std::endl; 
             if (trimToZero>0){
                 quantizer.setTrimToZero(trimToZero);
             }
