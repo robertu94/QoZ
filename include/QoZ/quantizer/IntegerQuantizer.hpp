@@ -127,7 +127,7 @@ namespace QoZ {
                     quant_index_shifted = this->radius + half_index;
                 }
                 T decompressed_data = pred + quant_index * this->error_bound;
-                if (fabs(decompressed_data - ori) > this->error_bound) {
+                if (fabs(decompressed_data - ori) > this->error_bound or (this->trimToZero==2 and quant_index_shifted==1)) {
                     if(save_unpred)
                         unpred.push_back(ori);
                     dest = ori;
@@ -155,6 +155,11 @@ namespace QoZ {
 
         // recover the data using the quantization index
         T recover(T pred, int quant_index) {
+
+            if(this->trimToZero==2 and quant_index==1){
+                std::cout<<"fuqin"<<std::endl;
+                return 0;
+            }
             if (quant_index) {
                 return recover_pred(pred, quant_index);
             } else {
