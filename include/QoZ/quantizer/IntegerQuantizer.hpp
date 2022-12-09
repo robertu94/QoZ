@@ -112,7 +112,7 @@ namespace QoZ {
             if(this->trimToZero>0 and fabs(ori)<=this->error_bound){
                 if(this->trimToZero==1 and save_unpred)
                     unpred.push_back(0);
-                std::cout<<ori<<" "<<this->trimToZero-1<<std::endl;
+                //std::cout<<ori<<" "<<this->trimToZero-1<<std::endl;
                 dest = 0;
                 return this->trimToZero-1;
             }
