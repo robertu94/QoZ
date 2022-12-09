@@ -82,6 +82,9 @@ namespace QoZ {
             read(cross_block,buffer_pos, remaining_length);
             read(trimToZero,buffer_pos, remaining_length);
            // std::cout<<cross_block<<std::endl; 
+            if (trimToZero>0){
+                quantizer.setTrimToZero(trimToZero);
+            }
 
 
            
@@ -336,6 +339,9 @@ namespace QoZ {
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
             read(trimToZero,buffer_pos, remaining_length);
+            if (trimToZero>0){
+                quantizer.setTrimToZero(trimToZero);
+            }
            // std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
