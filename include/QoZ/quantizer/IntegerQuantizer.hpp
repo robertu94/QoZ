@@ -72,7 +72,7 @@ namespace QoZ {
                 data=0;
                 if(this->trimToZero==1 and save_unpred)
                     unpred.push_back(0);
-                std::cout<<data<<" "<<this->trimToZero-1<<std::endl;
+                //std::cout<<data<<" "<<this->trimToZero-1<<std::endl;
 
                 return this->trimToZero-1;
             }
@@ -92,7 +92,7 @@ namespace QoZ {
                 }
                 T decompressed_data = pred + quant_index * this->error_bound;
                 if (fabs(decompressed_data - data) > this->error_bound or (this->trimToZero==2 and quant_index_shifted==1)) {
-                    std::cout<<data<<std::endl;
+                    //std::cout<<data<<std::endl;
                     if(save_unpred)
                         unpred.push_back(data);
                     return 0;
