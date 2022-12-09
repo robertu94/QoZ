@@ -72,6 +72,7 @@ namespace QoZ {
                 data=0;
                 if(this->trimToZero==1 and save_unpred)
                     unpred.push_back(0);
+                std::cout<<data<<" "<<this->trimToZero-1<<std::endl;
 
                 return this->trimToZero-1;
             }
