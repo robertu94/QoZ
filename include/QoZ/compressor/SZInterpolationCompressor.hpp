@@ -49,6 +49,7 @@ namespace QoZ {
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
             int fixBlockSize;
+            int trimToZero;
             //size_t maxStep;
 
             //std::cout<<"d2"<<std::endl;
@@ -79,6 +80,7 @@ namespace QoZ {
             
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
+            read(trimToZero,buffer_pos, remaining_length);
            // std::cout<<cross_block<<std::endl; 
 
 
@@ -308,6 +310,8 @@ namespace QoZ {
             std::vector <uint8_t> interpAlgo_list;
             std::vector <uint8_t> interpDirection_list;
             int fixBlockSize;
+            int trimToZero;
+
             //size_t maxStep;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
@@ -331,6 +335,7 @@ namespace QoZ {
             read(fixBlockSize,buffer_pos, remaining_length);
             size_t cross_block=0;
             read(cross_block,buffer_pos, remaining_length);
+            read(trimToZero,buffer_pos, remaining_length);
            // std::cout<<"step 1 "<<std::endl;
             if(blockwiseTuning){
                 size_t ops_num;
@@ -488,8 +493,8 @@ namespace QoZ {
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
             timer.start();
-            if (conf.trimToZero){
-                quantizer.setTrimToZero(true);
+            if (conf.trimToZero>0){
+                quantizer.setTrimToZero(conf.trimToZero);
             }
 
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
@@ -927,6 +932,7 @@ namespace QoZ {
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
             write(cross_block,buffer_pos);
+            write(conf.trimToZero,buffer_pos);
             //std::cout<<"5"<<std::endl;
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
@@ -984,8 +990,8 @@ namespace QoZ {
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
             timer.start();
-            if (conf.trimToZero){
-                quantizer.setTrimToZero(true);
+            if (conf.trimToZero>0){
+                quantizer.setTrimToZero(conf.trimToZero);
             }
             
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
@@ -1300,6 +1306,7 @@ namespace QoZ {
             write(conf.blockwiseTuning,buffer_pos);
             write(conf.fixBlockSize,buffer_pos);
             write(cross_block,buffer_pos);
+            write(conf.trimToZero,buffer_pos);
             if(conf.blockwiseTuning){
                 size_t ops_num=interp_ops.size();
                 write(ops_num,buffer_pos);
