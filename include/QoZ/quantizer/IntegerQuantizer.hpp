@@ -68,7 +68,7 @@ namespace QoZ {
         // int quantize(T data, T pred, T& dec_data);
         int quantize_and_overwrite(T &data, T pred,bool save_unpred=true) {
 
-            if(this->trimToZero and fabs(data)<=this->error_bound){
+            if(this->trimToZero>0 and fabs(data)<=this->error_bound){
                 data=0;
                 if(this->trimToZero==1 and save_unpred)
                     unpred.push_back(0);
@@ -109,9 +109,10 @@ namespace QoZ {
 
         int quantize_and_overwrite(T ori, T pred, T &dest,bool save_unpred=true) {
 
-            if(this->trimToZero and fabs(ori)<=this->error_bound){
+            if(this->trimToZero>0 and fabs(ori)<=this->error_bound){
                 if(this->trimToZero==1 and save_unpred)
                     unpred.push_back(0);
+                std::cout<<ori<<" "<<this->trimToZero-1<<std::endl;
                 dest = 0;
                 return this->trimToZero-1;
             }
