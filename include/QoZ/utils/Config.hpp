@@ -147,6 +147,7 @@ namespace QoZ {
             autoTuningRate = cfg.GetReal("AlgoSettings", "autoTuningRate", autoTuningRate);
             predictorTuningRate = cfg.GetReal("AlgoSettings", "predictorTuningRate", predictorTuningRate);
             wavelet_rel_coeff = cfg.GetReal("AlgoSettings", "wavelet_rel_coeff", wavelet_rel_coeff);
+            preTrim = cfg.GetReal("AlgoSettings", "preTrim", preTrim);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
             lorenzo = cfg.GetBoolean("AlgoSettings", "Lorenzo", lorenzo);
@@ -155,7 +156,7 @@ namespace QoZ {
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
             external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             coeffTracking = cfg.GetBoolean("AlgoSettings", "coeffTracking", coeffTracking);
-            preTrim = cfg.GetBoolean("AlgoSettings", "preTrim", preTrim);
+            
             
             
             auto interpAlgoStr = cfg.Get("AlgoSettings", "InterpolationAlgo", "");
@@ -386,7 +387,7 @@ namespace QoZ {
         std::vector<uint8_t> interp_ops;//for debug, to delete in final version.
         std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
         int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
-        bool preTrim=false;//trim small numbers to zero before compression.
+        double preTrim=0.0;//trim small numbers to zero before compression.
 
         
 
