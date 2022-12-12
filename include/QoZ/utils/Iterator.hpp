@@ -347,8 +347,9 @@ namespace QoZ {
                 ForwardIt1 global_dims_begin,
                 ForwardIt1 global_dims_end,
                 size_t stride_,
-                ptrdiff_t offset_
-        ): data(data_), left_boundary{false} {
+                ptrdiff_t offset_,
+                int order_=0
+        ): data(data_), left_boundary{false},order(order_) {
             static_assert(
                     std::is_convertible<
                             typename std::iterator_traits<ForwardIt1>::value_type,
@@ -381,8 +382,9 @@ namespace QoZ {
                 T *data_,
                 std::array<size_t, N> global_dims_,
                 std::array<size_t, N> stride_,
-                ptrdiff_t offset_
-        ) : data(data_), left_boundary{false} {
+                ptrdiff_t offset_,
+                int order_=0
+        ) : data(data_), left_boundary{false},order(order_) {
             set_access_stride(stride_);
             // set global dimensions
             global_dimensions = global_dims_;
@@ -392,11 +394,11 @@ namespace QoZ {
         }
 
         multi_dimensional_iterator begin() {
-            return multi_dimensional_iterator(this->shared_from_this(), start_offset,0);
+            return multi_dimensional_iterator(this->shared_from_this(), start_offset,order);
         }
 
         multi_dimensional_iterator end() {
-            return multi_dimensional_iterator(this->shared_from_this(), end_offset,0);
+            return multi_dimensional_iterator(this->shared_from_this(), end_offset,order);
         }
 
         template<class ForwardIt1>
@@ -491,6 +493,7 @@ namespace QoZ {
         std::array<size_t, N> access_stride;     // stride for access pattern
         ptrdiff_t start_offset;                  // offset for start point
         ptrdiff_t end_offset;                    // offset for end point
+        int order;                               // block order
         T *data;                                 // data pointer
     };
 
