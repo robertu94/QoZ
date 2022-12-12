@@ -50,7 +50,7 @@ namespace QoZ {
             }
             void rearrange_first(size_t start_pos,size_t level){
                 for(int i=N-1;i>=start_pos;i--){
-                    //std::cout<<"px "<<i<<std::endl;
+                    std::cout<<"px "<<i<<std::endl;
                     global_offset-=local_index[i]*range->global_dim_strides[i];
                     size_t cur_index=level<(range->dimensions[i]-1)?level:(range->dimensions[i]-1);
                     level-=cur_index;
@@ -142,9 +142,9 @@ namespace QoZ {
 
             inline multi_dimensional_iterator &operator++() {
                 if(order>0){//mhtd
-                    //this->print();
-                    //std::cout<<cur_level<<std::endl;
-                   // std::cout<<max_level<<std::endl;
+                    this->print();
+                   std::cout<<cur_level<<std::endl;
+                   std::cout<<max_level<<std::endl;
 
                     if(cur_level==max_level){
                         global_offset=range->dimensions[0]*range->global_dim_strides[0];
@@ -160,37 +160,37 @@ namespace QoZ {
 
                         while (local_index[i]==0 and i>0)
                             i--;
-                        //std::cout<<"p1 "<<i<<std::endl;
+                        std::cout<<"p1 "<<i<<std::endl;
                         if (i>0){
                             i--;
-                            //std::cout<<"p2 "<<i<<std::endl;
+                            std::cout<<"p2 "<<i<<std::endl;
                             while (local_index[i]==range->dimensions[i]-1 and i>0)
                                 i--;
-                            //std::cout<<"p3 "<<i<<std::endl;
+                            std::cout<<"p3 "<<i<<std::endl;
                             if (i==0 and local_index[i]==range->dimensions[i]-1){
                                 cur_level++;
                                 this->rearrange_first(0,cur_level);
-                                 //std::cout<<"p4 "<<i<<std::endl;
+                                 std::cout<<"p4 "<<i<<std::endl;
                             }
            
                             else{
-                                //std::cout<<"p5 "<<i<<std::endl;
+                                std::cout<<"p5 "<<i<<std::endl;
                                 local_index[i]+=1;
                                 global_offset+=range->global_dim_strides[i];
                                 size_t level=cur_level;
                                 for(size_t j=0;j<=i;j++)
                                 
                                     level-=local_index[j];
-                                 //std::cout<<"p6 "<<i<<std::endl;
+                                 std::cout<<"p6 "<<i<<std::endl;
                                 this->rearrange_first(i+1,level);
-                                 //std::cout<<"p7 "<<i<<std::endl;
+                                 std::cout<<"p7 "<<i<<std::endl;
                             }
                         }
                         else{
-                            //std::cout<<"p8 "<<i<<std::endl;
+                            std::cout<<"p8 "<<i<<std::endl;
                             cur_level+=1;
                             this->rearrange_first(0,cur_level);
-                            //std::cout<<"p9 "<<i<<std::endl;
+                            std::cout<<"p9 "<<i<<std::endl;
 
                         }
                     }
