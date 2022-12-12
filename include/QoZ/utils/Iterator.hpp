@@ -142,9 +142,9 @@ namespace QoZ {
 
             inline multi_dimensional_iterator &operator++() {
                 if(order>0){//mhtd
-                    this->print();
-                   std::cout<<cur_level<<std::endl;
-                   std::cout<<max_level<<std::endl;
+                    //this->print();
+                   //std::cout<<cur_level<<std::endl;
+                   //std::cout<<max_level<<std::endl;
 
                     if(cur_level==max_level){
                         global_offset=range->dimensions[0]*range->global_dim_strides[0];
