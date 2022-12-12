@@ -41,7 +41,7 @@ namespace QoZ {
 
             multi_dimensional_iterator &operator=(multi_dimensional_iterator &&) noexcept = default;
 
-            multi_dimensional_iterator(std::shared_ptr<multi_dimensional_range> &&range_, std::size_t current_offset_, int order_) noexcept:
+            multi_dimensional_iterator(std::shared_ptr<multi_dimensional_range> &&range_, std::size_t current_offset_, int order_=0) noexcept:
                     range(range_), global_offset(current_offset_), order(order_),local_index{} {
 
                     for(size_t i=0;i<N;i++)
