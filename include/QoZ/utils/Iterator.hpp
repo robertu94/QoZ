@@ -392,11 +392,11 @@ namespace QoZ {
         }
 
         multi_dimensional_iterator begin() {
-            return multi_dimensional_iterator(this->shared_from_this(), start_offset);
+            return multi_dimensional_iterator(this->shared_from_this(), start_offset,0);
         }
 
         multi_dimensional_iterator end() {
-            return multi_dimensional_iterator(this->shared_from_this(), end_offset);
+            return multi_dimensional_iterator(this->shared_from_this(), end_offset,0);
         }
 
         template<class ForwardIt1>
