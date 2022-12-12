@@ -199,6 +199,7 @@ namespace QoZ {
             transformation=cfg.GetInteger("AlgoSettings", "transformation", transformation);
             trimToZero = cfg.GetInteger("AlgoSettings", "trimToZero", trimToZero);
             pid = cfg.GetInteger("AlgoSettings", "pid", pid);
+            blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
 
 
 
@@ -251,6 +252,7 @@ namespace QoZ {
             write(coeffs_dims.data(), coeffs_dims.size(), c);
             write(coeffs_num, c);
             write(pid, c);
+            write(blockOrder, c);
             //write(trimToZero, c);
             //write(prewave_absErrorBound, c);
 
@@ -300,6 +302,7 @@ namespace QoZ {
             read(coeffs_dims.data(), N, c);
             read(coeffs_num, c);
             read(pid, c);
+            read(blockOrder, c);
             //read(trimToZero, c);
             //read(prewave_absErrorBound, c);
         }
@@ -388,6 +391,7 @@ namespace QoZ {
         std::vector<uint8_t> interp_dirs;//for debug, to delete in final version.
         int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
         double preTrim=0.0;//trim small numbers to zero before compression.
+        int blockOrder = 0;//order of blocks.
 
         
 
