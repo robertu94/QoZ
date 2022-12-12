@@ -41,93 +41,21 @@ namespace QoZ {
 
             multi_dimensional_iterator &operator=(multi_dimensional_iterator &&) noexcept = default;
 
-            multi_dimensional_iterator(std::shared_ptr<multi_dimensional_range> &&range_, std::size_t current_offset_, int order_) noexcept:
-                    range(range_), global_offset(current_offset_), order(order_),local_index{} {
-
-                    for(size_t i=0;i<N;i++)
-                        max_level+=range->dimensions[i]-1;
+            multi_dimensional_iterator(std::shared_ptr<multi_dimensional_range> &&range_, std::size_t current_offset_) noexcept:
+                    range(range_), global_offset(current_offset_), local_index{} {
             }
-            void rearrange_first(size_t start_pos,size_t level){
-                for(size_t i=N-1;i>=start_pos;i--){
-                    global_offset-=local_index[i]*range->global_dim_strides[i];
-                    size_t cur_index=level<(range->dimensions[i]-1)>level:(range->dimensions[i]-1);
-                    level-=cur_index;
-                    local_index[i]=cur_index;
-                    global_offset+=cur_index*range->global_dim_strides[i];
-                    
-                }
-            }
-
-            void rearrange_last(size_t start_pos,size_t level){
-                for(size_t i=start_pos;i<N;i++){
-                    global_offset-=local_index[i]*range->global_dim_strides[i];
-                    size_t cur_index=level<(range->dimensions[i]-1)>level:(range->dimensions[i]-1);
-                    level-=cur_index;
-                    local_index[i]=cur_index;
-                    global_offset+=cur_index*range->global_dim_strides[i];
-                    
-                }
-            }
-
 
             multi_dimensional_iterator &operator--() {
-
-
-                if(order>0){//mhtd first
-                    if(local_index[0]==range->dimensions[0]){
-                        global_offset=0;
-                        for(size_t i=0;i<N;i++){
-                            local_index[i]=range->dimensions[i]-1;
-                            global_offset+=local_index[i] * range->global_dim_strides[i];
-                        }
-
-                    }
-                    else{
-                        size_t i=N-1;
-
-                        while (local_index[i]==range->dimensions[i]-1 and i>0)
-                            i--;
-                        if (i>0){
-                            i--;
-                            while (local_index[i]==0 and i>0)
-                                i--;
-                            if (i==0 and local_index[i]==0){
-                                cur_level--;
-                                this->rearrange_last(0,cur_level);
-                            }
-                                
-                            else{
-                                local_index[i]-=1;
-                                global_offset-=range->global_dim_strides[i];
-                                size_t level=cur_level;
-                                for(size_t j=0;j<=i;j++)
-                                
-                                    level-=local_index[j];
-                                this->rearrange_last(i+1,level);
-                            }
-                        }
-                        else{
-                            cur_level-=1;
-                            this->rearrange_last(0,cur_level);
-
-                        }
-                    }
-
-
-
-                }
-                else{
-                    size_t i = N - 1;
+                size_t i = N - 1;
+                local_index[i]--;
+                ptrdiff_t offset = -range->global_dim_strides[i];//originally no negative. It should be a bug.
+                while (i && (local_index[i] < 0)) {
+                    offset += range->dimensions[i] * range->global_dim_strides[i];
+                    local_index[i--] = range->dimensions[i]-1;
+                    offset -= range->global_dim_strides[i];
                     local_index[i]--;
-                    ptrdiff_t offset = -range->global_dim_strides[i];
-                    while (i && (local_index[i] < 0)) {
-                        offset += range->dimensions[i] * range->global_dim_strides[i];
-                        local_index[i--] = range->dimensions[i]-1;
-                        offset -= range->global_dim_strides[i];
-                        local_index[i]--;
-                    }
-                    global_offset += offset;
                 }
+                global_offset += offset;
                 return *this;
             }
 
@@ -138,64 +66,16 @@ namespace QoZ {
             }
 
             inline multi_dimensional_iterator &operator++() {
-                if(order>0){//mhtd
-
-                    if(cur_level==max_level){
-                        global_offset=range->dimensions[0]*range->global_dim_strides[0];
-                        local_index[0]=range->dimensions[0];
-
-                        for(size_t i=1;i<N;i++){
-                            local_index[i]=0;
-                        }
-
-                    }
-                    else{
-                        size_t i=N-1;
-
-                        while (local_index[i]==0 and i>0)
-                            i--;
-                        if (i>0){
-                            i--;
-                            while (local_index[i]==range->dimensions[i]-1 and i>0)
-                                i--;
-                            if (i==0 and local_index[i]==range->dimensions[i]-1){
-                                cur_level++;
-                                this->rearrange_first(0,cur_level);
-                            }
-                                
-                            else{
-                                local_index[i]+=1;
-                                global_offset+=range->global_dim_strides[i];
-                                size_t level=cur_level;
-                                for(size_t j=0;j<=i;j++)
-                                
-                                    level-=local_index[j];
-                                this->rearrange_first(i+1,level);
-                            }
-                        }
-                        else{
-                            cur_level+=1;
-                            this->rearrange_first(0,cur_level);
-
-                        }
-                    }
-
-
-
-                }
-
-                else{
-                    size_t i = N - 1;
+                size_t i = N - 1;
+                local_index[i]++;
+                ptrdiff_t offset = range->global_dim_strides[i];
+                while (i && (local_index[i] == range->dimensions[i])) {
+                    offset -= range->dimensions[i] * range->global_dim_strides[i];
+                    local_index[i--] = 0;
+                    offset += range->global_dim_strides[i];
                     local_index[i]++;
-                    ptrdiff_t offset = range->global_dim_strides[i];
-                    while (i && (local_index[i] == range->dimensions[i])) {
-                        offset -= range->dimensions[i] * range->global_dim_strides[i];
-                        local_index[i--] = 0;
-                        offset += range->global_dim_strides[i];
-                        local_index[i]++;
-                    }
-                    global_offset += offset;
                 }
+                global_offset += offset;
                 // std::cout << "offset=" << offset << ", current_offset=" << current_offset << std::endl;
                 return *this;
             }
@@ -262,7 +142,6 @@ namespace QoZ {
             // return 0 if range is exceeded
             // [input] offset for all the dimensions
             // [output] value of data at the target position
-            //IMPORTANT: HAVEN'T SUPPORT MHTD ORDER
             template<class... Args>
             inline T prev(Args &&... pos) const {
                 // TODO: check int type
@@ -279,7 +158,6 @@ namespace QoZ {
 
             // No support for carry set.
             // For example, iterator in position (4,4) and dimension is 6x6, move(1,1) is supported but move (2,0) is not supported.
-            //MOVES not fully support MHTD ORDER
             template<class... Args>
             multi_dimensional_iterator &move(Args &&... pos) {
                 static_assert(sizeof...(Args) == N, "Must have the same number of arguments");
@@ -293,7 +171,6 @@ namespace QoZ {
                         assert(0 <= local_index[i] + args[i]);
                         assert(local_index[i] + args[i] < range->dimensions[i]);
                         local_index[i] += args[i];
-                        cur_level+=args[i];
                         global_offset += args[i] * range->global_dim_strides[i];
                     }
                 }
@@ -306,7 +183,6 @@ namespace QoZ {
             multi_dimensional_iterator &move() {
                 if (local_index[N - 1] < range->dimensions[N - 1] - 1) {
                     local_index[N - 1]++;
-                    cur_level+=1;
                     global_offset += range->global_dim_strides[N - 1];
                 }
                 return *this;
@@ -330,9 +206,6 @@ namespace QoZ {
             std::shared_ptr<multi_dimensional_range> range;
             std::array<size_t, N> local_index;        // index of current_offset position
             ptrdiff_t global_offset;
-            int order = 0;
-            size_t cur_level=0;
-            size_t max_level=0;
         };
 
         using iterator = multi_dimensional_iterator;
