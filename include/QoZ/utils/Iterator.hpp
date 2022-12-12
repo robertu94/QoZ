@@ -50,7 +50,7 @@ namespace QoZ {
             void rearrange_first(size_t start_pos,size_t level){
                 for(size_t i=N-1;i>=start_pos;i--){
                     global_offset-=local_index[i]*range->global_dim_strides[i];
-                    size_t cur_index=level<(range->dimensions[i]-1)>level:(range->dimensions[i]-1);
+                    size_t cur_index=level<(range->dimensions[i]-1)?level:(range->dimensions[i]-1);
                     level-=cur_index;
                     local_index[i]=cur_index;
                     global_offset+=cur_index*range->global_dim_strides[i];
@@ -61,7 +61,7 @@ namespace QoZ {
             void rearrange_last(size_t start_pos,size_t level){
                 for(size_t i=start_pos;i<N;i++){
                     global_offset-=local_index[i]*range->global_dim_strides[i];
-                    size_t cur_index=level<(range->dimensions[i]-1)>level:(range->dimensions[i]-1);
+                    size_t cur_index=level<(range->dimensions[i]-1)?level:(range->dimensions[i]-1);
                     level-=cur_index;
                     local_index[i]=cur_index;
                     global_offset+=cur_index*range->global_dim_strides[i];
