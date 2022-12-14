@@ -3524,7 +3524,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
             else{
                 for (size_t i=0;i<conf.num;i++){
-                    if(fabs(Data[i])>conf.absErrorBound)
+                    if(fabs(data[i])>conf.absErrorBound)
                         count++;
 
                 }
