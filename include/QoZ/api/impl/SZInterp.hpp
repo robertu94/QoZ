@@ -3880,7 +3880,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             char s4[]="_external_deccoeff_idwt.tmp";
             strcat(s3,s4);
             QoZ::readfile<T>(s3, conf.num, decData);
-            iif(conf.coeffTracking%2==1)
+            if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
