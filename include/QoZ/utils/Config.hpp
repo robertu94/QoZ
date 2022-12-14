@@ -148,6 +148,7 @@ namespace QoZ {
             predictorTuningRate = cfg.GetReal("AlgoSettings", "predictorTuningRate", predictorTuningRate);
             wavelet_rel_coeff = cfg.GetReal("AlgoSettings", "wavelet_rel_coeff", wavelet_rel_coeff);
             preTrim = cfg.GetReal("AlgoSettings", "preTrim", preTrim);
+            waveletTuningRate = cfg.GetReal("AlgoSettings", "waveletTuningRate", waveletTuningRate);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
             lorenzo = cfg.GetBoolean("AlgoSettings", "Lorenzo", lorenzo);
@@ -201,6 +202,7 @@ namespace QoZ {
             pid = cfg.GetInteger("AlgoSettings", "pid", pid);
             blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
             coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
+            waveletTest = cfg.GetInteger("AlgoSettings", "waveletTest", waveletTest);
 
 
 
@@ -393,6 +395,8 @@ namespace QoZ {
         int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
         double preTrim=0.0;//trim small numbers to zero before compression.
         int blockOrder = 0;//order of blocks.
+        int waveletTest = 0;
+        double waveletTuningRate = 0.0;
 
         
 

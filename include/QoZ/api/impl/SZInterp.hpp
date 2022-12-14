@@ -727,7 +727,7 @@ double Tuning(QoZ::Config &conf, T *data){
    
     
     T rng=conf.rng;
-    double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;;
+    double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
     //QoZ::Timer timer(true);
     
     //timer.stop("")
@@ -803,6 +803,9 @@ double Tuning(QoZ::Config &conf, T *data){
         num_blocks=starts.size();
 
     }
+
+    std::vector<size_t> global_dims=conf.dims;
+    size_t global_num=conf.num;
    
 
     /*
@@ -1214,13 +1217,177 @@ double Tuning(QoZ::Config &conf, T *data){
 
         }
         */
+
+        if(conf.waveletTest>0){
+            {
+                if(conf.waveletTuningRate==0)
+                    conf.waveletTuningRate=conf.predictorTuningRate;
+                for(int i=0;i<sampled_blocks.size();i++){
+                    std::vector< T >().swap(sampled_blocks[i]);
+                   
+                }
+                std::vector< std::vector<T> >().swap(sampled_blocks);
+                  
+                
+                
+                if (totalblock_num==-1){
+                    totalblock_num=1;
+                    for(int i=0;i<N;i++){
+                        
+                        totalblock_num*=(int)((conf.dims[i]-1)/sampleBlockSize);
+                    }
+
+
+                }
+
+               
+                //sampled_blocks.resize( (int)((totalblock_num-1)/sample_ratio)+1 );
+                int idx=0,block_idx=0;   
+
+                if(conf.profiling){
+                    
+                    int sample_ratio=int(num_blocks/(totalblock_num*conf.waveletTuningRate));
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
+                   
+                    
+
+                    if(N==2){
+                        for(int i=0;i<num_blocks;i+=sample_ratio){
+                            std::vector<T> s_block;
+                            QoZ::sample_block_2d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
+                            sampled_blocks.push_back(s_block);
+
+                        }
+                    }
+                    else if(N==3){
+                        for(int i=0;i<num_blocks;i+=sample_ratio){
+                            std::vector<T> s_block;
+                            QoZ::sample_block_3d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
+                            sampled_blocks.push_back(s_block);
+
+                        }
+                    }
+
+
+
+
+
+                }
+                
+                else{
+                    int sample_ratio=int(1.0/conf.waveletTuningRate);
+                    if(sample_ratio<=0)
+                        sample_ratio=1;
+                    if (N==2){
+                        
+                        //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
+
+                        for (size_t x_start=0;x_start<conf.dims[0]-sampleBlockSize;x_start+=sampleBlockSize){
+                            
+                            for (size_t y_start=0;y_start<conf.dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
+                                if (idx%sample_ratio==0){
+                                   
+
+                                    std::vector<size_t> starts{x_start,y_start};
+                                    std::vector<T> s_block;
+                                    QoZ::sample_block_2d<T,N>(data, s_block,conf.dims, starts,sampleBlockSize+1);
+                                    sampled_blocks.push_back(s_block);
+                                }
+                                idx+=1;
+
+                            }
+                        }
+                    }
+                    else if (N==3){
+                        //std::vector<size_t> sample_dims(3,sampleBlockSize+1);
+                        
+                        for (size_t x_start=0;x_start<conf.dims[0]-sampleBlockSize;x_start+=sampleBlockSize){
+                            
+                            for (size_t y_start=0;y_start<conf.dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
+                                for (size_t z_start=0;z_start<conf.dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
+                                    if (idx%sample_ratio==0){
+                                        std::vector<size_t> starts{x_start,y_start,z_start};
+                                        std::vector<T> s_block;
+                                        QoZ::sample_block_3d<T,N>(data, s_block,conf.dims, starts,sampleBlockSize+1);
+                                        sampled_blocks.push_back(s_block);
+                                    }
+                                    idx+=1;
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            num_sampled_blocks=sampled_blocks.size();
+            per_block_ele_num=pow(sampleBlockSize+1,N);
+            ele_num=num_sampled_blocks*per_block_ele_num;
+            conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
+            conf.num=per_block_ele_num;
+            std::vector<T> cur_block(per_block_ele_num,0);
+
+            double wave_eb=conf.absErrorBound*conf.wavelet_rel_coeff;
+
+            size_t sig_count=0;
+
+            std::vector<T> gathered_coeffs;
+
+            //
+
+            for (int i=0;i<num_sampled_blocks;i++){
+
+                cur_block=sampled_blocks[i];
+                QoZ::Wavelet<T,N> wlt;
+                wlt.preProcess_cdf97(cur_block.data(),conf.dims);
+
+                for(size_t i=0;i<conf.num;i++){
+                    if(fabs(cur_block[i])>wave_eb)
+                        sig_count++;
+
+                }
+                gathered_coeffs.insert(gathered_coeffs.end(),cur_block.begin(),cur_block.end());
+                                
+
+
+            }
+
+            double sig_rate=(double)sig_count/ele_num;
+
+            double normvar=QoZ::calcNormedVariance(gathered_coeffs,ele_num);
+            std::vector< T >().swap(gathered_coeffs);
+            bool useWave=false;
+            if (normvar>0.01 or sigrate>0.05){
+                useWave=true;
+
+            }
+            if(conf.verbose){
+                std::cout<<"Sigrate: "<<sigrate<<"Normvar: "<<normvar<<std::endl;
+                std::cout<<"Use wave: "<<useWave<<std::endl;
+
+            }
+
+
+
+            conf.dims=global_dims;
+            conf.num=global_num;
+
+        }
+
+
+
+
+
+
         if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
             if (conf.verbose)
                 std::cout<<"Predictor tuning started."<<std::endl;
 
 
-            std::vector<size_t> global_dims=conf.dims;
-            size_t global_num=conf.num;
+            
             double o_alpha=conf.alpha;
             double o_beta=conf.beta;
 
@@ -1232,7 +1399,7 @@ double Tuning(QoZ::Config &conf, T *data){
             //std::vector< std::vector<T> > sampled_blocks;
            
          
-            {//if(!conf.exhaustiveTuning or conf.predictorTuningRate!=conf.autoTuningRate){
+            if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate){
                 
                 for(int i=0;i<sampled_blocks.size();i++){
                     std::vector< T >().swap(sampled_blocks[i]);
@@ -1341,6 +1508,10 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
             conf.num=per_block_ele_num;
             std::vector<T> cur_block(per_block_ele_num,0);
+
+
+            conf.dims=global_dims;
+            conf.num=global_num;
 
 
            
@@ -2006,8 +2177,8 @@ double Tuning(QoZ::Config &conf, T *data){
                 std::cout<<"Alpha beta tuning started."<<std::endl;
            
             
-            std::vector<size_t> global_dims=conf.dims;
-            size_t global_num=conf.num;
+            //std::vector<size_t> global_dims=conf.dims;
+            //size_t global_num=conf.num;
             
            
             
@@ -3047,8 +3218,8 @@ double Tuning(QoZ::Config &conf, T *data){
                 std::cout<<"Second Predictor tuning started."<<std::endl;
 
 
-            std::vector<size_t> global_dims=conf.dims;
-            size_t global_num=conf.num;
+            //std::vector<size_t> global_dims=conf.dims;
+            //size_t global_num=conf.num;
             
 
 
@@ -4109,6 +4280,9 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
 
     }
     num_blocks=starts.size();
+
+    std::vector<size_t> global_dims=conf.dims;
+    size_t global_num=conf.num;
     /*
     std::vector<T> orig_data(conf.num,0);
     for(int i=0;i<conf.num;i++)
@@ -4125,10 +4299,10 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     {
         //tune interp
         if ( conf.autoTuningRate>0 ){
-            std::vector<size_t> global_dims=conf.dims;
+            //std::vector<size_t> global_dims=conf.dims;
             //size_t orig_maxStep=conf.maxStep;
             //conf.maxStep=conf.dims[0]-1;
-            size_t global_num=conf.num;
+            //size_t global_num=conf.num;
             
             
             

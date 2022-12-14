@@ -87,6 +87,35 @@ namespace QoZ {
     }
 
     template<typename Type>
+    double calcNormedVariance(const Type *data, size_t num){
+        double max=data[0],min=data[0];
+
+        double average=0;
+
+        for(size_t i=0;i<num;i++){
+            double val=data[i];
+            max=val>max?val:max;
+            min=val<min?val:min;
+            average+=val;
+        }
+        average/=num;
+        average=(average-min)/(max-min);
+        double variance;
+        for(size_t i=0;i<num;i++){
+            double val=data[i];
+            val=(val-min)/(max-min);
+
+            variance+=(val-average)*(val-average);
+
+        }
+        variance/=num;
+        return variance;
+        
+
+
+    }
+
+    template<typename Type>
     void verify(Type *ori_data, Type *data, size_t num_elements, double &psnr, double &nrmse) {
         size_t i = 0;
         double Max = ori_data[0];
