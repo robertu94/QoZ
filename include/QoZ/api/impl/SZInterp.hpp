@@ -3510,8 +3510,29 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.absErrorBound*=conf.wavelet_rel_coeff;
 
 
-        if(conf.coeffTracking)
+        if(conf.coeffTracking%2==1)
             QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
+        if(conf.coeffTracking>1){
+            size_t count=0;
+            if(conf.external_wave){
+                for (size_t i=0;i<conf.num;i++){
+                    if(fabs(coeffData[i])>conf.absErrorBound)
+                        count++;
+
+                }
+
+            }
+            else{
+                for (size_t i=0;i<conf.num;i++){
+                    if(fabs(Data[i])>conf.absErrorBound)
+                        count++;
+
+                }
+
+            }
+
+            std::cout<<"Significant coeff rate: "<<(float)count/conf.num;
+        }
             
             //std::cout<<conf.transformation<<std::endl;
             /*
@@ -3780,7 +3801,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     
 
     if(conf.wavelet){
-        if(conf.coeffTracking)
+        if(conf.coeffTracking>0)
             std::cout<<"Coeff CR = "<<(conf.num*1.0*sizeof(T))/outSize<<std::endl;
         
         conf.firstSize=outSize;
@@ -3859,7 +3880,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             char s4[]="_external_deccoeff_idwt.tmp";
             strcat(s3,s4);
             QoZ::readfile<T>(s3, conf.num, decData);
-            if(conf.coeffTracking)
+            iif(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
@@ -3874,7 +3895,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(decData,conf.dims);
-            if(conf.coeffTracking)
+            if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
