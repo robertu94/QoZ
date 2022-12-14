@@ -3531,7 +3531,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             }
 
-            std::cout<<"Significant coeff rate: "<<(float)count/conf.num;
+            std::cout<<"Significant coeff rate: "<<(float)count/conf.num<<std::endl;
         }
             
             //std::cout<<conf.transformation<<std::endl;
