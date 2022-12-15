@@ -1357,15 +1357,15 @@ double Tuning(QoZ::Config &conf, T *data){
 
             double sig_rate=(double)sig_count/ele_num;
 
-            double normvar=QoZ::calcNormedVariance(gathered_coeffs,ele_num);
+            double normvar=QoZ::calcNormedVariance(gathered_coeffs.data(),ele_num);
             std::vector< T >().swap(gathered_coeffs);
             bool useWave=false;
-            if (normvar>0.01 or sigrate>0.05){
+            if (normvar>0.01 or sig_rate>0.05){
                 useWave=true;
 
             }
             if(conf.verbose){
-                std::cout<<"Sigrate: "<<sigrate<<"Normvar: "<<normvar<<std::endl;
+                std::cout<<"Sigrate: "<<sig_rate<<"Normvar: "<<normvar<<std::endl;
                 std::cout<<"Use wave: "<<useWave<<std::endl;
 
             }
