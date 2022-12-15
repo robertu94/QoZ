@@ -778,16 +778,16 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
     size_t idx=0,block_idx=0;   
 
     if(profiling){
-        size_t num_blocks=starts.size();
+        size_t num_filtered_blocks=starts.size();
                     
-        size_t sample_stride=(size_t)(num_blocks/(totalblock_num*sample_rate));
+        size_t sample_stride=(size_t)(num_filtered_blocks/(totalblock_num*sample_rate));
         if(sample_stride<=0)
             sample_stride=1;
                    
                     
 
         if(N==2){
-            for(size_t i=0;i<num_blocks;i+=sample_stride){
+            for(size_t i=0;i<num_filtered_blocks;i+=sample_stride){
                 std::vector<T> s_block;
                 QoZ::sample_block_2d<T,N>(data, s_block,dims, starts[i],sampleBlockSize+1);
                 sampled_blocks.push_back(s_block);
@@ -795,7 +795,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             }
         }
         else if(N==3){
-            for(size_t i=0;i<num_blocks;i+=sample_stride){
+            for(size_t i=0;i<num_filtered_blocks;i+=sample_stride){
                 std::vector<T> s_block;
                 QoZ::sample_block_3d<T,N>(data, s_block,dims, starts[i],sampleBlockSize+1);
                 sampled_blocks.push_back(s_block);
@@ -934,7 +934,7 @@ double Tuning(QoZ::Config &conf, T *data){
     }
         
     
-    size_t num_blocks=0;
+    
     std::vector<std::vector<size_t> >starts;
     if((conf.waveletTuningRate>0 or conf.autoTuningRate>0 or conf.predictorTuningRate>0) and conf.profiling){
         
@@ -947,7 +947,7 @@ double Tuning(QoZ::Config &conf, T *data){
         //num_blocks=starts.size();
 
     }
-
+    size_t num_filtered_blocks=starts.size();
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
    
@@ -1884,10 +1884,10 @@ double Tuning(QoZ::Config &conf, T *data){
                    
 
                 double bitrate=8*double(outSize)/ele_num;
-                std::cout<<bitrate<<std::endl;
+                //std::cout<<bitrate<<std::endl;
                 if(conf.profiling){
                     bitrate*=((double)num_blocks)/(totalblock_num);
-                    std::cout<<bitrate<<std::endl;
+                    //std::cout<<bitrate<<std::endl;
                 }
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
                 /*
@@ -1908,17 +1908,17 @@ double Tuning(QoZ::Config &conf, T *data){
                 */
 
                 if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
-                    std::cout<<"---"<<std::endl;
+                    //std::cout<<"---"<<std::endl;
                     double mse=square_error/ele_num;
-                    std::cout<<mse<<std::endl;
+                    //std::cout<<mse<<std::endl;
 
                     if(conf.profiling){
                         mse*=((double)num_blocks)/(totalblock_num);
                     }
-                    std::cout<<mse<<std::endl;
+                    //std::cout<<mse<<std::endl;
                     metric=QoZ::PSNR(rng,mse);
-                    std::cout<<metric<<std::endl;
-                    std::cout<<"---"<<std::endl;
+                    //std::cout<<metric<<std::endl;
+                    //std::cout<<"---"<<std::endl;
                 }
                 else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
