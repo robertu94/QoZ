@@ -820,7 +820,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){
                             
                 for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
-                    if (idx%sample_ratio==0){
+                    if (idx%sample_stride==0){
                                    
 
                         std::vector<size_t> starts{x_start,y_start};
@@ -840,7 +840,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
                             
                 for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
                     for (size_t z_start=0;z_start<dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
-                        if (idx%sample_ratio==0){
+                        if (idx%sample_stride==0){
                             std::vector<size_t> starts{x_start,y_start,z_start};
                             std::vector<T> s_block;
                             QoZ::sample_block_3d<T,N>(data, s_block,dims, starts,sampleBlockSize+1);
@@ -952,7 +952,7 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.waveletTuningRate=conf.predictorTuningRate;
 
 
-        sampleBlocks(data,conf.dims,sampleBlockSize,sampled_blocks,conf.waveletTuningRate,0,starts);
+        sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.waveletTuningRate,0,starts);
             
 
 
@@ -1054,7 +1054,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate){
                 
                 
-            sampleBlocks(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
+            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
                 
                 
                 
@@ -1340,7 +1340,7 @@ double Tuning(QoZ::Config &conf, T *data){
             if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                     //recover sample if real compression used
                     
-                sampleBlocks(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
+                sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
             }
                 
             if(conf.autoTuningRate==0){
@@ -1648,7 +1648,7 @@ double Tuning(QoZ::Config &conf, T *data){
             
         if (conf.autoTuningRate!=conf.predictorTuningRate and (conf.predictorTuningRate!=0 or conf.autoTuningRate!=conf.waveletTuningRate)){
               
-            sampleBlocks(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
+            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
         }
 
             
