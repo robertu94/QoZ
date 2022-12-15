@@ -1884,8 +1884,10 @@ double Tuning(QoZ::Config &conf, T *data){
                    
 
                 double bitrate=8*double(outSize)/ele_num;
+                std::cout<<bitrate<<std::endl;
                 if(conf.profiling){
                     bitrate*=((double)num_blocks)/(totalblock_num);
+                    std::cout<<bitrate<<std::endl;
                 }
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
                 /*
