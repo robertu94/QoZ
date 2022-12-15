@@ -1371,7 +1371,9 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }*/
             if(conf.verbose){
+                double orivar=QoZ::calcNormedVariance(data,global_num);
                 std::cout<<"Sigrate: "<<sig_rate<<" Normvar: "<<normvar<<std::endl;
+                std::cout<<"Orivar: "<<orivar<<" Varrate: "<<normvar/orivar<<std::endl;
                 std::cout<<"Use wave: "<<useWave<<std::endl;
 
             }
