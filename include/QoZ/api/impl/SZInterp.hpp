@@ -1335,12 +1335,14 @@ double Tuning(QoZ::Config &conf, T *data){
             size_t sig_count=0;
 
             std::vector<T> gathered_coeffs;
+            std::vector<T> gathered_blocks;
 
             //
 
             for (int i=0;i<num_sampled_blocks;i++){
 
                 cur_block=sampled_blocks[i];
+                gathered_blocks.insert(gathered_blocks.end(),cur_block.begin(),cur_block.end());
                 QoZ::Wavelet<T,N> wlt;
                 wlt.preProcess_cdf97(cur_block.data(),conf.dims);
 
@@ -1358,7 +1360,9 @@ double Tuning(QoZ::Config &conf, T *data){
             double sig_rate=(double)sig_count/ele_num;
 
             double normvar=QoZ::calcNormedVariance(gathered_coeffs.data(),ele_num);
+            double orivar=QoZ::calcNormedVariance(gathered_blocks.data(),ele_num);
             std::vector< T >().swap(gathered_coeffs);
+            std::vector< T >().swap(gathered_blocks);
             bool useWave=(normvar<1e-4);
             /*
             if (normvar>0.01 or sig_rate>0.05){
@@ -1371,7 +1375,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }*/
             if(conf.verbose){
-                double orivar=QoZ::calcNormedVariance(data,global_num);
+                
                 std::cout<<"Sigrate: "<<sig_rate<<" Normvar: "<<normvar<<std::endl;
                 std::cout<<"Orivar: "<<orivar<<" Varrate: "<<normvar/orivar<<std::endl;
                 std::cout<<"Use wave: "<<useWave<<std::endl;
