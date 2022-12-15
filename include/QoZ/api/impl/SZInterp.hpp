@@ -930,7 +930,7 @@ double Tuning(QoZ::Config &conf, T *data){
     
     for(int i=0;i<N;i++){
                         
-        totalblock_num*=(int)((conf.dims[i]-1)/sampleBlockSize);
+        totalblock_num*=(size_t)((conf.dims[i]-1)/sampleBlockSize);
     }
         
     
@@ -1906,13 +1906,17 @@ double Tuning(QoZ::Config &conf, T *data){
                 */
 
                 if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
-                    
+                    std::cout<<"---"<<std::endl;
                     double mse=square_error/ele_num;
+                    std::cout<<mse<<std::endl;
 
                     if(conf.profiling){
                         mse*=((double)num_blocks)/(totalblock_num);
                     }
+                    std::cout<<mse<<std::endl;
                     metric=QoZ::PSNR(rng,mse);
+                    std::cout<<metric<<std::endl;
+                    std::cout<<"---"<<std::endl;
                 }
                 else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
