@@ -1364,6 +1364,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 useWave=false;
 
             }
+
+            if (normvar<1e-5 or sig_rate<0.01){
+                useWave=true;
+
+            }
             if(conf.verbose){
                 std::cout<<"Sigrate: "<<sig_rate<<" Normvar: "<<normvar<<std::endl;
                 std::cout<<"Use wave: "<<useWave<<std::endl;
