@@ -1365,7 +1365,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }
 
-            if (normvar<1e-5 or sig_rate<0.01){
+            if (normvar<1e-4 or sig_rate<0.01){
                 useWave=true;
 
             }
