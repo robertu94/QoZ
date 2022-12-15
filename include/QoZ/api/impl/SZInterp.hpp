@@ -748,7 +748,7 @@ int compareWavelets(QoZ::Config &conf, std::vector< std::vector<T> > & sampled_b
 */
 
 template<class T, QoZ::uint N>
-void sampleBlocks(T *data,std::vector<size_t> &dims, std::vector< std::vector<typename T> > & sampled_blocks,double sample_rate,int profiling = 0,std::vector<std::vector<size_t> > &starts=NULL){
+void sampleBlocks(T *data,std::vector<size_t> &dims, std::vector< std::vector<T> > & sampled_blocks,double sample_rate,int profiling = 0,std::vector<std::vector<size_t> > &starts){
     for(int i=0;i<sampled_blocks.size();i++){
                 std::vector< T >().swap(sampled_blocks[i]);
                    
