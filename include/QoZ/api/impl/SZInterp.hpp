@@ -1244,7 +1244,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 //sampled_blocks.resize( (int)((totalblock_num-1)/sample_ratio)+1 );
                 int idx=0,block_idx=0;   
 
-                if(conf.profiling){
+                if(0){//no profiling
                     
                     int sample_ratio=int(num_blocks/(totalblock_num*conf.waveletTuningRate));
                     if(sample_ratio<=0)
