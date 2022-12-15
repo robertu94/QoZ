@@ -1886,7 +1886,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double bitrate=8*double(outSize)/ele_num;
                 //std::cout<<bitrate<<std::endl;
                 if(conf.profiling){
-                    bitrate*=((double)num_blocks)/(totalblock_num);
+                    bitrate*=((double)num_filtered_blocks)/(totalblock_num);
                     //std::cout<<bitrate<<std::endl;
                 }
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
@@ -1913,7 +1913,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     //std::cout<<mse<<std::endl;
 
                     if(conf.profiling){
-                        mse*=((double)num_blocks)/(totalblock_num);
+                        mse*=((double)num_filtered_blocks)/(totalblock_num);
                     }
                     //std::cout<<mse<<std::endl;
                     metric=QoZ::PSNR(rng,mse);
@@ -2047,7 +2047,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         
                     double bitrate_r=8*double(outSize)/ele_num;
                     if(conf.profiling){
-                        bitrate_r*=((double)num_blocks)/(totalblock_num);
+                        bitrate_r*=((double)num_filtered_blocks)/(totalblock_num);
                     }
                     //bitrate_r+=8*sizeof(T)*anchor_rate;//added
                         
@@ -2057,7 +2057,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
                         double mse=square_error/ele_num;
                         if(conf.profiling){
-                            mse*=((double)num_blocks)/(totalblock_num);
+                            mse*=((double)num_filtered_blocks)/(totalblock_num);
                             }
                             metric_r=QoZ::PSNR(rng,mse);
                     }
@@ -2280,7 +2280,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             
             if(conf.profiling){
-                bitrate*=((double)num_blocks)/(totalblock_num);
+                bitrate*=((double)num_filtered_blocks)/(totalblock_num);
             }
             //bitrate+=8*sizeof(T)*anchor_rate;//added
                     /*
@@ -2304,7 +2304,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     //std::cout<<square_error<<std::endl;
                 double mse=square_error/ele_num;
                 if(conf.profiling){
-                    mse*=((double)num_blocks)/(totalblock_num);
+                    mse*=((double)num_filtered_blocks)/(totalblock_num);
                 }
                 metric=QoZ::PSNR(rng,mse);
             }
@@ -2493,7 +2493,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                 
                 if(conf.profiling){
-                    bitrate_r*=((double)num_blocks)/(totalblock_num);
+                    bitrate_r*=((double)num_filtered_blocks)/(totalblock_num);
                 }
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
                         /*
@@ -2516,7 +2516,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
                     double mse=square_error/ele_num;
                     if(conf.profiling){
-                        mse*=((double)num_blocks)/(totalblock_num);
+                        mse*=((double)num_filtered_blocks)/(totalblock_num);
                     }
                     metric_r=QoZ::PSNR(rng,mse);
                 }
@@ -2594,8 +2594,8 @@ double Tuning(QoZ::Config &conf, T *data){
          conf.cmprAlgo=QoZ::ALGO_LORENZO_REG;
     } 
 
-
-
+ 
+    /*
         if (conf.lastPdTuning and conf.cmprAlgo==QoZ::ALGO_INTERP and conf.autoTuningRate>0 and conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
             if (conf.verbose)
                 std::cout<<"Second Predictor tuning started."<<std::endl;
@@ -2639,14 +2639,14 @@ double Tuning(QoZ::Config &conf, T *data){
 
                 if(conf.profiling){
                     
-                    int sample_ratio=int(num_blocks/(totalblock_num*conf.predictorTuningRate));
+                    int sample_ratio=int(num_filtered_blocks/(totalblock_num*conf.predictorTuningRate));
                     if(sample_ratio<=0)
                         sample_ratio=1;
                    
                     
 
                     if(N==2){
-                        for(int i=0;i<num_blocks;i+=sample_ratio){
+                        for(int i=0;i<num_filtered_blocks;i+=sample_ratio){
                             std::vector<T> s_block;
                             QoZ::sample_block_2d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
                             sampled_blocks.push_back(s_block);
@@ -2654,7 +2654,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         }
                     }
                     else if(N==3){
-                        for(int i=0;i<num_blocks;i+=sample_ratio){
+                        for(int i=0;i<num_filtered_blocks;i+=sample_ratio){
                             std::vector<T> s_block;
                             QoZ::sample_block_3d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
                             sampled_blocks.push_back(s_block);
@@ -2761,10 +2761,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                     for (auto &interp_op: interpAlgo_Candidates) {
                         for (auto &interp_direction: interpDirection_Candidates) {
-                            /*
-                            if (interp_direction==2 and level<=2)
-                                continue;
-                            */
+                           
                             conf.interpAlgo=interp_op;
                             conf.interpDirection=interp_direction;
                             double cur_absloss=0;
@@ -2964,6 +2961,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
 
         }
+    */
         
 
 
@@ -3600,7 +3598,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     std::vector<T> sampling_data;
     std::vector< std::vector<T> > sampled_blocks;
     std::vector< std::vector<size_t> > starts;
-    int totalblock_num=-1;
+    size_t totalblock_num=1;
     if (conf.interpBlockSize<=0){
             conf.interpBlockSize = (N==2?64:32);
     }
@@ -3652,7 +3650,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     
     conf.fixBlockSize=conf.interpBlockSize;
 
-    size_t num_blocks=0;
+    size_t num_filtered_blocks=0;
     if(conf.autoTuningRate>0  and conf.profiling){
         if(N==2){
             QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound);
@@ -3662,7 +3660,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
         }
 
     }
-    num_blocks=starts.size();
+    num_filtered_blocks=starts.size();
 
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
@@ -3690,90 +3688,17 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
             
             
             
-            if (totalblock_num==-1){
-                    totalblock_num=1;
-                    for(int i=0;i<N;i++){
-                        totalblock_num*=(int)((conf.dims[i]-1)/sampleBlockSize);
-                    }
+         
+            totalblock_num=1;
+            for(int i=0;i<N;i++){
+                totalblock_num*=(int)((conf.dims[i]-1)/sampleBlockSize);
+            }
 
 
-                }
-                //sampled_blocks.resize( (int)((totalblock_num-1)/sample_ratio)+1 );
                 
-            int idx=0,block_idx=0;
-            //int step_length=int(pow(sample_ratio,1.0/N));
+                //sampled_blocks.resize( (int)((totalblock_num-1)/sample_ratio)+1 );
+            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,conf.profiling,starts);  
             
-            //std::cout<<"step 1"<<std::endl;
-            if(conf.profiling){
-                    
-                    int sample_ratio=int(num_blocks/(totalblock_num*conf.autoTuningRate));
-                    if(sample_ratio<=0)
-                        sample_ratio=1;
-
-                    if(N==2){
-                        for(int i=0;i<num_blocks;i+=sample_ratio){
-                            std::vector<T> s_block;
-                            QoZ::sample_block_2d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
-                            sampled_blocks.push_back(s_block);
-
-                        }
-                    }
-                    else if(N==3){
-                        for(int i=0;i<num_blocks;i+=sample_ratio){
-                            std::vector<T> s_block;
-                            QoZ::sample_block_3d<T,N>(data, s_block,conf.dims, starts[i],sampleBlockSize+1);
-                            sampled_blocks.push_back(s_block);
-
-                        }
-                    }
-
-
-
-
-            }
-            else{
-                int sample_ratio=int(1.0/conf.autoTuningRate);
-                if(sample_ratio<=0)
-                    sample_ratio=1;
-                if (N==2){
-                    
-                    //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
-
-                    for (size_t x_start=0;x_start<conf.dims[0]-sampleBlockSize;x_start+=sampleBlockSize){
-                        
-                        for (size_t y_start=0;y_start<conf.dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
-                            if (idx%sample_ratio==0){
-                                std::vector<size_t> starts{x_start,y_start};
-                                std::vector<T> s_block;
-                                QoZ::sample_block_2d<T,N>(data, s_block,conf.dims, starts,sampleBlockSize+1);
-                                sampled_blocks.push_back(s_block);
-                            }
-                            idx+=1;
-
-                        }
-                    }
-                }
-                else if (N==3){
-                    //std::vector<size_t> sample_dims(3,sampleBlockSize+1);
-                    
-                    for (size_t x_start=0;x_start<conf.dims[0]-sampleBlockSize;x_start+=sampleBlockSize){
-                        
-                        for (size_t y_start=0;y_start<conf.dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
-                            for (size_t z_start=0;z_start<conf.dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
-                                if (idx%sample_ratio==0){
-                                    std::vector<size_t> starts{x_start,y_start,z_start};
-                                    std::vector<T> s_block;
-                                    QoZ::sample_block_3d<T,N>(data, s_block,conf.dims, starts,sampleBlockSize+1);
-                                    sampled_blocks.push_back(s_block);
-                                }
-                                idx+=1;
-
-
-                            }
-                        }
-                    }
-                }
-            }
             double anchor_rate=0;
             if (conf.maxStep>0){
                 anchor_rate=1/(pow(conf.maxStep,N));
@@ -4022,13 +3947,13 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                     double bitrate=8*double(outSize)/ele_num;
                     bitrate+=8*sizeof(T)*anchor_rate;
                     if(conf.profiling){
-                            bitrate*=((double)num_blocks)/(totalblock_num);
+                            bitrate*=((double)num_filtered_blocks)/(totalblock_num);
                         }
 
                     if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
                         double mse=square_error/ele_num;
                         if(conf.profiling){
-                            mse*=((double)num_blocks)/(totalblock_num);
+                            mse*=((double)num_filtered_blocks)/(totalblock_num);
                          }
                          metric=QoZ::PSNR(rng,mse);
                     }
@@ -4156,14 +4081,14 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         double bitrate_r=8*double(outSize)/ele_num;
                         bitrate_r+=8*sizeof(T)*anchor_rate;
                         if(conf.profiling){
-                            bitrate_r*=((double)num_blocks)/(totalblock_num);
+                            bitrate_r*=((double)num_filtered_blocks)/(totalblock_num);
                         }
 
 
                         if(conf.tuningTarget==QoZ::TUNING_TARGET_RD){
                             double mse=square_error/ele_num;
                             if(conf.profiling){
-                                mse*=((double)num_blocks)/(totalblock_num);
+                                mse*=((double)num_filtered_blocks)/(totalblock_num);
                              }
                              metric_r=QoZ::PSNR(rng,mse);
                         }
