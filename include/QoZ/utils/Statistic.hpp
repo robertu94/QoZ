@@ -100,7 +100,7 @@ namespace QoZ {
         }
         average/=num;
         average=(average-min)/(max-min);
-        double variance;
+        double variance=0;
         for(size_t i=0;i<num;i++){
             double val=data[i];
             val=(val-min)/(max-min);
