@@ -930,7 +930,7 @@ double Tuning(QoZ::Config &conf, T *data){
     
     for(int i=0;i<N;i++){
                         
-        totalblock_num*=(int)((dims[i]-1)/sampleBlockSize);
+        totalblock_num*=(int)((conf.dims[i]-1)/sampleBlockSize);
     }
         
     
