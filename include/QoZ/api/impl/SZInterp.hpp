@@ -3004,7 +3004,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
 
             }
           
-            std::vector<double> flattened_cur_blocks;
+            std::vector<T> flattened_cur_blocks;
 
 
             auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
