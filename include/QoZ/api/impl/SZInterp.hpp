@@ -1977,7 +1977,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         QoZ::HuffmanEncoder<int>(),
                         QoZ::Lossless_zstd());
 
-        std::vector<double> flattened_sampled_data;
+        std::vector<T> flattened_sampled_data;
            
         if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
 
