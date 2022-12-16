@@ -1,6 +1,6 @@
 #ifndef _SZ_INTERPOLATION_COMPRESSSOR_HPP
 #define _SZ_INTERPOLATION_COMPRESSSOR_HPP
-
+#include "QoZ/compressor/Compressor.hpp"
 #include "QoZ/predictor/Predictor.hpp"
 #include "QoZ/predictor/LorenzoPredictor.hpp"
 #include "QoZ/quantizer/Quantizer.hpp"
@@ -19,7 +19,7 @@
 #include <limits>
 namespace QoZ {
     template<class T, uint N, class Quantizer, class Encoder, class Lossless>
-    class SZInterpolationCompressor : public concepts::CompressorInterface<T>{
+    class SZInterpolationCompressor : public concepts::CompressorInterface<T> {//added heritage
     public:
 
 
