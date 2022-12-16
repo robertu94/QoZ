@@ -1650,7 +1650,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         
                 size_t outSize=0;
                
-                auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+                auto cmprData=sz.encoding_lossless(outSize,q_bins);
                     
                     //delete sz;
                 delete []cmprData;
@@ -1731,7 +1731,7 @@ double Tuning(QoZ::Config &conf, T *data){
                        
                     size_t outSize=0;
                    
-                    auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+                    auto cmprData=sz.encoding_lossless(outSize,q_bins);
                         
                     delete []cmprData;
 
@@ -3127,7 +3127,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                     size_t outSize=0;
                     
            
-                    auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+                    auto cmprData=sz.encoding_lossless(outSize,q_bins);
                     delete []cmprData;
                     
                     
@@ -3264,7 +3264,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         outSize=0;
                         
 
-                        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+                        auto cmprData=sz.encoding_lossless(outSize,q_bins);
                         //delete sz;
                         delete []cmprData;
                         
