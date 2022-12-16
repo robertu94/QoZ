@@ -221,7 +221,7 @@ namespace QoZ {
     }
 
     template <class T>
-    double autocorrelation(T *data, T * data2,const size_t &element_num){
+    double autocorrelation(const T *data, const T * data2,const size_t &element_num){
          
          
         std::vector<T>diffs(element_num,0);
@@ -241,7 +241,7 @@ namespace QoZ {
         }
         cov/=element_num;
         if (cov==0){
-            return 1;
+            return 1.0;
         }
         double sum=0;
         for (size_t i=0;i<element_num-1;i++){
