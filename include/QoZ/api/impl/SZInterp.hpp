@@ -1997,7 +1997,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                 conf.alpha=alpha;
                 conf.beta=beta;                                       
-                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::tuningTarget)conf.tuningTarget,false,profiling_coeff,orig_means,
+                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                     orig_sigma2s,orig_ranges,flattened_sampled_data);
                 double bitrate=results.first;
                 double metric=results.second;
@@ -2024,7 +2024,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     double orieb=conf.absErrorBound;
                     conf.absErrorBound*=eb_fixrate;
                         
-                    std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,profiling_coeff,orig_means,
+                    std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data);
                     conf.absErrorBound=orieb;
 
@@ -2061,7 +2061,7 @@ double Tuning(QoZ::Config &conf, T *data){
         //add lorenzo
         if(conf.testLorenzo){
                 
-            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,profiling_coeff,orig_means,
+            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                     orig_sigma2s,orig_ranges,flattened_sampled_data);
 
             double bitrate=results.first;
@@ -2091,7 +2091,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double orieb=conf.absErrorBound;
                 conf.absErrorBound*=eb_fixrate;
                         
-                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,profiling_coeff,orig_means,
+                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data);
                 conf.absErrorBound=orieb;
 
