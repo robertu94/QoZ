@@ -69,7 +69,10 @@ namespace QoZ {
 
             return lossless_data;
         }
-        uchar *encoding_lossless(size_t &compressed_size){
+        uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()){
+
+            if(q_inds.size()>0)
+                quant_inds=q_inds;
           
             size_t bufferSize = 1.5 * quant_inds.size()*sizeof(T);//original is 3
             uchar *buffer = new uchar[bufferSize];

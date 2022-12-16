@@ -15,6 +15,7 @@ namespace QoZ {
 
             virtual uchar *compress(const Config &conf, T *data, size_t &compressed_size,int tuning=0) = 0;
             virtual uchar *encoding_lossless(size_t &compressed_size) = 0;
+            CompressorInterface(){}
         };
     }
 }

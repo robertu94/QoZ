@@ -860,7 +860,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
 
 template<class T, QoZ::uint N>
 std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std::vector<T> > & sampled_blocks,QoZ::ALGO algo = QoZ::ALGO_INTERP,
-                    QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,const std::vector<double> &orig_means=std::vector<double>(),
+                    QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,double profiling_coeff=1,const std::vector<double> &orig_means=std::vector<double>(),
                     const std::vector<double> &orig_sigma2s=std::vector<double>(),const std::vector<double> &orig_ranges=std::vector<double>(),const std::vector<T> &flattened_sampled_data=std::vector<T>()){
     QoZ::Config testConfig(conf);
     size_t ssim_size=conf.SSIMBlockSize;
@@ -881,9 +881,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     double square_error=0.0;
     double bitrate=0.0;
     double metric=0.0;
+    size_t sampleBlockSize=testConfig.sampleBlockSize;
     size_t num_sampled_blocks=sampled_blocks.size();
     size_t per_block_ele_num=pow(sampleBlockSize+1,N);
-    size_t ele_num=num_sampled_blocks*per_block_ele_num
+    size_t ele_num=num_sampled_blocks*per_block_ele_num;
     std::vector<T> cur_block(per_block_ele_num,0);
 
     std::vector<int> q_bins;
@@ -924,7 +925,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 
     for (int k=0;k<num_sampled_blocks;k++){
         size_t sampleOutSize;
-        cur_block=sampled_blocks[k];
+        std::vector<T> cur_block=sampled_blocks[k];
         auto cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
         delete[]cmprData;
         if(tuningTarget==QoZ::TUNING_TARGET_RD){
@@ -999,10 +1000,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                    
     
 
-    if(testConfig.profiling){
-        bitrate*=((double)num_filtered_blocks)/(totalblock_num);
+    
+        bitrate*=profiling_coeff;
                     //std::cout<<bitrate<<std::endl;
-    }
+    
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
                 /*
                 if (conf.tuningTarget==QoZ::TUNING_TARGET_SSIM){
@@ -1026,11 +1027,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
         double mse=square_error/ele_num;
                     //std::cout<<mse<<std::endl;
 
-        if(testConfig.profiling){
-            mse*=((double)num_filtered_blocks)/(totalblock_num);
-        }
+        
+        mse*=profiling_coeff;
+        
                     //std::cout<<mse<<std::endl;
-        metric=QoZ::PSNR(rng,mse);
+        metric=QoZ::PSNR(testConfig.rng,mse);
                     //std::cout<<metric<<std::endl;
                     //std::cout<<"---"<<std::endl;
     }
@@ -1087,13 +1088,30 @@ double Tuning(QoZ::Config &conf, T *data){
     std::vector<size_t> sample_dims(N);
     std::vector<T> sampling_data;
     double anchor_rate=0;
-    if (conf.maxStep>0){
+    
+
+    int max_interp_level = -1;
+
+    for (size_t i = 0; i < N; i++) {
+        if ( max_interp_level < ceil(log2(conf.dims[i]))) {
+             max_interp_level = (uint) ceil(log2(conf.dims[i]));
+        }
+                
+    }
+
+    if (maxStep>0){
         anchor_rate=1/(pow(conf.maxStep,N));
-        int max_interp_level=(int)log2(conf.maxStep);
+      
+        int temp_max_interp_level=(uint)log2(maxStep);//to be catious: the max_interp_level is different from the ones in szinterpcompressor, which includes the level of anchor grid.
+        if (temp_max_interp_level<=max_interp_level){
+                    
+            max_interp_level=temp_max_interp_level;
+        }
+
         if (conf.levelwisePredictionSelection>max_interp_level)
             conf.levelwisePredictionSelection=max_interp_level;
+
     }
-    
         
         
     
@@ -1125,6 +1143,8 @@ double Tuning(QoZ::Config &conf, T *data){
                         
         totalblock_num*=(size_t)((conf.dims[i]-1)/sampleBlockSize);
     }
+
+
         
     
     
@@ -1141,7 +1161,13 @@ double Tuning(QoZ::Config &conf, T *data){
 
     }
     size_t num_filtered_blocks=starts.size();
+
+    double profiling_coeff=1;
+    if(conf.profiling)
+        profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
     std::vector<size_t> global_dims=conf.dims;
+
+
     size_t global_num=conf.num;
    
 
@@ -1297,7 +1323,7 @@ double Tuning(QoZ::Config &conf, T *data){
             auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
             if (N == 3 && !conf.regression2) {
                     // use fast version for 3D
-                auto sz = QoZ::make_sz_general_compressor<T, N>(QoZ::make_sz_fast_frontend<T, N>(lorenzo_conf, quantizer), QoZ::HuffmanEncoder<int>(),//recently modified conf to lorenzo_conf
+                auto sz = QoZ::make_sz_general_compressor<T, N>(QoZ::make_sz_fast_frontend<T, N>(lorenzo_config, quantizer), QoZ::HuffmanEncoder<int>(),//recently modified conf to lorenzo_conf
                                                                    QoZ::Lossless_zstd());
                 for (int i=0;i<num_sampled_blocks;i++){
                     size_t sampleOutSize;
@@ -1766,7 +1792,7 @@ double Tuning(QoZ::Config &conf, T *data){
         //std::vector<size_t> sample_dims(N);
             
         sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);
-        //QoZ::Config lorenzo_config = conf;
+        QoZ::Config lorenzo_config = conf;
         lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
         lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
         lorenzo_config.lorenzo = true;
@@ -1848,6 +1874,8 @@ double Tuning(QoZ::Config &conf, T *data){
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
         }
 
+
+        
         std::vector<double>alpha_list;
         init_alphalist(alpha_list,rel_bound,conf);
         size_t alpha_nums=alpha_list.size();
@@ -1942,9 +1970,9 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                 conf.alpha=alpha;
                 conf.beta=beta;                                       
-                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,orig_means,
+                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                     orig_sigma2s,orig_ranges,flattened_sampled_data);
-                double birate=results.first;
+                double bitrate=results.first;
                 double metric=results.second;
 
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
@@ -1969,11 +1997,11 @@ double Tuning(QoZ::Config &conf, T *data){
                     double orieb=conf.absErrorBound;
                     conf.absErrorBound*=eb_fixrate;
                         
-                    std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,orig_means,
+                    std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data);
                     conf.absErrorBound=orieb;
 
-                    double bitrate_r_r=results.first;
+                    double bitrate_r=results.first;
                     double metric_r=results.second;
 
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
@@ -1993,7 +2021,7 @@ double Tuning(QoZ::Config &conf, T *data){
                             //printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                     }
                 }
-                if ( (alpha>=1 and pow(alpha,level_num-1)<=beta) or (alpha<1 and alpha*(level_num-1)<=beta) )
+                if ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta) )
                     break;
             }
         }
@@ -2006,10 +2034,10 @@ double Tuning(QoZ::Config &conf, T *data){
         //add lorenzo
         if(conf.testLorenzo){
                 
-            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,orig_means,
+            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,profiling_coeff,orig_means,
                     orig_sigma2s,orig_ranges,flattened_sampled_data);
 
-            double birate=results.first;
+            double bitrate=results.first;
             double metric=results.second;
                     
 
@@ -2036,11 +2064,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 double orieb=conf.absErrorBound;
                 conf.absErrorBound*=eb_fixrate;
                         
-                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,orig_means,
+                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data);
                 conf.absErrorBound=orieb;
 
-                double bitrate_r_r=results.first;
+                double bitrate_r=results.first;
                 double metric_r=results.second;
 
                 double a=(metric-metric_r)/(bitrate-bitrate_r);
@@ -2797,6 +2825,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
 
     }
     num_filtered_blocks=starts.size();
+
 
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;

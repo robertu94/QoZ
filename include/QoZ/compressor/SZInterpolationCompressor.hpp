@@ -498,6 +498,9 @@ namespace QoZ {
 
             return decData;
         }
+        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+            return compress(conf,data,compressed_size,tuning,0,0);
+        }
         // compress given the error bound
         uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
             
@@ -1364,14 +1367,17 @@ namespace QoZ {
         }
 
 
-        uchar *encoding_lossless(Config &conf,std::vector<int> &q_inds,size_t &compressed_size,bool write_metadata=false) {
+        uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()) {
+
+            if(q_inds.size()>0)
+                quant_inds=q_inds;
 
 
 
-            size_t bufferSize = 1.5 * (q_inds.size() * sizeof(T) + quantizer.size_est());//original is 3
+            size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());//original is 3
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
-           
+            /*
             if(write_metadata){
                 write(conf.dims.data(), N, buffer_pos);
                 write(conf.interpBlockSize, buffer_pos);
@@ -1388,6 +1394,7 @@ namespace QoZ {
                     write(conf.interpDirection_list.data(),conf.levelwisePredictionSelection,buffer_pos);
                 }
             }
+            */
 
 
 
@@ -1399,9 +1406,9 @@ namespace QoZ {
            
 
             //timer.start();
-            encoder.preprocess_encode(q_inds, 0);
+            encoder.preprocess_encode(quant_inds, 0);
             encoder.save(buffer_pos);
-            encoder.encode(q_inds, buffer_pos);
+            encoder.encode(quant_inds, buffer_pos);
             encoder.postprocess_encode();
            
 
@@ -1444,10 +1451,10 @@ namespace QoZ {
             }
 
             if (maxStep>0){
-               
+                anchor=true;//recently moved out of if
                 int max_interpolation_level=(uint)log2(maxStep)+1;
                 if (max_interpolation_level<=interpolation_level){
-                    anchor=true;
+                    
                     interpolation_level=max_interpolation_level;
                 }
 
