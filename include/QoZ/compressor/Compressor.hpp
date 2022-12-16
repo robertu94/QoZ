@@ -14,7 +14,7 @@ namespace QoZ {
 
             virtual T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) = 0;
 
-            virtual uchar *compress(const Config &conf, T *data, size_t &compressed_size,int tuning=0) = 0;
+            virtual uchar *compress(Config &conf, T *data, size_t &compressed_size,int tuning=0) = 0;
             //virtual uchar *encoding_lossless(size_t &compressed_size) = 0;
             virtual uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()) = 0;
             
