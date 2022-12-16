@@ -1997,7 +1997,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                 conf.alpha=alpha;
                 conf.beta=beta;                                       
-                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,conf.tuningTarget,false,profiling_coeff,orig_means,
+                std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::tuningTarget)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                     orig_sigma2s,orig_ranges,flattened_sampled_data);
                 double bitrate=results.first;
                 double metric=results.second;
