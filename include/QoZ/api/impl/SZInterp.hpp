@@ -2995,7 +2995,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
           
               
            
-            std::vector<double> flattened_sampled_data;
+            std::vector<T> flattened_sampled_data;
            
             if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
 
