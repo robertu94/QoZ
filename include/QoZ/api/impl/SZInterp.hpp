@@ -898,7 +898,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
 
     size_t idx=0;
     
-    auto sz=new QoZ::concepts::CompressorInterface();
+    auto sz=new QoZ::concepts::CompressorInterface<T>();
     if(algo == QoZ::ALGO_LORENZO_REG){
         auto quantizer = QoZ::LinearQuantizer<T>(testConfig.absErrorBound, testConfig.quantbinCnt / 2);
         if (useFast &&N == 3 && !testConfig.regression2) {
@@ -990,8 +990,28 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                         
                        
     }
+
+    if(algo==QoZ::ALGO_INTERP){
+        size_t q_bin_counts=conf.quant_bin_counts;
+        size_t level_num=q_bin_counts.size();
+        size_tlast_pos=0;
+        for(int k=level_num-1;k>=0;k--){
+            for (size_t l =0;l<num_sampled_blocks;l++){
+                for (size_t m=last_pos;m<q_bin_counts[k];m++){
+                    q_bins.push_back(block_q_bins[l][m]);
+                }
+            }
+            last_pos=q_bin_counts[k];
+        }
+                        
+        outSize=0;
+                        
+
+        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+    }
     size_t sampleOutSize;
-    auto cmprData=sz->encoding_lossless(sampleOutSize);
+
+    auto cmprData=sz->encoding_lossless(sampleOutSize,...);
                    
     delete[]cmprData;
                     //delete sz;
@@ -1001,7 +1021,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     
 
     
-        bitrate*=profiling_coeff;
+    bitrate*=profiling_coeff;
                     //std::cout<<bitrate<<std::endl;
     
                 //bitrate+=8*sizeof(T)*anchor_rate;//added
@@ -1099,10 +1119,10 @@ double Tuning(QoZ::Config &conf, T *data){
                 
     }
 
-    if (maxStep>0){
+    if (conf.maxStep>0){
         anchor_rate=1/(pow(conf.maxStep,N));
       
-        int temp_max_interp_level=(uint)log2(maxStep);//to be catious: the max_interp_level is different from the ones in szinterpcompressor, which includes the level of anchor grid.
+        int temp_max_interp_level=(uint)log2(conf.maxStep);//to be catious: the max_interp_level is different from the ones in szinterpcompressor, which includes the level of anchor grid.
         if (temp_max_interp_level<=max_interp_level){
                     
             max_interp_level=temp_max_interp_level;
@@ -1983,7 +2003,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     //printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                 }
                 else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
-                    if ( (alpha>=1 and pow(alpha,level_num-1)<=beta) or (alpha<1 and alpha*(level_num-1)<=beta) )
+                    if ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta) )
                         break;
 
                     continue;
