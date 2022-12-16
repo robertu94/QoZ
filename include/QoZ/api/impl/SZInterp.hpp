@@ -898,7 +898,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
 
     size_t idx=0;
     
-    auto sz=new QoZ::concepts::CompressorInterface<T>();
+    QoZ::concepts::CompressorInterface<T> *sz;
     if(algo == QoZ::ALGO_LORENZO_REG){
         auto quantizer = QoZ::LinearQuantizer<T>(testConfig.absErrorBound, testConfig.quantbinCnt / 2);
         if (useFast &&N == 3 && !testConfig.regression2) {
