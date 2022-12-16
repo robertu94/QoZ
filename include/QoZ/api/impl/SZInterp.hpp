@@ -928,10 +928,17 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
         std::vector<T> cur_block=sampled_blocks[k];
         auto cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
         delete[]cmprData;
+        if(algo==QoZ::ALGO_INTERP)
+            block_q_bins.push_back(testConfig.quant_bins);
+
         if(tuningTarget==QoZ::TUNING_TARGET_RD){
-            for(size_t j=0;j<per_block_ele_num;j++){
-                T value=sampled_blocks[k][j]-cur_block[j];
-                square_error+=value*value;
+            if(algo==QoZ::ALGO_INTERP)
+                square_error+=testConfig.decomp_square_error;
+            else{
+                for(size_t j=0;j<per_block_ele_num;j++){
+                    T value=sampled_blocks[k][j]-cur_block[j];
+                    square_error+=value*value;
+                }
             }
         }
 
@@ -992,9 +999,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     }
 
     if(algo==QoZ::ALGO_INTERP){
-        size_t q_bin_counts=conf.quant_bin_counts;
+        q_bin_counts=testConfig.quant_bin_counts;
         size_t level_num=q_bin_counts.size();
-        size_tlast_pos=0;
+        size_t last_pos=0;
         for(int k=level_num-1;k>=0;k--){
             for (size_t l =0;l<num_sampled_blocks;l++){
                 for (size_t m=last_pos;m<q_bin_counts[k];m++){
@@ -1004,14 +1011,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
             last_pos=q_bin_counts[k];
         }
                         
-        outSize=0;
+       // outSize=0;
                         
 
         auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
     }
     size_t sampleOutSize;
 
-    auto cmprData=sz->encoding_lossless(sampleOutSize,...);
+    auto cmprData=sz->encoding_lossless(sampleOutSize,q_bins);
                    
     delete[]cmprData;
                     //delete sz;
