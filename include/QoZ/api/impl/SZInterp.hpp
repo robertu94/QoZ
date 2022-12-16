@@ -1069,7 +1069,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                         
     }
                     
-            printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bitrate,metric);
+            printf("%.2f %.2f %.4f %.2f\n",testConfig.alpha,testConfig.beta,bitrate,metric);
 
               
     delete sz;
