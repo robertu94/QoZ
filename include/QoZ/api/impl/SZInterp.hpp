@@ -1064,7 +1064,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     }
     else if (tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-        metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+        metric=1.0-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
         
                         
     }
@@ -3151,7 +3151,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                     }
                     else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-                        metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+                        metric=1.0-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
                         std::vector<T>().swap(flattened_cur_blocks);
                         
                     }
@@ -3286,7 +3286,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         }
                         else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-                            metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+                            metric=1.0-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
                             std::vector<double>().swap(flattened_cur_blocks);
                             
                         }
