@@ -27,7 +27,7 @@ namespace QoZ {
                           "must implement the lossless interface");
         }
 
-        uchar *compress(const Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
 
             Timer timer(true);
             //std::cout<<"general1"<<std::endl;

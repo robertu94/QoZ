@@ -498,7 +498,7 @@ namespace QoZ {
 
             return decData;
         }
-        uchar *compress(const Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+        uchar *compress(Config &conf, T *data, size_t &compressed_size,int tuning=0) {
             return compress(conf,data,compressed_size,tuning,0,0);
         }
         // compress given the error bound
