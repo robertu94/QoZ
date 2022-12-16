@@ -498,11 +498,11 @@ namespace QoZ {
 
             return decData;
         }
-        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+        uchar *compress(const Config &conf, T *data, size_t &compressed_size,int tuning=0) {
             return compress(conf,data,compressed_size,tuning,0,0);
         }
         // compress given the error bound
-        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning,int start_level,int end_level) {
+        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning,int start_level,int end_level=0) {
             
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;

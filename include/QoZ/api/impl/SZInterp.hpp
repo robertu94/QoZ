@@ -1014,7 +1014,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
        // outSize=0;
                         
 
-        auto cmprData=sz.encoding_lossless(conf,q_bins,outSize);
+       
     }
     size_t sampleOutSize;
 
