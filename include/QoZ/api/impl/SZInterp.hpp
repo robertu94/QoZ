@@ -911,7 +911,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
         }
     }
     else if(algo == QoZ::ALGO_INTERP){
-        sz =  QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+        sz =  new QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                         QoZ::LinearQuantizer<T>(testConfig.absErrorBound),
                         QoZ::HuffmanEncoder<int>(),
                         QoZ::Lossless_zstd());
@@ -1064,7 +1064,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     }
     else if (tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-        metric=1-QoZ::autocorrelation(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+        metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
         
                         
     }
@@ -3151,7 +3151,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                     }
                     else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-                        metric=1-QoZ::autocorrelation(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+                        metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
                         std::vector<double>().swap(flattened_cur_blocks);
                         
                     }
@@ -3286,7 +3286,7 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
                         }
                         else if (conf.tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-                            metric=1-QoZ::autocorrelation(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+                            metric=1-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
                             std::vector<double>().swap(flattened_cur_blocks);
                             
                         }
