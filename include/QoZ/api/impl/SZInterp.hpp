@@ -1064,7 +1064,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     }
     else if (tuningTarget==QoZ::TUNING_TARGET_AC){
                        
-        metric=1.0-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+        metric=QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);
+        metric=1-metric;
         
                         
     }
