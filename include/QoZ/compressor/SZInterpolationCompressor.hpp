@@ -19,7 +19,7 @@
 #include <limits>
 namespace QoZ {
     template<class T, uint N, class Quantizer, class Encoder, class Lossless>
-    class SZInterpolationCompressor {
+    class SZInterpolationCompressor : public concepts::CompressorInterface<T>{
     public:
 
 
