@@ -865,9 +865,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     QoZ::Config testConfig(conf);
     size_t ssim_size=conf.SSIMBlockSize;
 
-    std::cout<<testConfig.interpAlgo_list.size()<<std::endl;
-    std::cout<<
-
+    
     if(algo == QoZ::ALGO_LORENZO_REG){
         testConfig.cmprAlgo = QoZ::ALGO_LORENZO_REG;
         testConfig.dims=conf.dims;
