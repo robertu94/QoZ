@@ -30,7 +30,7 @@ namespace QoZ {
         uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
 
             Timer timer(true);
-            //std::cout<<"general1"<<std::endl;
+            std::cout<<"general1"<<std::endl;
            
             std::vector<int> new_quant_inds = frontend.compress(data);
             quant_inds.insert(quant_inds.end(),new_quant_inds.begin(),new_quant_inds.end());
@@ -42,7 +42,7 @@ namespace QoZ {
                 return buffer;
 
             }
-            //std::cout<<"general2"<<std::endl;
+            std::cout<<"general2"<<std::endl;
 //            timer.stop("Prediction & Quantization");
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (frontend.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
@@ -50,7 +50,7 @@ namespace QoZ {
             uchar *buffer_pos = buffer;
 
             frontend.save(buffer_pos);
-            //std::cout<<"general3"<<std::endl;
+            std::cout<<"general3"<<std::endl;
 
             timer.start();
             
@@ -59,7 +59,7 @@ namespace QoZ {
             encoder.postprocess_encode();
 //            timer.stop("Coding");
             assert(buffer_pos - buffer < bufferSize);
-            //std::cout<<"general4"<<std::endl;
+            std::cout<<"general4"<<std::endl;
 
             //timer.start();
             uchar *lossless_data = lossless.compress(buffer, buffer_pos - buffer, compressed_size);
