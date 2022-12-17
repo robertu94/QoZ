@@ -42,14 +42,18 @@ namespace QoZ {
                 return buffer;
 
             }
+            std::cout<<quant_inds.size()<<std::endl;
             std::cout<<"general2"<<std::endl;
 //            timer.stop("Prediction & Quantization");
             encoder.preprocess_encode(quant_inds, 0);
+            std::cout<<"general2.1"<<std::endl;
             size_t bufferSize = 1.5 * (frontend.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
+            std::cout<<"general2.2"<<std::endl;
             uchar *buffer_pos = buffer;
 
             frontend.save(buffer_pos);
+            std::cout<<"general2.3"<<std::endl;
             std::cout<<"general3"<<std::endl;
 
             timer.start();
