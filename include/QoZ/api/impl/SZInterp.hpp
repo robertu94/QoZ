@@ -1605,7 +1605,7 @@ double Tuning(QoZ::Config &conf, T *data){
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
-    double prewave_absErrorBound=0.0;
+    double prewave_absErrorBound=conf.absErrorBound;
     QoZ::calAbsErrorBound(conf, data);
     T *origdata,*coeffData;
     if (conf.rng<0)
@@ -1622,7 +1622,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet and conf.waveletAutoTuning==0){       
         ori_wave=conf.wavelet;
         conf.wavelet=0;
-        prewave_absErrorBound=conf.absErrorBound;        
+        
         if(conf.external_wave){
             //read a coeff array and a size information array
             coeffs_size.resize(N);
@@ -1695,6 +1695,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);    
     }
     else if(conf.waveletAutoTuning>0){
+
         conf.wavelet=0;
         conf.external_wave=0;//temp
     }
@@ -1927,7 +1928,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         if(conf.coeffTracking%2==1)
             QoZ::writefile<T>("waved.qoz.cmp.dwt", decData, conf.num);
         conf.wavelet=ori_wave;
-        std::cout<<"p2"<<std::endl;
+        //std::cout<<"p2"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
         /*
 
@@ -1994,12 +1995,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 if(fabs(decData[i])>prewave_absErrorBound)
                     count++;
             }
-            std::cout<<count<<std::endl;
+            //std::cout<<count<<std::endl;
 
             //std::cout<<"origdatadel"<<std::endl;
             delete []origdata;
         }
-        std::cout<<"p5"<<std::endl;
+        //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
@@ -2012,7 +2013,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());  
             outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-            std::cout<<"p6"<<std::endl;
+            //std::cout<<"p6"<<std::endl;
             //std::cout<<outlier_outSize<<std::endl;
         }
         else if (conf.offsetPredictor ==1){
@@ -2073,12 +2074,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         memcpy(final_output,compress_output,outSize);
         memcpy(final_output+outSize,outlier_compress_output,outlier_outSize);
         outSize=totalsize;
-        std::cout<<"p7"<<std::endl;
+        //std::cout<<"p7"<<std::endl;
         delete [] compress_output;
         delete [] outlier_compress_output;
         //std::cout<<"decdatadel"<<std::endl;
         delete [] decData;
-        std::cout<<"p8"<<std::endl;
+        //std::cout<<"p8"<<std::endl;
         return final_output;
     }
     else{
