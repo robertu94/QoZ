@@ -1080,7 +1080,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector <std::vector<T> > ori_sampled_blocks;
             double ori_eb=conf.absErrorBound;
             if(wave_idx>0){//later distinguish different i
-                ori_sampled_blocks=sampled_Blocks;
+                ori_sampled_blocks=sampled_blocks;
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
 
                 for(size_t i=0;i<sampled_Blocks.size();i++){
@@ -1236,7 +1236,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
             conf.absErrorBound=ori_eb;
             if(wave_idx>0)
-                sampled_Blocks=ori_sampled_blocks;
+                sampled_blocks=ori_sampled_blocks;
 
 
         }
@@ -1418,7 +1418,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             if(conf.levelwisePredictionSelection>0){
                 conf.interpAlgo_list=interpAlgo_lists[wave_idx];
-                conf.interpDirection_list=Direction_lists[wave_idx];
+                conf.interpDirection_list=interpDirection_lists[wave_idx];
             }
             else{
                 conf.interpAlgo=bestInterpAlgos[wave_idx];
@@ -1427,7 +1427,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0){
-                waveleted_input=sampled_Blocks;
+                waveleted_input=sampled_blocks;
                 for(size_t i=0;i<waveleted_input.size();i++){
                     QoZ::Wavelet<T,N> wlt;
                     wlt.preProcess_cdf97(waveleted_input[i].data(),conf.dims);
@@ -1578,7 +1578,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             if(conf.levelwisePredictionSelection>0){
                 conf.interpAlgo_list=interpAlgo_lists[bestWave];
-                conf.interpDirection_list=Direction_lists[bestWave];
+                conf.interpDirection_list=interpDirection_lists[bestWave];
             }
             else{
                 conf.interpAlgo=bestInterpAlgos[bestWave];

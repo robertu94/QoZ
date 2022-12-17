@@ -203,6 +203,7 @@ namespace QoZ {
             blockOrder = cfg.GetInteger("AlgoSettings", "blockOrder", blockOrder);
             coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
             waveletTest = cfg.GetInteger("AlgoSettings", "waveletTest", waveletTest);
+            waveletAutoTuning = cfg.GetInteger("AlgoSettings", "waveletAutoTuning", waveletAutoTuning);
 
 
 
@@ -338,10 +339,12 @@ namespace QoZ {
         uint8_t lossless = 1; // 0-> skip lossless(use lossless_bypass); 1-> zstd
         uint8_t encoder = 1;// 0-> skip encoder; 1->HuffmanEncoder; 2->ArithmeticEncoder
         uint8_t interpAlgo = INTERP_ALGO_CUBIC;
+    
+        uint8_t interpDirection = 0;
+        int levelwisePredictionSelection=0;
         std::vector <uint8_t> interpAlgo_list;
         std::vector <uint8_t> interpDirection_list;
-        int levelwisePredictionSelection=0;
-        uint8_t interpDirection = 0;
+        
         size_t maxStep=0;
         int interpBlockSize = 32;
         int quantbinCnt = 65536;
@@ -397,6 +400,7 @@ namespace QoZ {
         int blockOrder = 0;//order of blocks.
         int waveletTest = 0;
         double waveletTuningRate = 0.0;
+        int waveletAutoTuning = 0;
 
         
 
