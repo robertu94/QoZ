@@ -1733,6 +1733,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         memcpy(origdata,data,conf.num*sizeof(T));
         QoZ::Wavelet<T,N> wlt;
         wlt.preProcess_cdf97(data,conf.dims);//temp
+        if(conf.coeffTracking%2==1)
+            QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
            
     }
     else if (conf.waveletAutoTuning==0){
@@ -1922,6 +1924,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             SZ_decompress_LorenzoReg<T, N>(conf, compress_output, tempSize,decData);
 
         }
+        if(conf.coeffTracking%2==1)
+            QoZ::writefile<T>("waved.qoz.cmp.dwt", decData, conf.num);
         conf.wavelet=ori_wave;
         std::cout<<"p2"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.sigmo", decData, conf.num);
