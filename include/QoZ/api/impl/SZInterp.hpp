@@ -1076,7 +1076,7 @@ double Tuning(QoZ::Config &conf, T *data){
      
         //double lorenzo_average_cr=0;
 
-        for(size_t wave_idx=0;wave_idx<conf.waveletAutoTuning;wave_idx++){
+        for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
             std::vector <std::vector<T> > ori_sampled_blocks;
             double ori_eb=conf.absErrorBound;
             if(wave_idx>0){//later distinguish different i
