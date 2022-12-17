@@ -1507,7 +1507,8 @@ double Tuning(QoZ::Config &conf, T *data){
                         orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
 
                 double bitrate=results.first;
-                double metric=results.second;        
+                double metric=results.second;   
+                printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                         
                     bestb=bitrate;
