@@ -1250,8 +1250,8 @@ double Tuning(QoZ::Config &conf, T *data){
         useInterp= (best_interp_cr>=best_lorenzo_ratio) or best_lorenzo_ratio>=80 or best_interp_cr>=80;//orig 0.95*lorenzo_ratio
         if(conf.verbose and conf.waveletAutoTuning==0){
             if (conf.levelwisePredictionSelection<=0){
-                std::cout << "interp best interpAlgo = " << (bestinterpAlgos[0] == 0 ? "LINEAR" : "CUBIC") << std::endl;
-                std::cout << "interp best direction = " << (unsigned) bestDirections[0] << std::endl;
+                std::cout << "interp best interpAlgo = " << (bestInterpAlgos[0] == 0 ? "LINEAR" : "CUBIC") << std::endl;
+                std::cout << "interp best direction = " << (unsigned) bestInterpDirections[0] << std::endl;
                     
             }
             else{
