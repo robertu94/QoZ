@@ -833,7 +833,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     else if (tuningTarget==QoZ::TUNING_TARGET_AC){                       
         metric=1.0-QoZ::autocorrelation<T>(flattened_sampled_data.data(),flattened_cur_blocks.data(),ele_num);                        
     }                    
-            //printf("%.2f %.2f %.4f %.2f\n",testConfig.alpha,testConfig.beta,bitrate,metric);              
+            //printf("%.2f %.2f %.4f %.2f\n",testConfig.alpha,testConfig.beta,bitrate,metric);   
+    if(testConfig.wavelet>0){
+        bitrate*=testConfig.waveletBrFix;
+    }           
     delete sz;
     return std::pair(bitrate,metric);
 }
