@@ -1083,9 +1083,9 @@ double Tuning(QoZ::Config &conf, T *data){
                 ori_sampled_blocks=sampled_blocks;
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
 
-                for(size_t i=0;i<sampled_Blocks.size();i++){
+                for(size_t i=0;i<sampled_blocks.size();i++){
                     QoZ::Wavelet<T,N> wlt;
-                    wlt.preProcess_cdf97(sampled_Blocks[i].data,conf.dims);
+                    wlt.preProcess_cdf97(sampled_blocks[i].data,conf.dims);
 
                 }
 
