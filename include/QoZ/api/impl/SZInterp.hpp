@@ -1467,10 +1467,13 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                     else{
                         double eb_fixrate;
+                        /*
                         if (metric>bestm)
                             eb_fixrate=rel_bound>1e-4?1.2:1.1;
                         else
                             eb_fixrate=rel_bound>1e-4?0.8:0.9;
+                            */
+                        eb_fixrate=bitrate/bestb;
                         double orieb=conf.absErrorBound;
                         conf.absErrorBound*=eb_fixrate;
                             
@@ -1523,10 +1526,13 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
                 else{
                     double eb_fixrate;
+                    /*
                     if (metric>bestm)
                         eb_fixrate=rel_bound>1e-4?1.2:1.1;
                     else
                         eb_fixrate=rel_bound>1e-4?0.8:0.9;
+                        */
+                    eb_fixrate=bitrate/bestb;
                     double orieb=conf.absErrorBound;
                     conf.absErrorBound*=eb_fixrate;                        
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
