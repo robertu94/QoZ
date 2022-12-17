@@ -1412,6 +1412,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 flattened_sampled_data.insert(flattened_sampled_data.end(),sampled_blocks[i].begin(),sampled_blocks[i].end());
 
         }
+        double oriabseb=conf.absErrorBound;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
         //std::vector<double> flattened_cur_blocks;
             conf.wavelet=wave_idx;
@@ -1427,6 +1428,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0){
+                conf.absErrorBound*=conf.wavelet_rel_coeff;
                 waveleted_input=sampled_blocks;
                 for(size_t i=0;i<waveleted_input.size();i++){
                     QoZ::Wavelet<T,N> wlt;
@@ -1546,6 +1548,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }          
             }
+            conf.absErrorBound=oriabseb;
         }
         if(conf.tuningTarget==QoZ::TUNING_TARGET_AC){
             bestm=1-bestm;
@@ -1698,6 +1701,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
         conf.wavelet=0;
         conf.external_wave=0;//temp
+
     }
 
     if(conf.preTrim>0){
@@ -1728,8 +1732,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     char * compress_output;
 
     if(conf.waveletAutoTuning>0 and conf.wavelet>0){
-        std::cout<<"wavelet actively selected."<<std::endl;
-
+        //std::cout<<"wavelet actively selected."<<std::endl;
+        conf.absErrorBound*=conf.wavelet_rel_coeff;
         origdata=new T[conf.num];
         memcpy(origdata,data,conf.num*sizeof(T));
         QoZ::Wavelet<T,N> wlt;
