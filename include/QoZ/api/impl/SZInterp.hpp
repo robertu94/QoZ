@@ -721,6 +721,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
         delete[]cmprData;
 
         if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
+            std::cout<<"test with wave"<<std::endl;
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
 
@@ -1815,25 +1816,24 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         double ratio;  
             //size_t sampling_num, sampling_block;
             
-            sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);        
-            lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
-            lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
-            lorenzo_config.lorenzo = true;
-            lorenzo_config.lorenzo2 = true;
-            lorenzo_config.regression = false;
-            lorenzo_config.regression2 = false;
-            lorenzo_config.openmp = false;
-            lorenzo_config.blockSize = 5;//why?
-            lorenzo_config.quantbinCnt = 65536 * 2;
+        sampling_data = QoZ::sampling<T, N>(data, conf.dims, sampling_num, sample_dims, sampling_block);        
+        lorenzo_config.cmprAlgo = QoZ::ALGO_LORENZO_REG;
+        lorenzo_config.setDims(sample_dims.begin(), sample_dims.end());
+        lorenzo_config.lorenzo = true;
+        lorenzo_config.lorenzo2 = true;
+        lorenzo_config.regression = false;
+        lorenzo_config.regression2 = false;
+        lorenzo_config.openmp = false;
+        lorenzo_config.blockSize = 5;//why?
+        lorenzo_config.quantbinCnt = 65536 * 2;
                     
-            if(conf.autoTuningRate>0 or conf.predictorTuningRate>0){
-                auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);
-                delete[]cmprData;
-                ratio = sampling_num * 1.0 * sizeof(T) / sampleOutSize;
-                //printf("Lorenzo ratio = %.2f\n", ratio);
-
-                best_lorenzo_ratio = ratio;
-            }
+        if(conf.autoTuningRate>0 or conf.predictorTuningRate>0){
+            auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);
+            delete[]cmprData;
+            ratio = sampling_num * 1.0 * sizeof(T) / sampleOutSize;
+            //printf("Lorenzo ratio = %.2f\n", ratio);
+            best_lorenzo_ratio = ratio;
+        }
       
         //further tune lorenzo
         if (N == 3 and !conf.useCoeff) {
@@ -1865,7 +1865,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
      
         lorenzo_config.setDims(conf.dims.begin(), conf.dims.end());
         conf = lorenzo_config;
-
+        /*
         if(conf.useCoeff){
             
             if (conf.lorenzo){
@@ -1901,6 +1901,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             }
         }
+        */
         //std::cout<<conf.quantbinCnt<<std::endl;
         double tuning_time = timer.stop();
         if(conf.verbose){
