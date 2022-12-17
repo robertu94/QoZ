@@ -1118,6 +1118,8 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             if(conf.multiDimInterp)
                 interpDirection_Candidates.push_back(QoZ::factorial(N));
+            uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
+            uint8_t bestDirection = 0;
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
@@ -1128,8 +1130,8 @@ double Tuning(QoZ::Config &conf, T *data){
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
                     int end_level=level-1;
-                    uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
-                    uint8_t bestDirection = 0;
+                    bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
+                    bestDirection = 0;
                     double best_interp_absloss=std::numeric_limits<double>::max();
                     conf.cmprAlgo == QoZ::ALGO_INTERP;                  
                     for (auto &interp_op: interpAlgo_Candidates) {
@@ -1198,8 +1200,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
 
             else{
-                uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
-                uint8_t bestDirection = 0;
+                
                 
 
                     
