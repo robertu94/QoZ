@@ -1085,7 +1085,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                 for(size_t i=0;i<sampled_blocks.size();i++){
                     QoZ::Wavelet<T,N> wlt;
-                    wlt.preProcess_cdf97(sampled_blocks[i].data,conf.dims);
+                    wlt.preProcess_cdf97(sampled_blocks[i].data(),conf.dims);
 
                 }
 
