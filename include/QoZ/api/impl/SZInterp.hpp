@@ -1727,6 +1727,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     char * compress_output;
 
     if(conf.waveletAutoTuning>0 and conf.wavelet>0){
+        std::cout<<"wavelet actively selected."<<std::endl;
 
         origdata=new T[conf.num];
         memcpy(origdata,data,conf.num*sizeof(T));
@@ -1910,7 +1911,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
       //for(size_t i=0;i<N;i++)
            //std::cout<<conf.dims[i]<<std::endl;
         //std::cout<<conf.num<<std::endl;
-        std::cout<<"decdatanew"<<std::endl;
+        //std::cout<<"decdatanew"<<std::endl;
         T *decData =new T [conf.num];
         int ori_wave=conf.wavelet;
         conf.wavelet=0;
