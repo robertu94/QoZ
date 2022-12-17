@@ -721,7 +721,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
         delete[]cmprData;
 
         if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
-            std::cout<<"test with wave"<<std::endl;
+            //std::cout<<"test with wave"<<std::endl;
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
 
