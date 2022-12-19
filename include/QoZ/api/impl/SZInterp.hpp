@@ -63,7 +63,7 @@ template<class T, QoZ::uint N>
 void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP);
     QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
-    if (!conf.wavelet){
+    if (conf.wavelet==0){
         
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                 QoZ::LinearQuantizer<T>(),
@@ -111,31 +111,19 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         */
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
-        if(conf.external_wave){
-            char s1[100]="";
-            std::sprintf(s1,"%d",conf.pid);
-            //std::cout<<s1<<std::endl;
-            char s2[]="_external_dec_wave_coeffs_dec.tmp";
-            strcat(s1,s2);
-            QoZ::writefile<T>(s1, decData, conf.coeffs_num);
-            
+        if(conf.wavelet>1){
 
-            char command[120] = "python coeff_idwt.py ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
-            strcat(command,s1);
-            system(command);
+
+            T* newDecData= external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            
           
             delete []decData;
-            decData=new T[conf.num];
-            char s3[100]="";
-            std::sprintf(s3,"%d",conf.pid);
-            char s4[]="_external_deccoeff_idwt.tmp";
-            strcat(s3,s4);
-            QoZ::readfile<T>(s3, conf.num, decData);
+            decData=newDecData;
+            
         }
         
         else{
             QoZ::Wavelet<T,N> wlt;
-
             wlt.postProcess_cdf97(decData,conf.dims);
         }
         //std::cout<<"x3"<<std::endl;
@@ -1722,7 +1710,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
         if(conf.wavelet>1){
             //read a coeff array and a size information array
-            coeffData=external_wavelet_preprocessing(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
+            coeffData=external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             
         }
@@ -1819,7 +1807,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         }
         else{
-            coeffData=external_wavelet_preprocessing(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
+            coeffData=external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
 
@@ -2053,7 +2041,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
             delete []coeffData;
-            decData=external_wavelet_postprocessing(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+            decData=external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
             conf.num=orig_num;
