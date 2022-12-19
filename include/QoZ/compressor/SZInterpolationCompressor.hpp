@@ -512,6 +512,7 @@ namespace QoZ {
             }
 
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
+            std::cout<<"c1"<<std::endl;
             blocksize = conf.interpBlockSize;
             
             maxStep=conf.maxStep;
@@ -538,6 +539,7 @@ namespace QoZ {
                 conf.decomp_square_error=0.0;
 
             }
+            std::cout<<"c2"<<std::endl;
             if(tuning==0 and conf.peTracking){
                 prediction_errors.resize(num_elements,0);
                 peTracking=1;
@@ -571,7 +573,7 @@ namespace QoZ {
                 build_grid(conf,data,maxStep,tuning);
                 start_level--;
             }
-
+            std::cout<<"c3"<<std::endl;
             
             double predict_error=0.0;
           
@@ -583,6 +585,8 @@ namespace QoZ {
             
 
             for (uint level = start_level; level > end_level && level <= start_level; level--) {
+
+                std::cout<<level<<std::endl;
 
                 
 
@@ -927,6 +931,7 @@ namespace QoZ {
             //timer.start();
             //assert(quant_inds.size() == num_elements);
              //std::cout<<"1"<<std::endl;
+            std::cout<<"c5"<<std::endl;
             encoder.preprocess_encode(quant_inds, 0);
             size_t bufferSize = 1.2 * (quantizer.size_est() + encoder.size_est() + sizeof(T) * quant_inds.size());
             uchar *buffer = new uchar[bufferSize];
@@ -961,6 +966,7 @@ namespace QoZ {
                 write(conf.interpDirection_list.data(),levelwise_predictor_levels,buffer_pos);
             }
            //std::cout<<"6"<<std::endl;
+            std::cout<<"c6"<<std::endl;
             quantizer.save(buffer_pos);
             quantizer.postcompress_data();
             quantizer.clear();
@@ -977,6 +983,8 @@ namespace QoZ {
             encoder.encode(quant_inds, buffer_pos);
           //  std::cout<<"7.3"<<std::endl;
             encoder.postprocess_encode();
+
+            std::cout<<"c7"<<std::endl;
            // std::cout<<"8"<<std::endl;
             
             //timer.stop("Coding");
@@ -988,6 +996,8 @@ namespace QoZ {
                                                      buffer_pos - buffer,
                                                      compressed_size);
             lossless.postcompress_data(buffer);
+
+            std::cout<<"c8"<<std::endl;
             
             //timer.stop("Lossless") ;
             
