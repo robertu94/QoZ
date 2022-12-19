@@ -32,7 +32,7 @@ template<class T, QoZ::uint N>
 T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true, std::vector<size_t> &coeffs_size=std::vector<size_t>())
 {
     std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
-    QoZ::writefile<T>(input_filename, data, num);
+    QoZ::writefile<T>(input_filename.c_str(), data, num);
 
     std::string wavetype = (wave_type == 2) ? "sym16" : "sym13";
     std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
@@ -47,7 +47,7 @@ T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, siz
 
     if (inplace)
     {
-        QoZ::readfile<T>(coeffs_filename, num, data);
+        QoZ::readfile<T>(coeffs_filename.c_str(), num, data);
         return data;
     }
     else
@@ -1158,8 +1158,9 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 else{
+                    std::vector<size_t> temp;
                     for(size_t i=0;i<sampled_blocks.size();i++)
-                        external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true);
+                        external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
 
                 }
 
@@ -1511,8 +1512,9 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 else{
+                    std::vector<size_t> temp;
                     for(size_t i=0;i<waveleted_input.size();i++)
-                        external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true);
+                        external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
                 }
             }
             for (size_t i=0;i<alpha_nums;i++){
