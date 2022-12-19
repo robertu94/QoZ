@@ -156,7 +156,7 @@ namespace QoZ {
             lorenzo2 = cfg.GetBoolean("AlgoSettings", "Lorenzo2ndOrder", lorenzo2);
             regression = cfg.GetBoolean("AlgoSettings", "Regression", regression);
             regression2 = cfg.GetBoolean("AlgoSettings", "Regression2ndOrder", regression2);
-            external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
+            //external_wave = cfg.GetBoolean("AlgoSettings", "external_wave", external_wave);
             
             
             
@@ -253,7 +253,7 @@ namespace QoZ {
             write(firstSize, c);
             write(offsetPredictor, c);
             write(transformation, c);
-            write(external_wave, c);
+            //write(external_wave, c);
             write(coeffs_dims.data(), coeffs_dims.size(), c);
             write(coeffs_num, c);
             write(pid, c);
@@ -303,7 +303,7 @@ namespace QoZ {
             read(firstSize, c);
             read(offsetPredictor, c);
             read(transformation, c);
-            read(external_wave, c);
+            //read(external_wave, c);
             read(coeffs_dims.data(), N, c);
             read(coeffs_num, c);
             read(pid, c);
@@ -383,7 +383,7 @@ namespace QoZ {
         int sampleBlockSampleBlockSize=0;
         bool peTracking=0;
         int wavelet=0; //may have different wavelets
-        bool external_wave=0;
+       //bool external_wave=0;
         std::vector<size_t> coeffs_dims;
         size_t coeffs_num=0;
         double wavelet_rel_coeff = 1.0;

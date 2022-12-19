@@ -112,7 +112,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
     assert(conf.cmprAlgo == QoZ::ALGO_LORENZO_REG);
     QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
     QoZ::LinearQuantizer<T> quantizer;
-    if(!conf.wavelet){
+    if(conf.wavelet==0){
 
         
         if (N == 3 and !conf.regression2 and !conf.useCoeff) {
@@ -130,7 +130,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
     else{
         std::vector<size_t> ori_dims=conf.dims;
         size_t ori_num=conf.num;
-        if(conf.external_wave){
+        if(conf.wavelet>1){
             conf.setDims(conf.coeffs_dims.begin(),conf.coeffs_dims.end());
             
         }
@@ -149,6 +149,11 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
            
         }
 
+        if(conf.wavelet>1){
+            conf.dims=ori_dims;
+            conf.num=ori_num;
+        }
+
         /*
         if(conf.transformation==1){
             for(size_t i=0;i<conf.num;i++)
@@ -163,27 +168,15 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
 
 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
-        if(conf.external_wave){
+        if(conf.wavelet>1){
 
-            char s1[100]="";
-            std::sprintf(s1,"%d",conf.pid);
-            char s2[]="_external_dec_wave_coeffs_dec.tmp";
-            strcat(s1,s2);
-            QoZ::writefile(s1, decData, conf.num);
-
-            char command[120] = "python coeff_idwt.py ";//still need slice.pkl wave_type.txt wave_size.dat, or pickle all metadata into one file.
-            strcat(command,s1);
-            system(command);
-
-           conf.setDims(ori_dims.begin(),ori_dims.end());
+            T* newDecData= external_wavelet_postprocessing(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            
           
             delete []decData;
-            decData=new T[conf.num];
-            char s3[100]="";
-            std::sprintf(s3,"%d",conf.pid);
-            char s4[]="_external_deccoeff_idwt.tmp";
-            strcat(s3,s4);
-            QoZ::readfile<T>(s3, conf.num, decData);
+            decData=newDecData;
+
+            
         }
 
         else{
