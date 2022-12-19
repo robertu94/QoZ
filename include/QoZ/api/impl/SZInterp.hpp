@@ -59,8 +59,8 @@ T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, siz
         for (size_t i = 0; i < N; i++)
             coeffs_num *= coeffs_size[i];
 
-        T *coeffData = new T[conf.num];
-        QoZ::readfile<T>(coeffs_filename.c_str(), num, coeffData);
+        T *coeffData = new T[coeffs_num];
+        QoZ::readfile<T>(coeffs_filename.c_str(), coeffs_num, coeffData);
         return coeffData;
     }
 }
@@ -76,7 +76,7 @@ T * external_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, si
     std::string command = "python coeff_idwt.py " + input_filename;
             
     system(command.c_str());
-    std::string output_filename = std::to_string(conf.pid) + "_external_deccoeff_idwt.tmp";
+    std::string output_filename = std::to_string(pid) + "_external_deccoeff_idwt.tmp";
 
     if (inplace)
     {
@@ -783,7 +783,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
             }
             else{
-                external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, inplace);
+                external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, true);
             }
 
         }
@@ -1158,7 +1158,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 else{
-                    external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true);
+                    for(size_t i=0;i<sampled_blocks.size();i++)
+                        external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true);
 
                 }
 
@@ -1503,10 +1504,15 @@ double Tuning(QoZ::Config &conf, T *data){
             if (wave_idx>0){
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 waveleted_input=sampled_blocks;
-                for(size_t i=0;i<waveleted_input.size();i++){
-                    QoZ::Wavelet<T,N> wlt;
-                    wlt.preProcess_cdf97(waveleted_input[i].data(),conf.dims);
-
+                if(wave_idx==1){
+                    for(size_t i=0;i<waveleted_input.size();i++){
+                        QoZ::Wavelet<T,N> wlt;
+                        wlt.preProcess_cdf97(waveleted_input[i].data(),conf.dims);
+                    }
+                }
+                else{
+                    for(size_t i=0;i<waveleted_input.size();i++)
+                        external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true);
                 }
             }
             for (size_t i=0;i<alpha_nums;i++){
@@ -1733,7 +1739,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         if(conf.coeffTracking>1){
             size_t count=0;
-            if(conf.external_wave){
+            if(conf.wavelet>1){
                 for (size_t i=0;i<conf.num;i++){
                     if(fabs(coeffData[i])>conf.absErrorBound)
                         count++;
@@ -1767,7 +1773,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     else if(conf.waveletAutoTuning>0){
 
         conf.wavelet=0;
-        .//conf.external_wave=0;//temp
+        //conf.external_wave=0;//temp
 
     }
 
