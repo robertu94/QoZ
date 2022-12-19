@@ -5,6 +5,7 @@
 #include "QoZ/frontend/SZFastFrontend.hpp"
 #include "QoZ/frontend/SZGeneralFrontend.hpp"
 #include "QoZ/quantizer/IntegerQuantizer.hpp"
+#include "QoZ/preprocessor/Wavelet.hpp"
 #include "QoZ/predictor/ComposedPredictor.hpp"
 #include "QoZ/predictor/LorenzoPredictor.hpp"
 #include "QoZ/predictor/RegressionPredictor.hpp"
@@ -14,9 +15,10 @@
 #include "QoZ/utils/Iterator.hpp"
 #include "QoZ/utils/Statistic.hpp"
 #include "QoZ/utils/Extraction.hpp"
-#include "QoZ/utils/QuantOptimizatioin.hpp"
+#include "QoZ/utils/QuantOptimization.hpp"
 #include "QoZ/utils/Config.hpp"
 #include "QoZ/def.hpp"
+
 #include <cmath>
 #include <cstdlib>
 #include <memory>
@@ -170,7 +172,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.wavelet>1){
 
-            T* newDecData= external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            T* newDecData= QoZ::external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
             
           
             delete []decData;

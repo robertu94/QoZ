@@ -5,10 +5,80 @@
 #include "QoZ/preprocessor/PreProcessor.hpp"
 #include "QoZ/preprocessor/CDF97.h"
 #include <gsl/gsl_wavelet.h>
-
+#include "QoZ/utils/FileUtil.hpp"
 
 
 namespace QoZ {
+
+
+    template<class T, QoZ::uint N>
+    T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true, std::vector<size_t> &coeffs_size=std::vector<size_t>())
+    {
+        std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
+        QoZ::writefile<T>(input_filename.c_str(), data, num);
+
+        std::string wavetype = (wave_type == 2) ? "sym16" : "sym13";
+        std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
+        for (int i = N - 1; i >= 0; i--)
+        {
+            command += " " + std::to_string(dims[i]);
+        }
+
+        system(command.c_str());
+
+        std::string coeffs_filename = std::to_string(pid) + "_external_wave_coeffs.tmp";
+
+        if (inplace)
+        {
+            QoZ::readfile<T>(coeffs_filename.c_str(), num, data);
+            return data;
+        }
+        else
+        {
+            coeffs_size.resize(N);
+            std::string size_filename = std::to_string(pid) + "_external_coeffs_size.tmp";
+            QoZ::readfile<size_t>(size_filename.c_str(), N, coeffs_size.data());
+            size_t coeffs_num = 1;
+            for (size_t i = 0; i < N; i++)
+                coeffs_num *= coeffs_size[i];
+
+            T *coeffData = new T[coeffs_num];
+            QoZ::readfile<T>(coeffs_filename.c_str(), coeffs_num, coeffData);
+            return coeffData;
+        }
+    }
+
+    template<class T, QoZ::uint N>
+    T * external_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
+    {
+        
+            
+        std::string input_filename = std::to_string(pid) + "_external_wave_coeff_input.tmp";
+        
+        QoZ::writefile<T>(input_filename.c_str(), data, num);
+        std::string command = "python coeff_idwt.py " + input_filename;
+                
+        system(command.c_str());
+        std::string output_filename = std::to_string(pid) + "_external_deccoeff_idwt.tmp";
+
+        if (inplace)
+        {
+            QoZ::readfile<T>(output_filename.c_str(), num, data);
+            return data;
+        }
+        else
+        {
+            size_t outnum=1;
+            for (size_t i = 0; i < N; i++)
+                outnum *= output_dims[i];
+
+            T *outData = new T[outnum];
+            QoZ::readfile<T>(output_filename.c_str(), outnum, outData);
+            return outData;
+        }
+    }
+
+
     template<class T, uint N>
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
