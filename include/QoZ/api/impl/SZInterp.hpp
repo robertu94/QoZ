@@ -14,7 +14,7 @@
 #include "QoZ/utils/Transform.hpp"
 #include "QoZ/utils/Statistic.hpp"
 #include "QoZ/utils/Extraction.hpp"
-#include "QoZ/utils/QuantOptimizatioin.hpp"
+#include "QoZ/utils/QuantOptimization.hpp"
 #include "QoZ/utils/Config.hpp"
 #include "QoZ/utils/Metrics.hpp"
 #include "QoZ/utils/CoeffRegression.hpp"
@@ -28,72 +28,7 @@
 #include <cstdlib>
 
 
-template<class T, QoZ::uint N>
-T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true, std::vector<size_t> &coeffs_size=std::vector<size_t>())
-{
-    std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
-    QoZ::writefile<T>(input_filename.c_str(), data, num);
 
-    std::string wavetype = (wave_type == 2) ? "sym16" : "sym13";
-    std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
-    for (int i = N - 1; i >= 0; i--)
-    {
-        command += " " + std::to_string(dims[i]);
-    }
-
-    system(command.c_str());
-
-    std::string coeffs_filename = std::to_string(pid) + "_external_wave_coeffs.tmp";
-
-    if (inplace)
-    {
-        QoZ::readfile<T>(coeffs_filename.c_str(), num, data);
-        return data;
-    }
-    else
-    {
-        coeffs_size.resize(N);
-        std::string size_filename = std::to_string(pid) + "_external_coeffs_size.tmp";
-        QoZ::readfile<size_t>(size_filename.c_str(), N, coeffs_size.data());
-        size_t coeffs_num = 1;
-        for (size_t i = 0; i < N; i++)
-            coeffs_num *= coeffs_size[i];
-
-        T *coeffData = new T[coeffs_num];
-        QoZ::readfile<T>(coeffs_filename.c_str(), coeffs_num, coeffData);
-        return coeffData;
-    }
-}
-
-template<class T, QoZ::uint N>
-T * external_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
-{
-    
-        
-    std::string input_filename = std::to_string(pid) + "_external_wave_coeff_input.tmp";
-    
-    QoZ::writefile<T>(input_filename.c_str(), data, num);
-    std::string command = "python coeff_idwt.py " + input_filename;
-            
-    system(command.c_str());
-    std::string output_filename = std::to_string(pid) + "_external_deccoeff_idwt.tmp";
-
-    if (inplace)
-    {
-        QoZ::readfile<T>(output_filename.c_str(), num, data);
-        return data;
-    }
-    else
-    {
-        size_t outnum=1;
-        for (size_t i = 0; i < N; i++)
-            outnum *= output_dims[i];
-
-        T *outData = new T[outnum];
-        QoZ::readfile<T>(output_filename.c_str(), outnum, outData);
-        return outData;
-    }
-}
 
 
 template<class T, QoZ::uint N>
@@ -182,7 +117,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.wavelet>1){
 
 
-            T* newDecData= external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            T* newDecData= QoZ::external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
             
           
             delete []decData;
@@ -783,7 +718,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
             }
             else{
-                external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, true);
+                QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, true);
             }
 
         }
@@ -1160,7 +1095,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 else{
                     std::vector<size_t> temp;
                     for(size_t i=0;i<sampled_blocks.size();i++)
-                        external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
+                        QoZ::external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
 
                 }
 
@@ -1514,7 +1449,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 else{
                     std::vector<size_t> temp;
                     for(size_t i=0;i<waveleted_input.size();i++)
-                        external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
+                        QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
                 }
             }
             for (size_t i=0;i<alpha_nums;i++){
@@ -1721,7 +1656,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
         if(conf.wavelet>1){
             //read a coeff array and a size information array
-            coeffData=external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
+            coeffData=QoZ::external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
             
         }
@@ -1818,7 +1753,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         }
         else{
-            coeffData=external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
+            coeffData=QoZ::external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
             conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
 
@@ -2052,7 +1987,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
             delete []coeffData;
-            decData=external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+            decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
             conf.num=orig_num;
