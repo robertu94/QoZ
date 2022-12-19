@@ -1651,8 +1651,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     size_t orig_num=conf.num;
     int ori_wave=0;
     if(conf.wavelet>0 and conf.waveletAutoTuning==0){       
-        ori_wave=conf.wavelet;
-        conf.wavelet=0;
+        
         
         if(conf.wavelet>1){
             //read a coeff array and a size information array
@@ -1692,6 +1691,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
             std::cout<<"Significant coeff rate: "<<(float)count/conf.num<<std::endl;
         }
+        ori_wave=conf.wavelet;
+        conf.wavelet=0;
             
             //std::cout<<conf.transformation<<std::endl;
             /*
