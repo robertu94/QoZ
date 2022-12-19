@@ -540,10 +540,13 @@ namespace QoZ {
 
             }
             std::cout<<"c2"<<std::endl;
+            for(size_t i=0;i<N;i++)
+                std::cout<<conf.dims[i]<<std::endl;
             if(tuning==0 and conf.peTracking){
                 prediction_errors.resize(num_elements,0);
                 peTracking=1;
             }
+            std::cout<<num_elements<<std::endl;
             quant_inds.reserve(num_elements);
             size_t interp_compressed_size = 0;
 
@@ -557,6 +560,7 @@ namespace QoZ {
 
                 
             } 
+            std::cout<<"c2.1"<<std::endl;
             if(end_level>=start_level or end_level<0){
                 end_level=0;
             }
@@ -569,7 +573,7 @@ namespace QoZ {
                 if(tuning){
                     conf.quant_bin_counts[start_level-1]=quant_inds.size();
                 }
-                    
+                std::cout<<"c2.2"<<std::endl;
                 build_grid(conf,data,maxStep,tuning);
                 start_level--;
             }
@@ -1018,7 +1022,7 @@ namespace QoZ {
             if (conf.trimToZero>0){
                 quantizer.setTrimToZero(conf.trimToZero);
             }
-            
+
             std::copy_n(conf.dims.begin(), N, global_dimensions.begin());
             blocksize = conf.interpBlockSize;
             
