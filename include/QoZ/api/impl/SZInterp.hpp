@@ -1068,7 +1068,7 @@ double Tuning(QoZ::Config &conf, T *data){
         double o_alpha=conf.alpha;
         double o_beta=conf.beta;
                     
-        if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate){
+        if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate or conf.profiling>0){
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
         }        
         num_sampled_blocks=sampled_blocks.size();
