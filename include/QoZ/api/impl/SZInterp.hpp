@@ -1692,7 +1692,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             std::cout<<"Significant coeff rate: "<<(float)count/conf.num<<std::endl;
         }
         ori_wave=conf.wavelet;
-        conf.wavelet=0;
+        
             
             //std::cout<<conf.transformation<<std::endl;
             /*
@@ -1708,15 +1708,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             */
             //QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);    
     }
-    else if(conf.waveletAutoTuning>0){
+    conf.wavelet=0; 
 
-        conf.wavelet=0;
-        //conf.external_wave=0;//temp
-
-    }
 
     if(conf.preTrim>0){
-        if(conf.wavelet>1){
+        if(ori_wave>1){
             for(size_t i=0;i<conf.num;i++){
                 if(fabs(coeffData[i])<=conf.preTrim*conf.absErrorBound)
                     coeffData[i]=0;
@@ -1734,7 +1730,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         std::cout << "====================================== BEGIN TUNING ================================" << std::endl;
     QoZ::Timer timer(true);
     double best_lorenzo_ratio=1.0;
-    if(conf.wavelet>1){    
+    if(ori_wave>1W){   
+
         best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
     }
     else{    
