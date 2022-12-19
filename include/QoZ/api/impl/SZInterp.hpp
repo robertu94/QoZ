@@ -1489,8 +1489,8 @@ double Tuning(QoZ::Config &conf, T *data){
                         double a=(metric-metric_r)/(bitrate-bitrate_r);
                         double b=metric-a*bitrate;
                         double reg=a*bestb+b;
-                           // printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bitrate_r,metric_r);
-                           // printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bestb,reg);      
+                            printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bitrate_r,metric_r);
+                            printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bestb,reg);      
                             //conf.absErrorBound=orig_eb;
                         if (reg>bestm){
                             bestalpha=alpha;
