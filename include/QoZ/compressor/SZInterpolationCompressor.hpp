@@ -540,13 +540,15 @@ namespace QoZ {
 
             }
             //std::cout<<"c2"<<std::endl;
+            /*
             for(size_t i=0;i<N;i++)
                 std::cout<<conf.dims[i]<<std::endl;
+                */
             if(tuning==0 and conf.peTracking){
                 prediction_errors.resize(num_elements,0);
                 peTracking=1;
             }
-            std::cout<<num_elements<<std::endl;
+            //std::cout<<num_elements<<std::endl;
             quant_inds.reserve(num_elements);
             size_t interp_compressed_size = 0;
 

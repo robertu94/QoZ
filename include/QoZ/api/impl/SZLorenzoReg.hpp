@@ -175,8 +175,12 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
             T* newDecData= QoZ::external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
             
           
+            //delete []decData;
+            //decData=newDecData;
             delete []decData;
-            decData=newDecData;
+            decData = new T [conf.num];
+            memcpy(decData,newDecData,sizeof(T)*conf.num);
+            delete []newDecData;
 
             
         }

@@ -117,21 +117,23 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.wavelet>1){
 
 
-            T* newDecData= QoZ::external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            //T* newDecData= QoZ::external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
 
-            std::cout<<conf.coeffs_num<<std::endl;
+            //std::cout<<conf.coeffs_num<<std::endl;
 
-            std::cout<<conf.coeffs_dims[2]<<std::endl;
+            //std::cout<<conf.coeffs_dims[2]<<std::endl;
 
-            std::cout<<conf.wavelet<<std::endl;
+            //std::cout<<conf.wavelet<<std::endl;
 
-            std::cout<<conf.dims[2]<<std::endl;
+            //std::cout<<conf.dims[2]<<std::endl;
             
           
             delete []decData;
-            decData=newDecData;
+            decData = new T [conf.num];
+            memcpy(decData,newDecData,sizeof(T)*conf.num);
+            delete []newDecData;
 
-            std::cout<<decData[100000]<<std::endl;
+            //std::cout<<decData[100000]<<std::endl;
 
 
             
