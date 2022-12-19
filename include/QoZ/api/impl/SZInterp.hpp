@@ -1816,8 +1816,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         else {
             std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
-            if(conf.wavelet >1)
+            if(conf.wavelet >1){
+                //std::cout<<"dawda"<<std::endl;
                 compress_output = SZ_compress_AutoSelectiveInterp<T,N>(conf,coeffData,outSize,op_candidates,dir_candidates,0);
+            }
             else
                 compress_output = SZ_compress_AutoSelectiveInterp<T,N>(conf,data,outSize,op_candidates,dir_candidates,0);
         }
@@ -1984,8 +1986,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //std::cout<<"coeffdatadel"<<std::endl;
 
 
-            delete []coeffData;
+            
             decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+            delete []coeffData;
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
             conf.num=orig_num;

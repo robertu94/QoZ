@@ -26,6 +26,8 @@ namespace QoZ {
 
         system(command.c_str());
 
+        
+
         std::string coeffs_filename = std::to_string(pid) + "_external_wave_coeffs.tmp";
 
         if (inplace)
@@ -38,9 +40,16 @@ namespace QoZ {
             coeffs_size.resize(N);
             std::string size_filename = std::to_string(pid) + "_external_coeffs_size.tmp";
             QoZ::readfile<size_t>(size_filename.c_str(), N, coeffs_size.data());
+
+            for (int i = 0; i <N; i++)
+            {
+                //std::cout<<coeffs_size[i]<<std::endl;
+            }
+
             size_t coeffs_num = 1;
             for (size_t i = 0; i < N; i++)
                 coeffs_num *= coeffs_size[i];
+            //std::cout<<coeffs_num<<std::endl;
 
             T *coeffData = new T[coeffs_num];
             QoZ::readfile<T>(coeffs_filename.c_str(), coeffs_num, coeffData);
@@ -54,6 +63,7 @@ namespace QoZ {
         
             
         std::string input_filename = std::to_string(pid) + "_external_wave_coeff_input.tmp";
+        //std::cout<<num<<std::endl;
         
         QoZ::writefile<T>(input_filename.c_str(), data, num);
         std::string command = "python coeff_idwt.py " + input_filename;
