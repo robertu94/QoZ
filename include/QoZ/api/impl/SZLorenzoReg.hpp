@@ -170,7 +170,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
          //QoZ::writefile<T>("waved.qoz.dec.logit", decData, conf.num);
         if(conf.wavelet>1){
 
-            T* newDecData= external_wavelet_postprocessing(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
+            T* newDecData= external_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, conf.wavelet, conf.pid, false,conf.dims);
             
           
             delete []decData;
