@@ -536,15 +536,25 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
     }
     else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){
-            if(conf.abList==0)            
-                alpha_list={1,1.25,1.5,1.75,2};
-            else if(conf.abList==1)
-                alpha_list={1,1.25,1.5,1.75,2,2.25,2.5};
-            else
-                alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
+            if(conf.waveletAutoTuning==0){
+                if(conf.abList==0)            
+                    alpha_list={1,1.25,1.5,1.75,2};
+                else if(conf.abList==1)
+                    alpha_list={1,1.25,1.5,1.75,2,2.25,2.5};
+                else
+                    alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
+            }
+            else{
+                alpha_list={1.25,1.5,1.75}
+            }
         }
-        else 
-            alpha_list={-1,1,1.25,1.5,1.75,2};
+        else{
+            if(conf.waveletAutoTuning==0){
+                alpha_list={-1,1,1.25,1.5,1.75,2};
+            }
+            else
+                alpha_list={-1,1,1.25,1.5};
+        }
     }
 }
 
@@ -553,11 +563,20 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
         beta_list={1,0.75,0.5,0.33,0.25};
     }
     else{
-        if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){            
-            beta_list={1.5,2,3,4};
+        if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){    
+            if(conf.waveletAutoTuning==0){        
+                beta_list={1.5,2,3,4};
+            }
+            else{
+                beta_list={2,3};
+            }
         }
-        else 
-            beta_list={-1,1.5,2,3};
+        else {
+            if(conf.waveletAutoTuning==0)
+                beta_list={-1,1.5,2,3};
+            else
+                 beta_list={-1,1.5,2};
+        }
     }
 }
 /*
