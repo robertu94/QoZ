@@ -1527,7 +1527,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         for (size_t j=0;j<coeffs_num;j++)
                             waveleted_input[i][j]=coeffData[j]; 
                         
-                        std::string oname="waveleted_block_"std::to_string(i)+"_"+std::to_string(wave_idx)+".tmp";
+                        std::string oname="waveleted_block_"+std::to_string(i)+"_"+std::to_string(wave_idx)+".tmp";
                         QoZ::writefile<T>(oname.c_str(), waveleted_input[i].data(), coeffs_num);
 
                         
