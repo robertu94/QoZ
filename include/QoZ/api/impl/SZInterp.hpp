@@ -852,6 +852,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
             //printf("%.2f %.2f %.4f %.2f\n",testConfig.alpha,testConfig.beta,bitrate,metric);   
     if(testConfig.wavelet==1){
         bitrate*=testConfig.waveletBrFix;
+    } 
+    else if(testConfig.wavelet>1){
+        bitrate*=testConfig.waveletBrFix2;
     }           
     delete sz;
     return std::pair(bitrate,metric);
