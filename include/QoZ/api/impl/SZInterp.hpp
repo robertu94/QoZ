@@ -732,7 +732,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
             }
             else{
-                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize);
+                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
                 T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
 
                 cur_block.resize(per_block_ele_num);
