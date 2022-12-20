@@ -20,7 +20,7 @@ namespace QoZ {
         std::string wavetype;
         if (wave_type==2)
             wavetype="sym16";
-        else
+        else if(wave_type==3)
             wavetype="sym13";
         else
             wavetype="sym18";
