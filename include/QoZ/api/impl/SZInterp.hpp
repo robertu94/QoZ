@@ -545,7 +545,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
                     alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
             }
             else{
-                alpha_list={1.25,1.5,1.75}
+                alpha_list={1.25,1.5,1.75};
             }
         }
         else{
