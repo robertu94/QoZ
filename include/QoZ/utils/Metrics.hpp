@@ -21,7 +21,7 @@ namespace QoZ {
        
     }
     template <class T>
-    void blockwise_profiling(T *data, const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize,double & mean,double & sigma2,double & range){
+    void blockwise_profiling(const T *data, const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize,double & mean,double & sigma2,double & range){
         size_t N=dims.size();
 
         if(N==2){
@@ -102,7 +102,7 @@ namespace QoZ {
     }
 
     template <class T>
-    double blockwise_cov(T *data, T * data2,const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize,const double & mean=0,const double & mean2=0){
+    double blockwise_cov(const T *data,const T * data2,const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize,const double & mean=0,const double & mean2=0){
         size_t N=dims.size();
 
         if(N==2){
@@ -147,7 +147,7 @@ namespace QoZ {
     }
 
     template <class T>
-    double blockwise_autocorrelation(T *data, T * data2,const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize){
+    double blockwise_autocorrelation(const T *data,const T * data2,const std::vector<size_t> &dims, const std::vector<size_t> &starts,const size_t &blocksize){
          size_t N=dims.size();
          size_t element_num;
          std::vector<T>diffs;
