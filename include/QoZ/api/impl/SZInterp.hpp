@@ -1616,7 +1616,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
                // delete sz;
             //add lorenzo
-            if(conf.testLorenzo){    
+            if(conf.testLorenzo and conf.wavelet==0){    
 
 
                 std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
