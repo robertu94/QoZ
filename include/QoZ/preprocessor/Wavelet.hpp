@@ -19,11 +19,11 @@ namespace QoZ {
 
         std::string wavetype;
         if (wave_type==2)
-            wavetype="sym16";
-        else if(wave_type==3)
-            wavetype="sym13";
-        else
             wavetype="sym18";
+        else if(wave_type==3)
+            wavetype="sym16";
+        else
+            wavetype="sym13";
         std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
         for (int i = N - 1; i >= 0; i--)
         {
