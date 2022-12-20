@@ -1433,7 +1433,7 @@ double Tuning(QoZ::Config &conf, T *data){
         double bestb=9999;
         double bestm=0;
         size_t num_sampled_blocks=sampled_blocks.size();
-        //std::cout<<num_sampled_blocks<<std::endl;
+        std::cout<<num_sampled_blocks<<std::endl;
         size_t per_block_ele_num=pow(sampleBlockSize+1,N);
         size_t ele_num=num_sampled_blocks*per_block_ele_num;
         //vector<double> orig_sums(num_sampled_blocks,0);
@@ -1516,7 +1516,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 else{
                     std::vector<size_t> coeffs_size;
                     size_t coeffs_num=1;
-                    for(size_t i=0;i<waveleted_input.size();i++){
+                    for(F){
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
                             for (size_t j=0;j<N;j++)
@@ -1535,6 +1535,8 @@ double Tuning(QoZ::Config &conf, T *data){
                         delete[]coeffData;
                     }
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
+
+                  
 
                 }
 
