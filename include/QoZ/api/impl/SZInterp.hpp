@@ -1656,6 +1656,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     double bitrate_r=results.first;
                     double metric_r=results.second;
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
+                    if(a<=0)
+                        continue;
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
                             printf("%.4f %.2f\n",bitrate_r,metric_r);
