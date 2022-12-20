@@ -1516,7 +1516,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 else{
                     std::vector<size_t> coeffs_size;
                     size_t coeffs_num=1;
-                    for(F){
+                    for(size_t i=0;i<waveleted_input.size();i++){
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
                             for (size_t j=0;j<N;j++)
@@ -1536,7 +1536,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
-                  
+
 
                 }
 
