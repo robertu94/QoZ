@@ -150,6 +150,7 @@ namespace QoZ {
             preTrim = cfg.GetReal("AlgoSettings", "preTrim", preTrim);
             waveletTuningRate = cfg.GetReal("AlgoSettings", "waveletTuningRate", waveletTuningRate);
             waveletBrFix = cfg.GetReal("AlgoSettings", "waveletBrFix", waveletBrFix);
+            waveletBrFix2 = cfg.GetReal("AlgoSettings", "waveletBrFix2", waveletBrFix2);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
             lorenzo = cfg.GetBoolean("AlgoSettings", "Lorenzo", lorenzo);
@@ -403,6 +404,7 @@ namespace QoZ {
         double waveletTuningRate = 0.0;
         int waveletAutoTuning = 0;
         double waveletBrFix = 1.0;
+        double waveletBrFix2 = 1.0;
 
         
 
