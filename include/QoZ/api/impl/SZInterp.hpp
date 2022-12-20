@@ -2029,18 +2029,20 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
             }
-            /*
-            size_t count=0;
-            for(size_t i=0;i<conf.num;i++){
-                if(fabs(decData[i])>prewave_absErrorBound)
-                    count++;
-            }
-            */
-            //std::cout<<count<<std::endl;
+            
 
             //std::cout<<"origdatadel"<<std::endl;
             delete []origdata;
         }
+
+
+        size_t count=0;
+        for(size_t i=0;i<conf.num;i++){
+            if(fabs(decData[i])>prewave_absErrorBound)
+                count++;
+        }
+            
+        std::cout<<count<<std::endl;
         //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
         QoZ::Config newconf(conf.num);
