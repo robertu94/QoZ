@@ -536,7 +536,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
     }
     else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){
-            if(conf.waveletAutoTuning==0){
+            if(conf.wavelet==0){
                 if(conf.abList==0)            
                     alpha_list={1,1.25,1.5,1.75,2};
                 else if(conf.abList==1)
@@ -545,11 +545,11 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
                     alpha_list={1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
             }
             else{
-                alpha_list={1.25,1.5,1.75};
+                alpha_list={1.5,1.75};
             }
         }
         else{
-            if(conf.waveletAutoTuning==0){
+            if(conf.wavelet==0){
                 alpha_list={-1,1,1.25,1.5,1.75,2};
             }
             else
@@ -564,7 +564,7 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
     }
     else{
         if (conf.tuningTarget!=QoZ::TUNING_TARGET_CR){    
-            if(conf.waveletAutoTuning==0){        
+            if(conf.wavelet==0){        
                 beta_list={1.5,2,3,4};
             }
             else{
@@ -572,7 +572,7 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
             }
         }
         else {
-            if(conf.waveletAutoTuning==0)
+            if(conf.wavelet==0)
                 beta_list={-1,1.5,2,3};
             else
                  beta_list={-1,1.5,2};
@@ -1427,12 +1427,7 @@ double Tuning(QoZ::Config &conf, T *data){
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
         }
 
-        std::vector<double>alpha_list;
-        init_alphalist(alpha_list,rel_bound,conf);
-        size_t alpha_nums=alpha_list.size();
-        std::vector<double>beta_list;
-        init_betalist(beta_list,rel_bound,conf);
-        size_t beta_nums=beta_list.size();  
+        
         double bestalpha=1;
         double bestbeta=1;
         double bestb=9999;
@@ -1539,6 +1534,12 @@ double Tuning(QoZ::Config &conf, T *data){
 
 
             }
+            std::vector<double>alpha_list;
+            init_alphalist(alpha_list,rel_bound,conf);
+            size_t alpha_nums=alpha_list.size();
+            std::vector<double>beta_list;
+            init_betalist(beta_list,rel_bound,conf);
+            size_t beta_nums=beta_list.size();  
             for (size_t i=0;i<alpha_nums;i++){
                 for (size_t j=0;j<beta_nums;j++){
                     double alpha=alpha_list[i];
