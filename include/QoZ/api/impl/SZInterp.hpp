@@ -736,7 +736,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
 
                 cur_block.resize(per_block_ele_num);
-                for(size_t i=0;i<per_block_ele_num)
+                for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
             }
@@ -1097,14 +1097,15 @@ double Tuning(QoZ::Config &conf, T *data){
         std::vector<T> cur_block(per_block_ele_num,0);
      
         //double lorenzo_average_cr=0;
-
+        std::vector <std::vector<T> > ori_sampled_blocks;
+        if (conf.waveletAutoTuning>1)
+            ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            //std::vector <std::vector<T> > ori_sampled_blocks;
+            
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
             if(wave_idx>0){//later distinguish different i
-                std::cout<<wave_idx<<std::endl;
-                ori_sampled_blocks=sampled_blocks;
+                //std::cout<<wave_idx<<std::endl;
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 if(wave_idx==1){
 
@@ -1497,7 +1498,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 }
                 else{
                     std::vector<size_t> coeffs_size;
-                    size_t coeff_num=1;
+                    size_t coeffs_num=1;
                     for(size_t i=0;i<waveleted_input.size();i++){
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
