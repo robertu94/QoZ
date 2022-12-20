@@ -17,7 +17,7 @@ namespace QoZ {
         std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
         QoZ::writefile<T>(input_filename.c_str(), data, num);
 
-        std::string wavetype = (wave_type == 2) ? "sym16" : "sym13";
+        std::string wavetype = (wave_type == 2) ? "sym16" : "bior3.1";
         std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
         for (int i = N - 1; i >= 0; i--)
         {
