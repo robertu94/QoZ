@@ -684,7 +684,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
     size_t num_sampled_blocks=sampled_blocks.size();
     size_t per_block_ele_num=pow(sampleBlockSize+1,N);
     size_t ele_num=num_sampled_blocks*per_block_ele_num;
-    std::vector<T> cur_block(per_block_ele_num,0);
+    std::vector<T> cur_block(testConfig.num,0);
     std::vector<int> q_bins;
     std::vector<std::vector<int> > block_q_bins;
     std::vector<size_t> q_bin_counts;
@@ -732,7 +732,13 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf, std::vector< std:
                 wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
             }
             else{
-                QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, true);
+                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize);
+                T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+
+                cur_block.resize(per_block_ele_num);
+                for(size_t i=0;i<per_block_ele_num)
+                    cur_block[i]=idwtData[i];
+                delete []idwtData;
             }
 
         }
@@ -1093,8 +1099,9 @@ double Tuning(QoZ::Config &conf, T *data){
         //double lorenzo_average_cr=0;
 
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            std::vector <std::vector<T> > ori_sampled_blocks;
+            //std::vector <std::vector<T> > ori_sampled_blocks;
             double ori_eb=conf.absErrorBound;
+            std::vector<size_t> coeffs_size;
             if(wave_idx>0){//later distinguish different i
                 std::cout<<wave_idx<<std::endl;
                 ori_sampled_blocks=sampled_blocks;
@@ -1108,12 +1115,25 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 else{
-                    std::vector<size_t> temp;
-                    for(size_t i=0;i<sampled_blocks.size();i++)
-                        QoZ::external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
+                    size_t coeffs_num=1;
+                    for(size_t i=0;i<sampled_blocks.size();i++){
+                        T *coeffData=QoZ::external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
+                        if(i==0){
+                            
+                            for (size_t j=0;j<N;j++)
+                                coeffs_num*=coeffs_size[j];
+                            
+
+                        }
+                        sampled_blocks[i].resize(coeffs_num);
+                        for (size_t j=0;j<coeffs_num;j++)
+                            sampled_blocks[i][j]=coeffData[j]; 
+                        delete[]coeffData;
+                    }
+                    conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
                 }
-                std::cout<<"dawd"<<std::endl;
+                //std::cout<<"dawd"<<std::endl;
 
             }
 
@@ -1145,7 +1165,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             if(conf.multiDimInterp)
                 interpDirection_Candidates.push_back(QoZ::factorial(N));
-            std::cout<<"pd1"<<std::endl;
+            //std::cout<<"pd1"<<std::endl;
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
                 std::vector<uint8_t> interpDirection_list(conf.levelwisePredictionSelection,0);
@@ -1153,9 +1173,9 @@ double Tuning(QoZ::Config &conf, T *data){
                                         QoZ::LinearQuantizer<T>(conf.absErrorBound),
                                         QoZ::HuffmanEncoder<int>(),
                                         QoZ::Lossless_zstd());   
-                std::cout<<"pd2"<<std::endl;             
+                //std::cout<<"pd2"<<std::endl;             
                 for(int level=conf.levelwisePredictionSelection;level>0;level--){
-                    std::cout<<"pd3"<<std::endl;
+                    //std::cout<<"pd3"<<std::endl;
                     int start_level=(level==conf.levelwisePredictionSelection?9999:level);
                     int end_level=level-1;
                     uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
@@ -1164,7 +1184,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.cmprAlgo == QoZ::ALGO_INTERP;                  
                     for (auto &interp_op: interpAlgo_Candidates) {
                         for (auto &interp_direction: interpDirection_Candidates) {
-                            std::cout<<"pd4"<<std::endl;
+                            //std::cout<<"pd4"<<std::endl;
                             /*
                             if (interp_direction==2 and level<=2)
                                 continue;
@@ -1179,7 +1199,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 delete []cmprData;                              
                                 cur_absloss+=conf.decomp_square_error;
                             }
-                            std::cout<<"pd5"<<std::endl;
+                            //std::cout<<"pd5"<<std::endl;
                             if (cur_absloss<best_interp_absloss){
                                 best_interp_absloss=cur_absloss;
                                 bestInterpAlgo=interp_op;
@@ -1217,6 +1237,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 if(conf.autoTuningRate==0){              
                     std::pair<double,double> results=CompressTest<T,N>(conf,sampled_blocks,QoZ::ALGO_INTERP,QoZ::TUNING_TARGET_CR,false);
                     double cur_best_interp_cr=sizeof(T)*8.0/results.first;     
+                    /*
+                    if(wave_idx>1){
+                        cur_best_interp_cr*=double(per_block_ele_num)/conf.num;//maybe incorrect;
+                    }
+                    */
                     if(cur_best_interp_cr>best_interp_cr){
                         best_interp_cr=cur_best_interp_cr;
                         conf.interpAlgo_list=interpAlgo_list;
@@ -1227,7 +1252,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //if (anchor_rate>0)
                         //  best_interp_cr=1/((1-anchor_rate)/best_interp_cr+anchor_rate);   
                 }
-                std::cout<<"pd6"<<std::endl;
+                //std::cout<<"pd6"<<std::endl;
             }
 
             else{
@@ -1471,9 +1496,22 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 else{
-                    std::vector<size_t> temp;
-                    for(size_t i=0;i<waveleted_input.size();i++)
-                        QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,true,temp);
+                    std::vector<size_t> coeffs_size;
+                    size_t coeff_num=1;
+                    for(size_t i=0;i<waveleted_input.size();i++){
+                        T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
+                        if(i==0){     
+                            for (size_t j=0;j<N;j++)
+                                coeffs_num*=coeffs_size[j];
+                                
+                        }
+                        waveleted_input[i].resize(coeffs_num);
+                        for (size_t j=0;j<coeffs_num;j++)
+                            waveleted_input[i][j]=coeffData[j]; 
+                        delete[]coeffData;
+                    }
+                    conf.setDims(coeffs_size.begin(),coeffs_size.end());
+
                 }
 
 
