@@ -1628,7 +1628,7 @@ double Tuning(QoZ::Config &conf, T *data){
                   
                 printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
-                    printf("Best: %.4f %.2f\n",bestb,bestm);
+                    
                     bestb=bitrate;
                     bestm=metric;
                     bestWave=wave_idx;
@@ -1658,8 +1658,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     double a=(metric-metric_r)/(bitrate-bitrate_r);
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
-                            //printf("%.4f %.2f\n",bitrate_r,metric_r);
-                           //printf("%.4f %.2f\n",bestb,reg);
+                            printf("%.4f %.2f\n",bitrate_r,metric_r);
+                           printf("%.4f %.2f\n",bestb,reg);
                             //conf.absErrorBound=orig_eb;
                     if (reg>bestm){
                                // bestalpha=alpha;
