@@ -1433,7 +1433,7 @@ double Tuning(QoZ::Config &conf, T *data){
         double bestb=9999;
         double bestm=0;
         size_t num_sampled_blocks=sampled_blocks.size();
-        std::cout<<num_sampled_blocks<<std::endl;
+        //std::cout<<num_sampled_blocks<<std::endl;
         size_t per_block_ele_num=pow(sampleBlockSize+1,N);
         size_t ele_num=num_sampled_blocks*per_block_ele_num;
         //vector<double> orig_sums(num_sampled_blocks,0);
