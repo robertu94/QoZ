@@ -923,6 +923,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         double mse=square_error/ele_num;
                     //std::cout<<mse<<std::endl;      
         mse*=profiling_coeff;      
+        if(testConfig.wavelet==1)
+            mse*=testConfig.waveletMseFix;
+        else if(testConfig.wavelet>1)
+            mse*=testConfig.waveletMseFix2;
                     //std::cout<<mse<<std::endl;
         metric=QoZ::PSNR(testConfig.rng,mse);
                     //std::cout<<metric<<std::endl;
