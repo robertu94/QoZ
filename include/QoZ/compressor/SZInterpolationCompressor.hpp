@@ -1641,7 +1641,11 @@ namespace QoZ {
         }
 
         inline void recover(size_t idx, T &d, T pred) {
-            std::cout<<idx<<std::endl;
+            if(idx>=354212600){
+                std::cout<<idx<<std::endl;
+                std::cout<<quant_inds.size()<<std::endl;
+                std::cout<<quant_index<<std::endl;
+            }
             d = quantizer.recover(pred, quant_inds[quant_index++]);
         };
 
