@@ -820,6 +820,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
+                std::cout<<"fuqindejian4"<<std::endl;  
             }
 
         }
@@ -1623,6 +1624,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::cout<<"fuqindejian"<<std::endl;                                      
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                    std::cout<<"fuqindejian5"<<std::endl;  
                     double bitrate=results.first;
                     double metric=results.second;
                     printf("%d %.2f %.2f %.4f %.2f\n",wave_idx,alpha,beta,bitrate,metric);
