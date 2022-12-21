@@ -206,6 +206,9 @@ namespace QoZ {
             coeffTracking = cfg.GetInteger("AlgoSettings", "coeffTracking", coeffTracking);
             waveletTest = cfg.GetInteger("AlgoSettings", "waveletTest", waveletTest);
             waveletAutoTuning = cfg.GetInteger("AlgoSettings", "waveletAutoTuning", waveletAutoTuning);
+            var_first = cfg.GetInteger("AlgoSettings", "var_first", var_first);
+            profStride = cfg.GetInteger("AlgoSettings", "profStride", profStride);
+
 
 
 
@@ -405,6 +408,8 @@ namespace QoZ {
         int waveletAutoTuning = 0;
         double waveletBrFix = 1.0;
         double waveletBrFix2 = 1.0;
+        int var_first=0;
+        size_t profStride=0;
 
         
 

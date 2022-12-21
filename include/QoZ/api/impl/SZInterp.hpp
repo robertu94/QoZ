@@ -606,7 +606,7 @@ int compareWavelets(QoZ::Config &conf, std::vector< std::vector<T> > & sampled_b
 */
 
 template<class T, QoZ::uint N>
-void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std::vector< std::vector<T> > & sampled_blocks,double sample_rate,int profiling ,std::vector<std::vector<size_t> > &starts){
+void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std::vector< std::vector<T> > & sampled_blocks,double sample_rate,int profiling ,std::vector<std::vector<size_t> > &starts,int var_first=0){
     for(int i=0;i<sampled_blocks.size();i++){
                 std::vector< T >().swap(sampled_blocks[i]);                
             }
@@ -621,57 +621,119 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
     }               
     size_t idx=0,block_idx=0;   
     if(profiling){
-        size_t num_filtered_blocks=starts.size();                  
-        size_t sample_stride=(size_t)(num_filtered_blocks/(totalblock_num*sample_rate));
-        if(sample_stride<=0)
-            sample_stride=1;
-        if(N==2){
+        size_t num_filtered_blocks=starts.size();    
+        if(var_first==0){  
+            size_t sample_stride=(size_t)(num_filtered_blocks/(totalblock_num*sample_rate));
+            if(sample_stride<=0)
+                sample_stride=1;
+            
             for(size_t i=0;i<num_filtered_blocks;i+=sample_stride){
                 std::vector<T> s_block;
-                QoZ::sample_block_2d<T,N>(data, s_block,dims, starts[i],sampleBlockSize+1);
+                QoZ::sample_blocks<T,N>(data, s_block,dims, starts[i],sampleBlockSize+1);
                 sampled_blocks.push_back(s_block);
+                
             }
+            
         }
-        else if(N==3){
-            for(size_t i=0;i<num_filtered_blocks;i+=sample_stride){
-                std::vector<T> s_block;
-                QoZ::sample_block_3d<T,N>(data, s_block,dims, starts[i],sampleBlockSize+1);
-                sampled_blocks.push_back(s_block);
+        else{
+            std::vector< std::pair<double,std::vector<size_t> > >block_heap;
+            for(size_t i=0;i<num_filtered_blocks;i++){
+                double mean,sigma2,range;
+                blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
+                block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,starts[i]));
             }
+                std::make_heap(block_heap.begin(),block_heap.end());
+                size_t sampled_block_num=totalblock_num*sample_rate;
+                if(sampled_block_num==0)
+                    sampled_block_num=1;
+                for(size_t i=0;i<sampled_block_num;i++){
+                    std::vector<T> s_block;
+                    QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
+                    sampled_blocks.push_back(s_block);
+                    std::pop_heap(block_heap.begin(),block_heap.end());
+                    block_heap.pop_back();
+                }
+
+            }
+
         }
     }               
     else{
-        size_t sample_stride=(size_t)(1.0/sample_rate);
-        if(sample_stride<=0)
-            sample_stride=1;
-        if (N==2){                        
-            //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
-            for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                           
-                for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
-                    if (idx%sample_stride==0){
-                        std::vector<size_t> starts{x_start,y_start};
-                        std::vector<T> s_block;
-                        QoZ::sample_block_2d<T,N>(data, s_block,dims, starts,sampleBlockSize+1);
-                        sampled_blocks.push_back(s_block);
-                    }
-                    idx+=1;
-                }
-            }
-        }
-        else if (N==3){
-            //std::vector<size_t> sample_dims(3,sampleBlockSize+1);                     
-            for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                          
-                for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
-                    for (size_t z_start=0;z_start<dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
+        if(var_first==0){
+            size_t sample_stride=(size_t)(1.0/sample_rate);
+            if(sample_stride<=0)
+                sample_stride=1;
+            if (N==2){                        
+                //std::vector<size_t> sample_dims(2,sampleBlockSize+1);
+                for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                           
+                    for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
                         if (idx%sample_stride==0){
-                            std::vector<size_t> starts{x_start,y_start,z_start};
+                            std::vector<size_t> starts{x_start,y_start};
                             std::vector<T> s_block;
-                            QoZ::sample_block_3d<T,N>(data, s_block,dims, starts,sampleBlockSize+1);
+                            QoZ::sample_blocks<T,N>(data, s_block,dims, starts,sampleBlockSize+1);
                             sampled_blocks.push_back(s_block);
                         }
                         idx+=1;
                     }
                 }
+            }
+            else if (N==3){
+                //std::vector<size_t> sample_dims(3,sampleBlockSize+1);                     
+                for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                          
+                    for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
+                        for (size_t z_start=0;z_start<dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
+                            if (idx%sample_stride==0){
+                                std::vector<size_t> starts{x_start,y_start,z_start};
+                                std::vector<T> s_block;
+                                QoZ::sample_blocks<T,N>(data, s_block,dims, starts,sampleBlockSize+1);
+                                sampled_blocks.push_back(s_block);
+                            }
+                            idx+=1;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            std::vector <std::vector<size_t> > blocks_starts;
+            if (N==2){  
+                for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                           
+                    for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
+                       
+                            blocks_starts.push_back(std::vector<size_t>{x_start,y_start});
+                    }
+                }
+
+            }
+            else if (N==3){
+                //std::vector<size_t> sample_dims(3,sampleBlockSize+1);                     
+                for (size_t x_start=0;x_start<dims[0]-sampleBlockSize;x_start+=sampleBlockSize){                          
+                    for (size_t y_start=0;y_start<dims[1]-sampleBlockSize;y_start+=sampleBlockSize){
+                        for (size_t z_start=0;z_start<dims[2]-sampleBlockSize;z_start+=sampleBlockSize){
+                            blocks_starts.push_back(std::vector<size_t>{x_start,y_start,z_start});
+                        }
+                    }
+                }
+            
+
+                std::vector< std::pair<double,std::vector<size_t> > >block_heap;
+                for(size_t i=0;i<totalblock_num;i++){
+                    double mean,sigma2,range;
+                    blockwise_profiling<T>(data,dims, blocks_starts[i],sampleBlockSize+1, mean,sigma2,range);
+                    block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,blocks_starts[i]));
+                }
+                std::make_heap(block_heap.begin(),block_heap.end());
+                size_t sampled_block_num=totalblock_num*sample_rate;
+                if(sampled_block_num==0)
+                    sampled_block_num=1;
+                for(size_t i=0;i<sampled_block_num;i++){
+                    std::vector<T> s_block;
+                    QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
+                    sampled_blocks.push_back(s_block);
+                    std::pop_heap(block_heap.begin(),block_heap.end());
+                    block_heap.pop_back();
+                }
+
             }
         }
     }
@@ -1037,13 +1099,15 @@ double Tuning(QoZ::Config &conf, T *data){
     std::vector<std::vector<size_t> >starts;
     if((conf.waveletTuningRate>0 or conf.autoTuningRate>0 or conf.predictorTuningRate>0) and conf.profiling){      
         if(N==2){
-            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound);
+            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
         }
         else if (N==3){
-            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound);
+            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
         }
         //num_blocks=starts.size();
     }
+
+
     size_t num_filtered_blocks=starts.size();
     double profiling_coeff=1;
     if(conf.profiling)
@@ -1204,7 +1268,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     uint8_t bestInterpAlgo = QoZ::INTERP_ALGO_CUBIC;
                     uint8_t bestDirection = 0;
                     double best_interp_absloss=std::numeric_limits<double>::max();
-                    conf.cmprAlgo == QoZ::ALGO_INTERP;                  
+                    //conf.cmprAlgo = QoZ::ALGO_INTERP;                  
                     for (auto &interp_op: interpAlgo_Candidates) {
                         for (auto &interp_direction: interpDirection_Candidates) {
                             //std::cout<<"pd4"<<std::endl;
@@ -2283,10 +2347,10 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
     size_t num_filtered_blocks=0;
     if(conf.autoTuningRate>0  and conf.profiling){
         if(N==2){
-            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound);
+            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
         }
         else if (N==3){
-            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound);
+            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
         }
 
     }
