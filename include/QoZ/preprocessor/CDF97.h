@@ -220,7 +220,7 @@ class CDF97 {
 
 
 
-template <typename T>
+
 template <typename T>
 auto sperr::CDF97::copy_data(const T* data, size_t len, dims_type dims) -> RTNType
 {
