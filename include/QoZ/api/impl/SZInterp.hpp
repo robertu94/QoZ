@@ -800,9 +800,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             cur_block=sampled_blocks[k];
         else
             cur_block=waveleted_input[k];
-        std::cout<<"fuqindejian1"<<std::endl;        
+        //std::cout<<"fuqindejian1"<<std::endl;        
         auto cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
-        std::cout<<"fuqindejian2"<<std::endl;     
+        //std::cout<<"fuqindejian2"<<std::endl;     
         delete[]cmprData;
 
         if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
@@ -814,13 +814,13 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             else{
                 std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
                 T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
-                std::cout<<"fuqindejian3"<<std::endl;     
+                //std::cout<<"fuqindejian3"<<std::endl;     
 
                 cur_block.resize(per_block_ele_num);
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
-                std::cout<<"fuqindejian4"<<std::endl;  
+                //std::cout<<"fuqindejian4"<<std::endl;  
             }
 
         }
@@ -1621,10 +1621,10 @@ double Tuning(QoZ::Config &conf, T *data){
                         continue;
                     conf.alpha=alpha;
                     conf.beta=beta; 
-                    std::cout<<"fuqindejian"<<std::endl;                                      
+                    //std::cout<<"fuqindejian"<<std::endl;                                      
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                    std::cout<<"fuqindejian5"<<std::endl;  
+                    //std::cout<<"fuqindejian5"<<std::endl;  
                     double bitrate=results.first;
                     double metric=results.second;
                     printf("%d %.2f %.2f %.4f %.2f\n",wave_idx,alpha,beta,bitrate,metric);
