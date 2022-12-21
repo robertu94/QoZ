@@ -137,7 +137,7 @@ namespace QoZ {
  
     template<class T, uint N>
     inline void
-    profiling_block_2d(T *data, std::vector<size_t> &dims, std::vector< std::vector<size_t> > &starts,size_t block_size, double abseb) {
+    profiling_block_2d(T *data, std::vector<size_t> &dims, std::vector< std::vector<size_t> > &starts,size_t block_size, double abse,size_t stride=0) {
         assert(dims.size() == N);
         
         size_t dimx=dims[0],dimy=dims[1];
