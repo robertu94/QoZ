@@ -283,25 +283,25 @@ auto CDF97::get_dims() const -> std::array<size_t, 3>
 
 void CDF97::dwt1d()
 {
-  size_t num_xforms = sperr::num_of_xforms(m_dims[0]);
+  size_t num_xforms = num_of_xforms(m_dims[0]);
   m_dwt1d(m_data_buf.begin(), m_data_buf.size(), num_xforms);
 }
 
 void CDF97::idwt1d()
 {
-  size_t num_xforms = sperr::num_of_xforms(m_dims[0]);
+  size_t num_xforms = num_of_xforms(m_dims[0]);
   m_idwt1d(m_data_buf.begin(), m_data_buf.size(), num_xforms);
 }
 
 void CDF97::dwt2d()
 {
-  size_t num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
+  size_t num_xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
   m_dwt2d(m_data_buf.begin(), {m_dims[0], m_dims[1]}, num_xforms_xy);
 }
 
 void CDF97::idwt2d()
 {
-  size_t num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
+  size_t num_xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
   m_idwt2d(m_data_buf.begin(), {m_dims[0], m_dims[1]}, num_xforms_xy);
 }
 
@@ -313,9 +313,9 @@ void CDF97::dwt3d()
   // 3) ELSE use dyadic.
   //
   // clang-format off
-  const auto num_xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
-                                                sperr::num_of_xforms(m_dims[1]),
-                                                sperr::num_of_xforms(m_dims[2])};
+  const auto num_xforms = std::array<size_t, 3>{num_of_xforms(m_dims[0]),
+                                                num_of_xforms(m_dims[1]),
+                                                num_of_xforms(m_dims[2])};
   // clang-format on
 
   if (num_xforms[0] >= 5 && num_xforms[1] >= 5 && num_xforms[2] >= 5) {
@@ -332,9 +332,9 @@ void CDF97::dwt3d()
 void CDF97::idwt3d()
 {
   // clang-format off
-  const auto num_xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
-                                                sperr::num_of_xforms(m_dims[1]),
-                                                sperr::num_of_xforms(m_dims[2])};
+  const auto num_xforms = std::array<size_t, 3>{num_of_xforms(m_dims[0]),
+                                                num_of_xforms(m_dims[1]),
+                                                num_of_xforms(m_dims[2])};
   // clang-format on
 
   if (num_xforms[0] >= 5 && num_xforms[1] >= 5 && num_xforms[2] >= 5) {
@@ -371,7 +371,7 @@ void CDF97::m_dwt3d_wavelet_packet()
 
   // First transform along the Z dimension
   //
-  const auto num_xforms_z = sperr::num_of_xforms(m_dims[2]);
+  const auto num_xforms_z = num_of_xforms(m_dims[2]);
 
   for (size_t y = 0; y < m_dims[1]; y++) {
     const auto y_offset = y * m_dims[0];
@@ -397,7 +397,7 @@ void CDF97::m_dwt3d_wavelet_packet()
 
   // Second transform each plane
   //
-  const auto num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
+  const auto num_xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
 
   for (size_t z = 0; z < m_dims[2]; z++) {
     const size_t offset = plane_size_xy * z;
@@ -411,7 +411,7 @@ void CDF97::m_idwt3d_wavelet_packet()
 
   // First, inverse transform each plane
   //
-  auto num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
+  auto num_xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
 
   for (size_t i = 0; i < m_dims[2]; i++) {
     const size_t offset = plane_size_xy * i;
@@ -439,7 +439,7 @@ void CDF97::m_idwt3d_wavelet_packet()
 
   // Process one XZ slice at a time
   //
-  const auto num_xforms_z = sperr::num_of_xforms(m_dims[2]);
+  const auto num_xforms_z = num_of_xforms(m_dims[2]);
 
   for (size_t y = 0; y < m_dims[1]; y++) {
     const auto y_offset = y * m_dims[0];
@@ -467,16 +467,16 @@ void CDF97::m_idwt3d_wavelet_packet()
 void CDF97::m_dwt3d_dyadic()
 {
   // clang-format off
-  const auto xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
-                                            sperr::num_of_xforms(m_dims[1]),
-                                            sperr::num_of_xforms(m_dims[2])};
+  const auto xforms = std::array<size_t, 3>{num_of_xforms(m_dims[0]),
+                                            num_of_xforms(m_dims[1]),
+                                            num_of_xforms(m_dims[2])};
   const auto num_xforms = *std::min_element(xforms.cbegin(), xforms.cend());
   // clang-format on
 
   for (size_t lev = 0; lev < num_xforms; lev++) {
-    auto app_x = sperr::calc_approx_detail_len(m_dims[0], lev);
-    auto app_y = sperr::calc_approx_detail_len(m_dims[1], lev);
-    auto app_z = sperr::calc_approx_detail_len(m_dims[2], lev);
+    auto app_x = calc_approx_detail_len(m_dims[0], lev);
+    auto app_y = calc_approx_detail_len(m_dims[1], lev);
+    auto app_z = calc_approx_detail_len(m_dims[2], lev);
     m_dwt3d_one_level(m_data_buf.begin(), {app_x[0], app_y[0], app_z[0]});
   }
 }
@@ -484,16 +484,16 @@ void CDF97::m_dwt3d_dyadic()
 void CDF97::m_idwt3d_dyadic()
 {
   // clang-format off
-  const auto xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
-                                            sperr::num_of_xforms(m_dims[1]),
-                                            sperr::num_of_xforms(m_dims[2])};
+  const auto xforms = std::array<size_t, 3>{num_of_xforms(m_dims[0]),
+                                            num_of_xforms(m_dims[1]),
+                                            num_of_xforms(m_dims[2])};
   const auto num_xforms = *std::min_element(xforms.cbegin(), xforms.cend());
   // clang-format on
 
   for (size_t lev = num_xforms; lev > 0; lev--) {
-    auto app_x = sperr::calc_approx_detail_len(m_dims[0], lev - 1);
-    auto app_y = sperr::calc_approx_detail_len(m_dims[1], lev - 1);
-    auto app_z = sperr::calc_approx_detail_len(m_dims[2], lev - 1);
+    auto app_x = calc_approx_detail_len(m_dims[0], lev - 1);
+    auto app_y = calc_approx_detail_len(m_dims[1], lev - 1);
+    auto app_z = calc_approx_detail_len(m_dims[2], lev - 1);
     m_idwt3d_one_level(m_data_buf.begin(), {app_x[0], app_y[0], app_z[0]});
   }
 }
@@ -505,7 +505,7 @@ void CDF97::m_idwt3d_dyadic()
 void CDF97::m_dwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 {
   for (size_t lev = 0; lev < num_of_lev; lev++) {
-    auto [apx, nnm] = sperr::calc_approx_detail_len(array_len, lev);
+    auto [apx, nnm] = calc_approx_detail_len(array_len, lev);
     m_dwt1d_one_level(array, apx);
   }
 }
@@ -513,7 +513,7 @@ void CDF97::m_dwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 void CDF97::m_idwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 {
   for (size_t lev = num_of_lev; lev > 0; lev--) {
-    auto [apx, nnm] = sperr::calc_approx_detail_len(array_len, lev - 1);
+    auto [apx, nnm] = calc_approx_detail_len(array_len, lev - 1);
     m_idwt1d_one_level(array, apx);
   }
 }
@@ -521,8 +521,8 @@ void CDF97::m_idwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 void CDF97::m_dwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
 {
   for (size_t lev = 0; lev < num_of_lev; lev++) {
-    auto approx_x = sperr::calc_approx_detail_len(len_xy[0], lev);
-    auto approx_y = sperr::calc_approx_detail_len(len_xy[1], lev);
+    auto approx_x = calc_approx_detail_len(len_xy[0], lev);
+    auto approx_y = calc_approx_detail_len(len_xy[1], lev);
     m_dwt2d_one_level(plane, {approx_x[0], approx_y[0]});
   }
 }
@@ -530,8 +530,8 @@ void CDF97::m_dwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_
 void CDF97::m_idwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
 {
   for (size_t lev = num_of_lev; lev > 0; lev--) {
-    auto approx_x = sperr::calc_approx_detail_len(len_xy[0], lev - 1);
-    auto approx_y = sperr::calc_approx_detail_len(len_xy[1], lev - 1);
+    auto approx_x = calc_approx_detail_len(len_xy[0], lev - 1);
+    auto approx_y = calc_approx_detail_len(len_xy[1], lev - 1);
     m_idwt2d_one_level(plane, {approx_x[0], approx_y[0]});
   }
 }
