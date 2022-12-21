@@ -244,12 +244,17 @@ namespace QoZ {
 
                         auto start_idx=block.get_global_index();
                         auto end_idx = start_idx;
+
+
                         for (int i = 0; i < N; i++) {
                             end_idx[i] += cur_blocksize;
                             if (end_idx[i] > global_dimensions[i] - 1) {
                                 end_idx[i] = global_dimensions[i] - 1;
                             }
                         }
+                        for (int i = 0; i < N; i++) 
+                            std::cout<<start_idx[i]<<" "<<end_idx[i]<<""<<std::endl;
+
                         /*
                         if (blockwiseTuning){
                             
