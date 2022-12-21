@@ -222,7 +222,7 @@ class CDF97 {
 
 
 template <typename T>
-auto sperr::CDF97::copy_data(const T* data, size_t len, dims_type dims) -> RTNType
+auto CDF97::copy_data(const T* data, size_t len, dims_type dims) -> RTNType
 {
   static_assert(std::is_floating_point<T>::value, "!! Only floating point values are supported !!");
   if (len != dims[0] * dims[1] * dims[2])
@@ -243,10 +243,10 @@ auto sperr::CDF97::copy_data(const T* data, size_t len, dims_type dims) -> RTNTy
 
   return RTNType::Good;
 }
-template auto sperr::CDF97::copy_data(const float*, size_t, dims_type) -> RTNType;
-template auto sperr::CDF97::copy_data(const double*, size_t, dims_type) -> RTNType;
+template auto CDF97::copy_data(const float*, size_t, dims_type) -> RTNType;
+template auto CDF97::copy_data(const double*, size_t, dims_type) -> RTNType;
 
-auto sperr::CDF97::take_data(vecd_type&& buf, dims_type dims) -> RTNType
+auto CDF97::take_data(vecd_type&& buf, dims_type dims) -> RTNType
 {
   if (buf.size() != dims[0] * dims[1] * dims[2])
     return RTNType::WrongDims;
@@ -265,47 +265,47 @@ auto sperr::CDF97::take_data(vecd_type&& buf, dims_type dims) -> RTNType
   return RTNType::Good;
 }
 
-auto sperr::CDF97::view_data() const -> const vecd_type&
+auto CDF97::view_data() const -> const vecd_type&
 {
   return m_data_buf;
 }
 
-auto sperr::CDF97::release_data() -> vecd_type&&
+auto CDF97::release_data() -> vecd_type&&
 {
   m_dims = {0, 0, 0};
   return std::move(m_data_buf);
 }
 
-auto sperr::CDF97::get_dims() const -> std::array<size_t, 3>
+auto CDF97::get_dims() const -> std::array<size_t, 3>
 {
   return m_dims;
 }
 
-void sperr::CDF97::dwt1d()
+void CDF97::dwt1d()
 {
   size_t num_xforms = sperr::num_of_xforms(m_dims[0]);
   m_dwt1d(m_data_buf.begin(), m_data_buf.size(), num_xforms);
 }
 
-void sperr::CDF97::idwt1d()
+void CDF97::idwt1d()
 {
   size_t num_xforms = sperr::num_of_xforms(m_dims[0]);
   m_idwt1d(m_data_buf.begin(), m_data_buf.size(), num_xforms);
 }
 
-void sperr::CDF97::dwt2d()
+void CDF97::dwt2d()
 {
   size_t num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
   m_dwt2d(m_data_buf.begin(), {m_dims[0], m_dims[1]}, num_xforms_xy);
 }
 
-void sperr::CDF97::idwt2d()
+void CDF97::idwt2d()
 {
   size_t num_xforms_xy = sperr::num_of_xforms(std::min(m_dims[0], m_dims[1]));
   m_idwt2d(m_data_buf.begin(), {m_dims[0], m_dims[1]}, num_xforms_xy);
 }
 
-void sperr::CDF97::dwt3d()
+void CDF97::dwt3d()
 {
   // Strategy to choose "dyadic" or "wavelet packet" 3D transform:
   // 1) IF all 3 axes have 5 or more levels of transforms, THEN use dyadic;
@@ -329,7 +329,7 @@ void sperr::CDF97::dwt3d()
   }
 }
 
-void sperr::CDF97::idwt3d()
+void CDF97::idwt3d()
 {
   // clang-format off
   const auto num_xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
@@ -348,7 +348,7 @@ void sperr::CDF97::idwt3d()
   }
 }
 
-void sperr::CDF97::m_dwt3d_wavelet_packet()
+void CDF97::m_dwt3d_wavelet_packet()
 {
   /*
    *             Z
@@ -405,7 +405,7 @@ void sperr::CDF97::m_dwt3d_wavelet_packet()
   }
 }
 
-void sperr::CDF97::m_idwt3d_wavelet_packet()
+void CDF97::m_idwt3d_wavelet_packet()
 {
   const size_t plane_size_xy = m_dims[0] * m_dims[1];
 
@@ -464,7 +464,7 @@ void sperr::CDF97::m_idwt3d_wavelet_packet()
   }
 }
 
-void sperr::CDF97::m_dwt3d_dyadic()
+void CDF97::m_dwt3d_dyadic()
 {
   // clang-format off
   const auto xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
@@ -481,7 +481,7 @@ void sperr::CDF97::m_dwt3d_dyadic()
   }
 }
 
-void sperr::CDF97::m_idwt3d_dyadic()
+void CDF97::m_idwt3d_dyadic()
 {
   // clang-format off
   const auto xforms = std::array<size_t, 3>{sperr::num_of_xforms(m_dims[0]),
@@ -502,7 +502,7 @@ void sperr::CDF97::m_idwt3d_dyadic()
 // Private Methods
 //
 
-void sperr::CDF97::m_dwt1d(itd_type array, size_t array_len, size_t num_of_lev)
+void CDF97::m_dwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 {
   for (size_t lev = 0; lev < num_of_lev; lev++) {
     auto [apx, nnm] = sperr::calc_approx_detail_len(array_len, lev);
@@ -510,7 +510,7 @@ void sperr::CDF97::m_dwt1d(itd_type array, size_t array_len, size_t num_of_lev)
   }
 }
 
-void sperr::CDF97::m_idwt1d(itd_type array, size_t array_len, size_t num_of_lev)
+void CDF97::m_idwt1d(itd_type array, size_t array_len, size_t num_of_lev)
 {
   for (size_t lev = num_of_lev; lev > 0; lev--) {
     auto [apx, nnm] = sperr::calc_approx_detail_len(array_len, lev - 1);
@@ -518,7 +518,7 @@ void sperr::CDF97::m_idwt1d(itd_type array, size_t array_len, size_t num_of_lev)
   }
 }
 
-void sperr::CDF97::m_dwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
+void CDF97::m_dwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
 {
   for (size_t lev = 0; lev < num_of_lev; lev++) {
     auto approx_x = sperr::calc_approx_detail_len(len_xy[0], lev);
@@ -527,7 +527,7 @@ void sperr::CDF97::m_dwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t 
   }
 }
 
-void sperr::CDF97::m_idwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
+void CDF97::m_idwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t num_of_lev)
 {
   for (size_t lev = num_of_lev; lev > 0; lev--) {
     auto approx_x = sperr::calc_approx_detail_len(len_xy[0], lev - 1);
@@ -536,7 +536,7 @@ void sperr::CDF97::m_idwt2d(itd_type plane, std::array<size_t, 2> len_xy, size_t
   }
 }
 
-void sperr::CDF97::m_dwt1d_one_level(itd_type array, size_t array_len)
+void CDF97::m_dwt1d_one_level(itd_type array, size_t array_len)
 {
   std::copy(array, array + array_len, m_qcc_buf.begin());
 #if __cplusplus >= 202002L
@@ -554,7 +554,7 @@ void sperr::CDF97::m_dwt1d_one_level(itd_type array, size_t array_len)
   }
 }
 
-void sperr::CDF97::m_idwt1d_one_level(itd_type array, size_t array_len)
+void CDF97::m_idwt1d_one_level(itd_type array, size_t array_len)
 {
 #if __cplusplus >= 202002L
   if (array_len % 2 == 0) [[likely]]  // Even length
@@ -572,7 +572,7 @@ void sperr::CDF97::m_idwt1d_one_level(itd_type array, size_t array_len)
   std::copy(m_qcc_buf.begin(), m_qcc_buf.begin() + array_len, array);
 }
 
-void sperr::CDF97::m_dwt2d_one_level(itd_type plane, std::array<size_t, 2> len_xy)
+void CDF97::m_dwt2d_one_level(itd_type plane, std::array<size_t, 2> len_xy)
 {
   // Note: here we call low-level functions (Qcc*()) instead of
   // m_dwt1d_one_level() because we want to have only one even/odd test outside of
@@ -641,7 +641,7 @@ void sperr::CDF97::m_dwt2d_one_level(itd_type plane, std::array<size_t, 2> len_x
   }
 }
 
-void sperr::CDF97::m_idwt2d_one_level(itd_type plane, std::array<size_t, 2> len_xy)
+void CDF97::m_idwt2d_one_level(itd_type plane, std::array<size_t, 2> len_xy)
 {
   const size_t max_len = std::max(len_xy[0], len_xy[1]);
   const auto beg = m_qcc_buf.begin();  // First half of the buffer
@@ -700,7 +700,7 @@ void sperr::CDF97::m_idwt2d_one_level(itd_type plane, std::array<size_t, 2> len_
   }
 }
 
-void sperr::CDF97::m_dwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xyz)
+void CDF97::m_dwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xyz)
 {
   // First, do one level of transform on all XY planes.
   const size_t plane_size_xy = m_dims[0] * m_dims[1];
@@ -760,7 +760,7 @@ void sperr::CDF97::m_dwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xyz
   }
 }
 
-void sperr::CDF97::m_idwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xyz)
+void CDF97::m_idwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xyz)
 {
   const size_t plane_size_xy = m_dims[0] * m_dims[1];
   const auto beg = m_qcc_buf.begin();  // First half of the buffer
@@ -820,7 +820,7 @@ void sperr::CDF97::m_idwt3d_one_level(itd_type vol, std::array<size_t, 3> len_xy
   }
 }
 
-void sperr::CDF97::m_gather_even(citd_type begin, citd_type end, itd_type dest) const
+void CDF97::m_gather_even(citd_type begin, citd_type end, itd_type dest) const
 {
   auto len = end - begin;
   assert(len % 2 == 0);  // This function specifically for even length input
@@ -835,7 +835,7 @@ void sperr::CDF97::m_gather_even(citd_type begin, citd_type end, itd_type dest) 
   }
 }
 
-void sperr::CDF97::m_gather_odd(citd_type begin, citd_type end, itd_type dest) const
+void CDF97::m_gather_odd(citd_type begin, citd_type end, itd_type dest) const
 {
   auto len = end - begin;
   assert(len % 2 == 1);  // This function specifically for odd length input
@@ -850,7 +850,7 @@ void sperr::CDF97::m_gather_odd(citd_type begin, citd_type end, itd_type dest) c
   }
 }
 
-void sperr::CDF97::m_scatter_even(citd_type begin, citd_type end, itd_type dest) const
+void CDF97::m_scatter_even(citd_type begin, citd_type end, itd_type dest) const
 {
   auto len = end - begin;
   assert(len % 2 == 0);  // This function specifically for even length input
@@ -865,7 +865,7 @@ void sperr::CDF97::m_scatter_even(citd_type begin, citd_type end, itd_type dest)
   }
 }
 
-void sperr::CDF97::m_scatter_odd(citd_type begin, citd_type end, itd_type dest) const
+void CDF97::m_scatter_odd(citd_type begin, citd_type end, itd_type dest) const
 {
   auto len = end - begin;
   assert(len % 2 == 1);  // This function specifically for odd length input
@@ -883,7 +883,7 @@ void sperr::CDF97::m_scatter_odd(citd_type begin, citd_type end, itd_type dest) 
 //
 // Methods from QccPack
 //
-void sperr::CDF97::QccWAVCDF97AnalysisSymmetricEvenEven(double* signal, size_t signal_length)
+void CDF97::QccWAVCDF97AnalysisSymmetricEvenEven(double* signal, size_t signal_length)
 {
   for (size_t index = 1; index < signal_length - 2; index += 2)
     signal[index] += ALPHA * (signal[index - 1] + signal[index + 1]);
@@ -905,7 +905,7 @@ void sperr::CDF97::QccWAVCDF97AnalysisSymmetricEvenEven(double* signal, size_t s
     signal[index] *= -INV_EPSILON;
 }
 
-void sperr::CDF97::QccWAVCDF97SynthesisSymmetricEvenEven(double* signal, size_t signal_length)
+void CDF97::QccWAVCDF97SynthesisSymmetricEvenEven(double* signal, size_t signal_length)
 {
   for (size_t index = 1; index < signal_length; index += 2)
     signal[index] *= (-EPSILON);
@@ -928,7 +928,7 @@ void sperr::CDF97::QccWAVCDF97SynthesisSymmetricEvenEven(double* signal, size_t 
   signal[signal_length - 1] -= 2.0 * ALPHA * signal[signal_length - 2];
 }
 
-void sperr::CDF97::QccWAVCDF97SynthesisSymmetricOddEven(double* signal, size_t signal_length)
+void CDF97::QccWAVCDF97SynthesisSymmetricOddEven(double* signal, size_t signal_length)
 {
   for (size_t index = 1; index < signal_length - 1; index += 2)
     signal[index] *= (-EPSILON);
@@ -955,7 +955,7 @@ void sperr::CDF97::QccWAVCDF97SynthesisSymmetricOddEven(double* signal, size_t s
     signal[index] -= ALPHA * (signal[index - 1] + signal[index + 1]);
 }
 
-void sperr::CDF97::QccWAVCDF97AnalysisSymmetricOddEven(double* signal, size_t signal_length)
+void CDF97::QccWAVCDF97AnalysisSymmetricOddEven(double* signal, size_t signal_length)
 {
   for (size_t index = 1; index < signal_length - 1; index += 2)
     signal[index] += ALPHA * (signal[index - 1] + signal[index + 1]);
