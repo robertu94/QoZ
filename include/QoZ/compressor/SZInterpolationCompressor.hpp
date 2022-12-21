@@ -40,7 +40,7 @@ namespace QoZ {
         }
 
         T *decompress(uchar const *cmpData, const size_t &cmpSize, T *decData) {
-            std::cout<<"d1"<<std::endl;
+            //std::cout<<"d1"<<std::endl;
             size_t remaining_length = cmpSize;
             uchar *buffer = lossless.decompress(cmpData, remaining_length);
             int levelwise_predictor_levels;
@@ -52,7 +52,7 @@ namespace QoZ {
             int trimToZero;
             //size_t maxStep;
 
-            std::cout<<"d2"<<std::endl;
+            //std::cout<<"d2"<<std::endl;
            
             read(global_dimensions.data(), N, buffer_pos, remaining_length);
             //std::cout<<global_dimensions[N-1]<<std::endl;
@@ -113,11 +113,11 @@ namespace QoZ {
                 //std::cout<<(uint)(interpDirection_list[1])<<std::endl; 
                
             }
-            std::cout<<"d3"<<std::endl;
+            //std::cout<<"d3"<<std::endl;
            
             init();   
             //std::cout<<num_elements<<std::endl;
-            std::cout<<"d4"<<std::endl;
+            //std::cout<<"d4"<<std::endl;
             //QoZ::Timer timer(true);
             quantizer.load(buffer_pos, remaining_length);
            // std::cout<<"d4.1"<<std::endl;
@@ -134,7 +134,7 @@ namespace QoZ {
             //timer.start();
             double eb = quantizer.get_eb();
 
-            std::cout<<"d5"<<std::endl;
+            //std::cout<<"d5"<<std::endl;
             
             if(!anchor){
                 *decData = quantizer.recover(0, quant_inds[quant_index++]);
@@ -151,11 +151,11 @@ namespace QoZ {
             }
             size_t op_index=0;
 
-            std::cout<<"d6"<<std::endl;
+            //std::cout<<"d6"<<std::endl;
     
             for (uint level = interpolation_level; level > 0 && level <= interpolation_level; level--) {
 
-                std::cout<<level<<std::endl;
+                //std::cout<<level<<std::endl;
                
                 if (alpha<0) {
                     if (level >= 3) {
@@ -227,7 +227,7 @@ namespace QoZ {
                     cur_blocksize=blocksize*stride;
                 }
                 
-                std::cout<<cur_blocksize<<std::endl;
+                //std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
                         QoZ::multi_dimensional_range<T, N>>(decData,
@@ -252,8 +252,10 @@ namespace QoZ {
                                 end_idx[i] = global_dimensions[i] - 1;
                             }
                         }
+                        /*
                         for (int i = 0; i < N; i++) 
                             std::cout<<start_idx[i]<<" "<<end_idx[i]<<""<<std::endl;
+                            */
 
                         /*
                         if (blockwiseTuning){
@@ -301,12 +303,12 @@ namespace QoZ {
                 }
                 */
                 
-                std::cout<<"d7"<<std::endl;
+                //std::cout<<"d7"<<std::endl;
                
             }
             quantizer.postdecompress_data();
            
-            std::cout<<"d8"<<std::endl;
+            //std::cout<<"d8"<<std::endl;
 
             return decData;
         }
@@ -1641,11 +1643,7 @@ namespace QoZ {
         }
 
         inline void recover(size_t idx, T &d, T pred) {
-            if(idx>=354212600){
-                std::cout<<idx<<std::endl;
-                std::cout<<quant_inds.size()<<std::endl;
-                std::cout<<quant_index<<std::endl;
-            }
+            
             d = quantizer.recover(pred, quant_inds[quant_index++]);
         };
 
