@@ -161,12 +161,15 @@ namespace QoZ {
             CDF97 m_cdf;
 
             m_cdf.take_data(std::move(dwtdata), m_dims);
+            /*
             auto xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
             auto xforms_z = num_of_xforms(m_dims[2]);
             if (xforms_xy == xforms_z)
                 m_cdf.dwt3d_dyadic();
             else
                 m_cdf.dwt3d_wavelet_packet();
+            */
+            m_cdf.dwt3d();
 
 
             dwtdata=m_cdf.release_data();
@@ -241,12 +244,15 @@ namespace QoZ {
             CDF97 m_cdf;
 
             m_cdf.take_data(std::move(dwtdata), m_dims);
+            /*
             auto xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
             auto xforms_z = num_of_xforms(m_dims[2]);
             if (xforms_xy == xforms_z)
                 m_cdf.idwt3d_dyadic();
             else
                 m_cdf.idwt3d_wavelet_packet();
+            */
+            m_cdf.idwt3d();
 
 
             dwtdata=m_cdf.release_data();
