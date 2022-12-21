@@ -227,7 +227,7 @@ namespace QoZ {
                     cur_blocksize=blocksize*stride;
                 }
                 
-                //std::cout<<cur_blocksize<<std::endl;
+                std::cout<<cur_blocksize<<std::endl;
 
                 auto inter_block_range = std::make_shared<
                         QoZ::multi_dimensional_range<T, N>>(decData,
@@ -296,7 +296,7 @@ namespace QoZ {
                 }
                 */
                 
-                
+                std::cout<<"d7"<<std::endl;
                
             }
             quantizer.postdecompress_data();
