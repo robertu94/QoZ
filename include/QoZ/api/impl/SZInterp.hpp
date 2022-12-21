@@ -402,13 +402,13 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
         conf.dims=std::vector<size_t>{sample_size+1,sample_size+1};
         conf.num=(sample_size+1)*(sample_size+1);
         std::vector<size_t> starts{0,0};
-        QoZ::sample_block_2d<T,N>(data,sampled_data,conf.dims,starts,sample_size+1);
+        QoZ::sample_blocks<T,N>(data,sampled_data,conf.dims,starts,sample_size+1);
     }
     else{//N==3
         conf.dims=std::vector<size_t>{sample_size+1,sample_size+1,sample_size+1};
         conf.num=(sample_size+1)*(sample_size+1)*(sample_size+1);
         std::vector<size_t> starts{0,0,0};
-        QoZ::sample_block_3d<T,N>(data,sampled_data,conf.dims,starts,sample_size+1);
+        QoZ::sample_blocks<T,N>(data,sampled_data,conf.dims,starts,sample_size+1);
  
     }
               
@@ -639,7 +639,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             std::vector< std::pair<double,std::vector<size_t> > >block_heap;
             for(size_t i=0;i<num_filtered_blocks;i++){
                 double mean,sigma2,range;
-                blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
+                QoZ::blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
                 block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,starts[i]));
             }
                 std::make_heap(block_heap.begin(),block_heap.end());
@@ -719,7 +719,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
                 std::vector< std::pair<double,std::vector<size_t> > >block_heap;
                 for(size_t i=0;i<totalblock_num;i++){
                     double mean,sigma2,range;
-                    blockwise_profiling<T>(data,dims, blocks_starts[i],sampleBlockSize+1, mean,sigma2,range);
+                    QoZ::blockwise_profiling<T>(data,dims, blocks_starts[i],sampleBlockSize+1, mean,sigma2,range);
                     block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,blocks_starts[i]));
                 }
                 std::make_heap(block_heap.begin(),block_heap.end());
