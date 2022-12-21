@@ -1641,6 +1641,7 @@ namespace QoZ {
         }
 
         inline void recover(size_t idx, T &d, T pred) {
+            std::cout<<idx<<std::endl;
             d = quantizer.recover(pred, quant_inds[quant_index++]);
         };
 
