@@ -782,6 +782,61 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
     }
 }
 
+template<class T, QoZ::uint N> 
+char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
+        
+    SPERR3D_OMP_C compressor;
+    compressor.set_num_threads(1);
+    compressor.set_eb_coeff(conf.sperr_eb_coeff);
+    //std::cout<<"s1"<<std::endl;
+    auto rtn = sperr::RTNType::Good;
+      
+    auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
+    rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
+                                {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
+    //std::cout<<"s2"<<std::endl;
+    compressor.set_target_pwe(conf.absErrorBound);
+    //std::cout<<"s3"<<std::endl;
+    rtn = compressor.compress();
+    //std::cout<<"s4"<<std::endl;
+    auto stream = compressor.get_encoded_bitstream();
+        
+    char * outData=new char[stream.size()+conf.size_est()];
+    outSize=stream.size();
+    //std::cout<<outSize<<std::endl;
+    memcpy(outData,stream.data(),stream.size());
+    stream.clear();
+    stream.shrink_to_fit();
+
+    //std::cout<<"s5"<<std::endl;
+    return outData;
+
+}
+template<class T, QoZ::uint N> 
+void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData){
+
+    std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
+    SPERR3D_OMP_D decompressor;
+    //std::cout<<"d1"<<std::endl;
+    decompressor.set_num_threads(1);
+    if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
+        std::cerr << "Read compressed file error: "<< std::endl;
+        return;
+    }
+
+    if (decompressor.decompress(in_stream.data()) != sperr::RTNType::Good) {
+        std::cerr << "Decompression failed!" << std::endl;
+        return ;
+    }
+    in_stream.clear();
+    in_stream.shrink_to_fit();
+    const auto vol = decompressor.get_data<float>();
+    memcpy(decData,vol.data(),sizeof(T)*conf.num);
+    //std::cout<<"d2"<<std::endl;
+    //decData=vol.data();
+    return;
+}
+
 template<class T, QoZ::uint N>
 std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector< std::vector<T> > & sampled_blocks,QoZ::ALGO algo = QoZ::ALGO_INTERP,
                     QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,double profiling_coeff=1,const std::vector<double> &orig_means=std::vector<double>(),
@@ -1102,60 +1157,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
     }
 
 }
-template<class T, QoZ::uint N> 
-char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
-        
-    SPERR3D_OMP_C compressor;
-    compressor.set_num_threads(1);
-    compressor.set_eb_coeff(conf.sperr_eb_coeff);
-    //std::cout<<"s1"<<std::endl;
-    auto rtn = sperr::RTNType::Good;
-      
-    auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
-    rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
-                                {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
-    //std::cout<<"s2"<<std::endl;
-    compressor.set_target_pwe(conf.absErrorBound);
-    //std::cout<<"s3"<<std::endl;
-    rtn = compressor.compress();
-    //std::cout<<"s4"<<std::endl;
-    auto stream = compressor.get_encoded_bitstream();
-        
-    char * outData=new char[stream.size()+conf.size_est()];
-    outSize=stream.size();
-    //std::cout<<outSize<<std::endl;
-    memcpy(outData,stream.data(),stream.size());
-    stream.clear();
-    stream.shrink_to_fit();
 
-    //std::cout<<"s5"<<std::endl;
-    return outData;
-
-}
-template<class T, QoZ::uint N> 
-void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData){
-
-    std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
-    SPERR3D_OMP_D decompressor;
-    //std::cout<<"d1"<<std::endl;
-    decompressor.set_num_threads(1);
-    if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
-        std::cerr << "Read compressed file error: "<< std::endl;
-        return;
-    }
-
-    if (decompressor.decompress(in_stream.data()) != sperr::RTNType::Good) {
-        std::cerr << "Decompression failed!" << std::endl;
-        return ;
-    }
-    in_stream.clear();
-    in_stream.shrink_to_fit();
-    const auto vol = decompressor.get_data<float>();
-    memcpy(decData,vol.data(),sizeof(T)*conf.num);
-    //std::cout<<"d2"<<std::endl;
-    //decData=vol.data();
-    return;
-}
 template<class T, QoZ::uint N>
 double Tuning(QoZ::Config &conf, T *data){
    
