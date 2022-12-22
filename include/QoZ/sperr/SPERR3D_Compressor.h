@@ -40,6 +40,7 @@ class SPERR3D_Compressor {
 
   auto view_encoded_bitstream() const -> const std::vector<uint8_t>&;
   auto release_encoded_bitstream() -> std::vector<uint8_t>&&;
+  void set_eb_coeff(const double & coeff);
 
  private:
   dims_type m_dims = {0, 0, 0};
@@ -58,6 +59,7 @@ class SPERR3D_Compressor {
   size_t m_bit_budget = 0;  // Total bit budget, including headers etc.
   double m_target_psnr = sperr::max_d;
   double m_target_pwe = 0.0;
+  double eb_coeff=1.5;
 
   SPERR m_sperr;
   vec8_type m_sperr_stream;
@@ -74,6 +76,10 @@ class SPERR3D_Compressor {
 
 };  // namespace sperr
 
+
+void sperr::SPERR3D_Compressor::set_eb_coeff(const double & coeff){
+  eb_coeff=coeff;
+}
 
 template <typename T>
 auto sperr::SPERR3D_Compressor::copy_data(const T* p, size_t len, sperr::dims_type dims) -> RTNType
@@ -178,7 +184,9 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     speck_budget = sperr::max_size;
   else
     speck_budget = m_bit_budget - m_condi_stream.size() * 8;
+  m_encoder.set_eb_coeff(eb_coeff);
   rtn = m_encoder.set_comp_params(speck_budget, m_target_psnr, m_target_pwe);
+
   if (rtn != RTNType::Good)
     return rtn;
 

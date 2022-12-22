@@ -48,6 +48,7 @@ class SPECK3D : public SPECK_Storage {
   // core operations
   auto encode() -> RTNType;
   auto decode() -> RTNType;
+  void set_eb_coeff(const double & coeff);
 
  private:
   auto m_ready_to_encode() const -> bool;
@@ -84,6 +85,7 @@ class SPECK3D : public SPECK_Storage {
   // Private data members
   //
   std::vector<std::vector<SPECKSet3D>> m_LIS;
+  double eb_coeff=1.5;
 };
 
 };  // namespace sperr
@@ -105,6 +107,11 @@ auto sperr::SPECKSet3D::is_empty() const -> bool
 //
 // Class SPECK3D
 //
+
+void sperr::SPECK3D::set_eb_coeff(const double & coeff){
+  eb_coeff=coeff;
+}
+
 void sperr::SPECK3D::m_clean_LIS()
 {
   for (auto& list : m_LIS) {
@@ -163,7 +170,7 @@ auto sperr::SPECK3D::encode() -> RTNType
   size_t num_bitplanes = 128;
   const auto max_coeff = *std::max_element(m_coeff_buf.begin(), m_coeff_buf.end());
   if (m_mode_cache == CompMode::FixedPWE || m_mode_cache == CompMode::FixedPSNR) {
-    const auto terminal_threshold = m_estimate_finest_q();
+    const auto terminal_threshold = m_estimate_finest_q(eb_coeff);
     //std::cout<<terminal_threshold<<std::endl;
     auto max_t = terminal_threshold;
     num_bitplanes = 1;

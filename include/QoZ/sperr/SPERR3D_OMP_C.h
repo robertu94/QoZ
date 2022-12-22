@@ -46,6 +46,8 @@ class SPERR3D_OMP_C {
   // Provide a copy of the encoded bitstream to the caller.
   auto get_encoded_bitstream() const -> std::vector<uint8_t>;
 
+  void set_eb_coeff(const double & coeff);
+
  private:
   sperr::dims_type m_dims = {0, 0, 0};        // Dimension of the entire volume
   sperr::dims_type m_chunk_dims = {0, 0, 0};  // Preferred dimensions for a chunk
@@ -67,6 +69,8 @@ class SPERR3D_OMP_C {
 
   // Outlier stats include 1) the number of outliers, and 2) the num of bytes used to encode them.
   std::vector<std::pair<size_t, size_t>> m_outlier_stats;
+  double eb_coeff=1.5;
+
 
   //
   // Private methods
@@ -74,6 +78,10 @@ class SPERR3D_OMP_C {
   auto m_generate_header() const -> sperr::vec8_type;
 };
 
+
+void SPERR3D_OMP_C::set_eb_coeff(const double & coeff){
+  eb_coeff=coeff;
+}
 
 void SPERR3D_OMP_C::set_num_threads(size_t n)
 {
@@ -228,8 +236,9 @@ auto SPERR3D_OMP_C::compress() -> RTNType
       while (my_budget % 8 != 0)
         my_budget--;
     }
-
+    compressor.set_eb_coeff(eb_coeff);
     chunk_rtn[i] = compressor.set_comp_params(my_budget, m_target_psnr, m_target_pwe);
+
 
     if (chunk_rtn[i] == RTNType::Good) {
       chunk_rtn[i] = compressor.compress();

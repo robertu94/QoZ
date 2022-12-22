@@ -374,11 +374,11 @@ auto sperr::SPECK_Storage::m_estimate_rmse(double q) const -> double
   return std::sqrt(mse);
 }
 
-auto sperr::SPECK_Storage::m_estimate_finest_q() const -> double
+auto sperr::SPECK_Storage::m_estimate_finest_q(const double &coeff=1.5) const -> double
 {
   if (m_mode_cache == CompMode::FixedPWE) {
     // Most recent tests show that q = 1.5 t is a pretty good estimation.
-    return m_target_pwe * 1.5;
+    return m_target_pwe * coeff;
   }
   else if (m_mode_cache == CompMode::FixedPSNR) {
     // Note: based on Peter's estimation method, to achieved the target PSNR, the terminal
