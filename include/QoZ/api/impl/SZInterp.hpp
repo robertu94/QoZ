@@ -817,6 +817,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }
     }
     else if(algo == QoZ::ALGO_INTERP){
+
         sz =  new QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                         QoZ::LinearQuantizer<T>(testConfig.absErrorBound),
                         QoZ::HuffmanEncoder<int>(),
@@ -1082,6 +1083,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
         
     SPERR3D_OMP_C compressor;
     compressor.set_num_threads(1);
+    compressor.set_eb_coeff(conf.sperr_eb_coeff);
     //std::cout<<"s1"<<std::endl;
     auto rtn = sperr::RTNType::Good;
       
@@ -2035,7 +2037,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             if (conf.sperr and N==3){
                 conf.cmprAlgo = QoZ::ALGO_INTERP;
-                return SPERR_Compress<T,N>(conf,data,outSize)
+                return SPERR_Compress<T,N>(conf,data,outSize);
             }
 
 

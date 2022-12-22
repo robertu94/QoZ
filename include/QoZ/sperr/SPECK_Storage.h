@@ -98,7 +98,7 @@ class SPECK_Storage {
   auto m_refinement_pass_decode() -> RTNType;
 
   auto m_estimate_rmse(double q) const -> double;
-  auto m_estimate_finest_q() const -> double;
+  auto m_estimate_finest_q(const double &eb_coeff) const -> double;
 };
 
 };  // namespace sperr
