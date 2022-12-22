@@ -1970,7 +1970,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
-    if(use_sperr<T,N>(conf)){
+    if(use_sperr<T,N>(conf) and conf.waveletAutoTuning==0){
         conf.cmprAlgo = QoZ::ALGO_INTERP;
         
 
