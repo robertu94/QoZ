@@ -154,14 +154,14 @@ template<class T>
 void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
     //QoZ::Timer timer(true);
     QoZ::Config conf(config);
-    {
+    //{
         //load config
         int confSize;
         
         memcpy(&confSize, cmpData + (cmpSize - sizeof(int)), sizeof(int));
         QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData + (cmpSize - sizeof(int) - confSize);
         conf.load(cmpDataPos);
-    }
+    //}
     //timer.stop("load config");
     //timer.start();
     if (decData == nullptr) {
