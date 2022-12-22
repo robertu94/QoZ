@@ -60,7 +60,7 @@ else()
   message("GSL not found.")
 endif()
 
-add_subdirectory(src)
+add_subdirectory(include/QoZ/sperr/src)
 add_subdirectory(test)
 
 install(TARGETS ${PROJECT_NAME} 
