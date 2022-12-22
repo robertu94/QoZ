@@ -90,10 +90,10 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
 
         if(conf.wavelet==1 and conf.sperr and N==3){
-            std::cout<<cmpSize<<std::endl;
+            //std::cout<<cmpSize<<std::endl;
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
-            std::cout<<"d1"<<std::endl;
+            //std::cout<<"d1"<<std::endl;
             decompressor.set_num_threads(1);
             if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
                 std::cerr << "Read compressed file error: "<< std::endl;
@@ -108,7 +108,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             in_stream.shrink_to_fit();
             const auto vol = decompressor.get_data<float>();
             memcpy(decData,vol.data(),sizeof(T)*conf.num);
-            std::cout<<"d2"<<std::endl;
+            //std::cout<<"d2"<<std::endl;
             //decData=vol.data();
             return;
 

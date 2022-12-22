@@ -161,7 +161,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
 
     delete[]data;
     delete[]bytes;
-    std::cout<<"finished."<<std::endl;
+   
 }
 
 template<class T>
@@ -170,7 +170,7 @@ void decompress(char *inPath, char *cmpPath, char *decPath,
                 int binaryOutput, int printCmpResults) {
 
     size_t cmpSize;
-    std::cout<<"start."<<std::endl;
+   
     auto cmpData = QoZ::readfile<char>(cmpPath, cmpSize);
     std::cout<<cmpSize<<std::endl;
 
@@ -535,14 +535,14 @@ int main(int argc, char *argv[]) {
             usage();
             exit(0);
         }
-        std::cout<<"fuqin"<<std::endl;
+        
     }
     if (decompression) {
         if (printCmpResults && inPath == nullptr) {
             printf("Error: Since you add -a option (analysis), please specify the original data path by -i <path>.\n");
             exit(0);
         }
-        std::cout<<"fuqin2"<<std::endl;
+       
         if (dataType == SZ_FLOAT) {
             decompress<float>(inPath, cmpPath, decPath, conf, binaryOutput, printCmpResults);
 
