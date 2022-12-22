@@ -913,6 +913,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
             totalOutSize+=sampleOutSize;
 
+
+            SPERR_Decompress<T,N>(testConfig,cmprData,sampleOutSize,cur_block.data());
+           
+            delete []cmprData;
+                  
         }    
         else{
             cmprData = (char*)sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
@@ -920,22 +925,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             delete[]cmprData;
         }
 
-        if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
+        if(testConfig.wavelet>0 and (waveleted_input.size()>0 or and tuningTarget!=QoZ::TUNING_TARGET_CR){
             //std::cout<<"test with wave"<<std::endl;
             if(testConfig.wavelet==1){
-                if(use_sperr<T,N>(testConfig)){
-                    T * curDecData=new T[per_block_ele_num];
-                    SPERR_Decompress<T,N>(testConfig,cmprData,sampleOutSize,curDecData);
-                    for(size_t i=0;i<cur_block.size();i++)
-                        cur_block[i]=curDecData[i];
-                    delete []cmprData;
-                    delete []curDecData;
-
-                }
-                else{
-                    QoZ::Wavelet<T,N> wlt;
-                    wlt.postProcess_cdf97(cur_block.data(),conf.dims);
-                }
+                
+                
+                QoZ::Wavelet<T,N> wlt;
+                wlt.postProcess_cdf97(cur_block.data(),conf.dims);
+                
                 //std::cout<<"fuqindejian"<<std::endl; 
             }
             else{
@@ -962,7 +959,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     T value=sampled_blocks[k][j]-cur_block[j];
                     square_error+=value*value;
                 }
-                std::cout<<square_error<<std::endl;
+                //std::cout<<square_error<<std::endl;
             }
         }
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
@@ -1057,7 +1054,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     if(tuningTarget==QoZ::TUNING_TARGET_RD){
                     //std::cout<<"---"<<std::endl;
         double mse=square_error/ele_num;
-                    std::cout<<mse<<std::endl;      
+                   // std::cout<<mse<<std::endl;      
         mse*=profiling_coeff;      
         if(testConfig.wavelet==1)
             mse*=testConfig.waveletMseFix;
