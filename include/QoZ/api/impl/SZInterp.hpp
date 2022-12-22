@@ -809,7 +809,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             //std::cout<<"test with wave"<<std::endl;
             if(testConfig.wavelet==1){
                 QoZ::Wavelet<T,N> wlt;
-                wlt.postProcess_cdf97(cur_block.data(),conf.dims);//temp
+                wlt.postProcess_cdf97(cur_block.data(),conf.dims);/
+                std::cout<<"fuqindejian"<<std::endl; 
             }
             else{
                 std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
@@ -896,7 +897,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     }
     size_t sampleOutSize;
     auto cmprData=sz->encoding_lossless(sampleOutSize,q_bins);                   
-    delete[]cmprData;             
+    delete[]cmprData;     
+    std::cout<<"muqindedao"<<std::endl;         
     bitrate=8*double(sampleOutSize)/ele_num;   
     bitrate*=profiling_coeff;
                     //std::cout<<bitrate<<std::endl;
@@ -1642,10 +1644,10 @@ double Tuning(QoZ::Config &conf, T *data){
                         continue;
                     conf.alpha=alpha;
                     conf.beta=beta; 
-                    //std::cout<<"fuqindejian"<<std::endl;                                      
+                    std::cout<<"fuqindejian0.1"<<std::endl;                                      
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                    //std::cout<<"fuqindejian5"<<std::endl;  
+                    std::cout<<"fuqindejian0.2"<<std::endl;  
                     double bitrate=results.first;
                     double metric=results.second;
                     printf("%d %.2f %.2f %.4f %.2f\n",wave_idx,alpha,beta,bitrate,metric);
