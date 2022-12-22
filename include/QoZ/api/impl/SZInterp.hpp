@@ -22,7 +22,9 @@
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
 
 #include "QoZ/sperr/include/SPERR3D_OMP_C.h"
+#include "QoZ/sperr/include/SPERR3D_OMP_C.cpp"
 #include "QoZ/sperr/include/SPERR3D_OMP_D.h"
+#include "QoZ/sperr/include/SPERR3D_OMP_D.cpp"
 
 //#include <cunistd>
 #include <cmath>

@@ -4,6 +4,7 @@
 #ifdef ENABLE_GSL 
 #include "QoZ/preprocessor/PreProcessor.hpp"
 #include "QoZ/sperr/include/CDF97.h"
+#include "QoZ/sperr/include/CDF97.cpp"
 #include <gsl/gsl_wavelet.h>
 #include "QoZ/utils/FileUtil.hpp"
 
