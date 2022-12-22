@@ -177,7 +177,7 @@ namespace QoZ {
             for (size_t i = 0; i < n; i++) {
                 data[i] = dwtdata[i];
             }
-            std::cout<<"pre finished"<<std::endl;
+            //std::cout<<"pre finished"<<std::endl;
         }
 
 
@@ -261,7 +261,7 @@ namespace QoZ {
             for (size_t i = 0; i < n; i++) {
                 data[i] = dwtdata[i];
             }
-            std::cout<<"post finished"<<std::endl;
+            //std::cout<<"post finished"<<std::endl;
 
 
 
