@@ -1320,6 +1320,8 @@ double Tuning(QoZ::Config &conf, T *data){
 
     }
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
+        int ori_sperr=conf.sperr;//temp
+        conf.sperr=0;
         if (conf.verbose)
             std::cout<<"Predictor tuning started."<<std::endl;
         double o_alpha=conf.alpha;
@@ -1345,6 +1347,9 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<size_t> coeffs_size;
             if(wave_idx>0){//later distinguish different i
                 //std::cout<<wave_idx<<std::endl;
+
+               
+
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 if(wave_idx==1){
 
@@ -1545,6 +1550,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.beta=o_beta;
         conf.dims=global_dims;
         conf.num=global_num;
+        conf.sperr=ori_sperr;
         useInterp= (best_interp_cr>=best_lorenzo_ratio) or best_lorenzo_ratio>=80 or best_interp_cr>=80;//orig 0.95*lorenzo_ratio
         if(conf.verbose and conf.waveletAutoTuning==0){
             if (conf.levelwisePredictionSelection<=0){
@@ -1720,7 +1726,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
 
             std::vector <std::vector<T> > waveleted_input;
-            if (wave_idx>0){
+            if (wave_idx>0 and !use_sperr<T,N>(conf)){
                 
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 waveleted_input=sampled_blocks;
@@ -1747,16 +1753,12 @@ double Tuning(QoZ::Config &conf, T *data){
                         std::string oname="waveleted_block_"+std::to_string(i)+"_"+std::to_string(wave_idx)+".tmp";
                         QoZ::writefile<T>(oname.c_str(), waveleted_input[i].data(), coeffs_num);
                         */
-
                         
                         delete[]coeffData;
                     }
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
-
-
                 }
-
 
             }
             std::vector<double>alpha_list;
