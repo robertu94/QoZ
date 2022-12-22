@@ -150,7 +150,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     }
    
     QoZ::writefile(outputFilePath, bytes, outSize);
-    
+
 
     
 
@@ -161,6 +161,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
 
     delete[]data;
     delete[]bytes;
+    std::cout<<"finished."<<std::endl;
 }
 
 template<class T>
@@ -169,7 +170,9 @@ void decompress(char *inPath, char *cmpPath, char *decPath,
                 int binaryOutput, int printCmpResults) {
 
     size_t cmpSize;
+    std::cout<<"start."<<std::endl;
     auto cmpData = QoZ::readfile<char>(cmpPath, cmpSize);
+    std::cout<<cmpSize<<std::endl;
 
     QoZ::Timer timer(true);
     T *decData = SZ_decompress<T>(conf, cmpData.get(), cmpSize);
