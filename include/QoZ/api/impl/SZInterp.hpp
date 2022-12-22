@@ -1192,7 +1192,7 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.sampleBlockSize = (N==2?64:32);
 
     }   
-    if(conf.waveletAutoTuning>0)
+    if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
         setFixRates(conf,rel_bound);
     size_t sampling_num, sampling_block;
     double best_interp_cr=0.0;

@@ -212,6 +212,7 @@ namespace QoZ {
             var_first = cfg.GetInteger("AlgoSettings", "var_first", var_first);
             profStride = cfg.GetInteger("AlgoSettings", "profStride", profStride);
             sperr = cfg.GetInteger("AlgoSettings", "sperr", sperr);
+            waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
 
 
 
@@ -420,6 +421,7 @@ namespace QoZ {
         size_t profStride=0;
         int sperr=0;
         double sperr_eb_coeff = 1.5;
+        int waveAutoFix=1;
 
         
 
