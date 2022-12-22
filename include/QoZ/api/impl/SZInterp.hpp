@@ -809,7 +809,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             //std::cout<<"test with wave"<<std::endl;
             if(testConfig.wavelet==1){
                 QoZ::Wavelet<T,N> wlt;
-                wlt.postProcess_cdf97(cur_block.data(),conf.dims);/
+                wlt.postProcess_cdf97(cur_block.data(),conf.dims);
                 std::cout<<"fuqindejian"<<std::endl; 
             }
             else{
