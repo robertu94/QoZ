@@ -43,7 +43,7 @@ else()
     message(STATUS "IPO / LTO not supported")
 endif()
 
-set_target_properties( SPERR PROPERTIES VERSION ${SPERR_VERSION} )
+#set_target_properties( SPERR PROPERTIES VERSION ${SPERR_VERSION} )
 
 #
 # The list of headers is formatted a little cumbersome, but don't change it!
