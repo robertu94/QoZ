@@ -1888,13 +1888,15 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<"s4"<<std::endl;
         auto stream = compressor.get_encoded_bitstream();
         
-        char * outData=new char[stream.size()];
+        char * outData=new char[stream.size()+conf.size_est()];
         outSize=stream.size();
         std::cout<<outSize<<std::endl;
         memcpy(outData,stream.data(),stream.size());
+        stream.clear();
+        stream.shrink_to_fit();
 
         //std::cout<<"s5"<<std::endl;
-        return reinterpret_cast<char *>(outData);
+        return outData;
         //rtn = sperr::write_n_bytes(output_file, stream.size(), stream.data());
 
       
@@ -2353,7 +2355,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
 
         size_t totalsize=outSize+outlier_outSize;
-        char * final_output=new char[totalsize+1000];
+        char * final_output=new char[totalsize+conf.size_est()];
         //for(size_t i=0;i<totalsize;i++)
             //final_output[i]=0;
         memcpy(final_output,compress_output,outSize);
