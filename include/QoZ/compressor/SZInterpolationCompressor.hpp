@@ -1397,7 +1397,7 @@ namespace QoZ {
 
 
 
-            size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());//original is 3
+            size_t bufferSize = 2 * (quant_inds.size() * sizeof(T) + quantizer.size_est());//original is 3
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
             /*

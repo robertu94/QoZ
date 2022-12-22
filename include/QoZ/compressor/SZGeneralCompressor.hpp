@@ -78,7 +78,7 @@ namespace QoZ {
             if(q_inds.size()>0)
                 quant_inds=q_inds;
           
-            size_t bufferSize = 1.5 * quant_inds.size()*sizeof(T);//original is 3
+            size_t bufferSize = 2 * quant_inds.size()*sizeof(T);//original is 3
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
 
