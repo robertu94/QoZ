@@ -566,7 +566,7 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
 }
 
 
-
+template<class T, QoZ::uint N>
 inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bound, QoZ::Config &conf){
 
     if (use_sperr<T,N>(conf))
@@ -601,7 +601,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
         }
     }
 }
-
+template<class T, QoZ::uint N>
 inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound, QoZ::Config &conf){
     if (use_sperr<T,N>(conf))
     {
@@ -1760,10 +1760,10 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }
             std::vector<double>alpha_list;
-            init_alphalist(alpha_list,rel_bound,conf);
+            init_alphalist<T,N>(alpha_list,rel_bound,conf);
             size_t alpha_nums=alpha_list.size();
             std::vector<double>beta_list;
-            init_betalist(beta_list,rel_bound,conf);
+            init_betalist<T,N>(beta_list,rel_bound,conf);
             size_t beta_nums=beta_list.size();  
             for (size_t i=0;i<alpha_nums;i++){
                 for (size_t j=0;j<beta_nums;j++){
@@ -2562,11 +2562,11 @@ char *SZ_compress_Interp_blocked(QoZ::Config &conf, T *data, size_t &outSize) {
             }
             //std::cout<<"step 2"<<std::endl;
             std::vector<double>alpha_list;
-            init_alphalist(alpha_list,rel_bound,conf);
+            init_alphalist<T,N>(alpha_list,rel_bound,conf);
             size_t alpha_nums=alpha_list.size();
             std::vector<double>beta_list;
 
-            init_betalist(beta_list,rel_bound,conf);
+            init_betalist<T,N>(beta_list,rel_bound,conf);
             size_t beta_nums=beta_list.size();
             double bestalpha=1;
             double bestbeta=1;
