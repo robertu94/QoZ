@@ -1868,7 +1868,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
     if(conf.wavelet==1 and conf.waveletAutoTuning==0 and conf.sperr and N==3){
-        conf.cmprAlgo == QoZ::ALGO_INTERP;
+        conf.cmprAlgo = QoZ::ALGO_INTERP;
         SPERR3D_OMP_C compressor;
         compressor.set_num_threads(1);
         std::cout<<"s1"<<std::endl;
