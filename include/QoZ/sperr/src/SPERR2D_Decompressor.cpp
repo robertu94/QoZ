@@ -24,8 +24,10 @@ auto SPERR2D_Decompressor::use_bitstream(const void* p, size_t len) -> RTNType
   const uint8_t* u8p = static_cast<const uint8_t*>(p);
 
   // Task 1)
+  /*
   if (*u8p != static_cast<uint8_t>(SPERR_VERSION_MAJOR))
     return RTNType::VersionMismatch;
+    */
   u8p += 1;
 
   // Task 2)

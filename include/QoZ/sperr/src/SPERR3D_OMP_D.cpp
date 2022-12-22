@@ -34,8 +34,8 @@ auto SPERR3D_OMP_D::use_bitstream(const void* p, size_t total_len) -> RTNType
 
   // Parse Step 1: Major version number need to match
   uint8_t ver = *u8p;
-  if (ver != static_cast<uint8_t>(SPERR_VERSION_MAJOR))
-    return RTNType::VersionMismatch;
+  //if (ver != static_cast<uint8_t>(SPERR_VERSION_MAJOR))
+   // return RTNType::VersionMismatch;
   size_t loc = 1;
 
   // Parse Step 2: ZSTD application and 3D/2D recording need to be consistent.

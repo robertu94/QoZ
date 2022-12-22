@@ -225,7 +225,7 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   // bool_byte[3-7]: unused
   //
   auto meta = std::vector<uint8_t>(m_meta_size, 0);
-  meta[0] = static_cast<uint8_t>(SPERR_VERSION_MAJOR);
+  meta[0] = 0;//static_cast<uint8_t>(SPERR_VERSION_MAJOR);
   auto metabool = std::array<bool, 8>{false, false, false, false, false, false, false, false};
 
 #ifdef USE_ZSTD
