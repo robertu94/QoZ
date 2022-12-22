@@ -12,9 +12,9 @@
 #include "SPECK3D.h"
 #include "SPERR.h"
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
 #include "zstd.h"
-#endif
+//#endif
 #include <cassert>
 #include <cstring>
 
@@ -49,10 +49,10 @@ class SPERR3D_Decompressor {
   SPERR m_sperr;
   vec8_type m_sperr_stream;
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   vec8_type m_zstd_buf;
   std::unique_ptr<ZSTD_DCtx, decltype(&ZSTD_freeDCtx)> m_dctx = {nullptr, &ZSTD_freeDCtx};
-#endif
+//#endif
 };
 
 };  // namespace sperr
@@ -67,7 +67,7 @@ auto sperr::SPERR3D_Decompressor::use_bitstream(const void* p, size_t len) -> RT
   m_val_buf.clear();
   m_sperr_stream.clear();
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   // Make sure that we have a ZSTD Decompression Context first
   if (m_dctx == nullptr) {
     auto* ctx_p = ZSTD_createDCtx();
@@ -89,10 +89,10 @@ auto sperr::SPERR3D_Decompressor::use_bitstream(const void* p, size_t len) -> RT
     return RTNType::ZSTDError;
   const uint8_t* const ptr = m_zstd_buf.data();
   const size_t ptr_len = m_zstd_buf.size();
-#else
-  const uint8_t* const ptr = static_cast<const uint8_t*>(p);
-  const size_t ptr_len = len;
-#endif
+//#else
+//  const uint8_t* const ptr = static_cast<const uint8_t*>(p);
+//  const size_t ptr_len = len;
+//#endif
 
   // Step 1: extract conditioner stream from it
   const auto condi_size = m_condi_stream.size();

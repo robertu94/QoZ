@@ -6,9 +6,9 @@
 #include "SPECK3D.h"
 #include "SPERR.h"
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
 #include "zstd.h"
-#endif
+//#endif
 
 #include <algorithm>
 #include <cassert>
@@ -64,10 +64,10 @@ class SPERR3D_Compressor {
   vecd_type m_val_buf2;        // Copy of `m_val_buf` that's used for outlier coding.
   std::vector<Outlier> m_LOS;  // List of OutlierS
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   vec8_type m_zstd_buf;
   std::unique_ptr<ZSTD_CCtx, decltype(&ZSTD_freeCCtx)> m_cctx = {nullptr, &ZSTD_freeCCtx};
-#endif
+//#endif
 
   auto m_assemble_encoded_bitstream() -> RTNType;
 };
@@ -253,7 +253,7 @@ auto sperr::SPERR3D_Compressor::m_assemble_encoded_bitstream() -> RTNType
               m_encoded_stream.begin() + condi_speck_len);
   }
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   if (m_cctx == nullptr) {
     auto* ctx_p = ZSTD_createCCtx();
     if (ctx_p == nullptr)
@@ -275,7 +275,7 @@ auto sperr::SPERR3D_Compressor::m_assemble_encoded_bitstream() -> RTNType
     m_encoded_stream.resize(comp_size);
     std::copy(m_zstd_buf.cbegin(), m_zstd_buf.cbegin() + comp_size, m_encoded_stream.begin());
   }
-#endif
+//#endif
 
   return RTNType::Good;
 }
