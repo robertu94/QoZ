@@ -33,7 +33,10 @@
 #include <cstring>
 #include <cstdlib>
 
-
+template<class T, QoZ::uint N>
+bool use_sperr(const QoZ::Config & conf){
+    return (conf.wavelet==1 and conf.sperr and N==3);
+}
 
 
 
@@ -89,7 +92,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     else{
 
 
-        if(conf.wavelet==1 and conf.sperr and N==3){
+        if(use_sperr<T,N>(conf)){
             //std::cout<<cmpSize<<std::endl;
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
@@ -566,7 +569,7 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
 
 inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bound, QoZ::Config &conf){
 
-    if (conf.wavelet==1 and conf.dims.size()==3 and conf.sperr)
+    if (use_sperr<T,N>(conf))
     {
         alpha_list={0.5,0.75,1,1.25,1.5,1.75,2};
         return;
@@ -600,7 +603,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
 }
 
 inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound, QoZ::Config &conf){
-    if (conf.wavelet==1 and conf.dims.size()==3 and conf.sperr)
+    if (use_sperr<T,N>(conf))
     {
         beta_list={-1};
         return;
@@ -650,6 +653,7 @@ int compareWavelets(QoZ::Config &conf, std::vector< std::vector<T> > & sampled_b
 
 }
 */
+
 
 template<class T, QoZ::uint N>
 void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std::vector< std::vector<T> > & sampled_blocks,double sample_rate,int profiling ,std::vector<std::vector<size_t> > &starts,int var_first=0){
@@ -871,6 +875,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     //char *cmpData;
     size_t idx=0;   
     QoZ::concepts::CompressorInterface<T> *sz;
+    size_t totalOutSize=0;
     if(algo == QoZ::ALGO_LORENZO_REG){
         auto quantizer = QoZ::LinearQuantizer<T>(testConfig.absErrorBound, testConfig.quantbinCnt / 2);
         if (useFast &&N == 3 && !testConfig.regression2) {
@@ -904,8 +909,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             cur_block=waveleted_input[k];
         //std::cout<<"fuqindejian1"<<std::endl;
         char *cmprData;
-        if(testConfig.wavelet==1 and testConfig.sperr and N==3){
+        if(use_sperr<T,N>(testConfig)){
             cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
+            totalOutSize+=sampleOutSize;
 
         }    
         else{
@@ -917,8 +923,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
             //std::cout<<"test with wave"<<std::endl;
             if(testConfig.wavelet==1){
-                if(testConfig.wavelet==1 and testConfig.sperr and N==3){
+                if(use_sperr<T,N>(testConfig)){
                     SPERR_Decompress<T,N>(testConfig,cmprData,sampleOutSize,cur_block.data());
+                    delete []cmprData;
 
                 }
                 else{
@@ -940,11 +947,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             }
 
         }
-        if(algo==QoZ::ALGO_INTERP)
+        if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig)))
             block_q_bins.push_back(testConfig.quant_bins);
 
         if(tuningTarget==QoZ::TUNING_TARGET_RD){
-            if(algo==QoZ::ALGO_INTERP)
+            if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig)) )
                 square_error+=testConfig.decomp_square_error;
             else{
                 for(size_t j=0;j<per_block_ele_num;j++){
@@ -997,7 +1004,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             flattened_cur_blocks.insert(flattened_cur_blocks.end(),cur_block.begin(),cur_block.end());
         }                      
     }
-    if(algo==QoZ::ALGO_INTERP){
+    if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig))){
         q_bin_counts=testConfig.quant_bin_counts;
         size_t level_num=q_bin_counts.size();
         size_t last_pos=0;
@@ -1013,10 +1020,15 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     size_t sampleOutSize;
     //std::cout<<q_bins.size()<<std::endl;
     //std::cout<<"muqindedao0.0"<<std::endl; 
-    auto cmprData=sz->encoding_lossless(sampleOutSize,q_bins);                   
-    delete[]cmprData;     
+    if(!use_sperr<T,N>(testConfig)){
+        auto cmprData=sz->encoding_lossless(totalOutSize,q_bins);                   
+        delete[]cmprData;   
+       
+    }  
     //std::cout<<"muqindedao"<<std::endl;         
-    bitrate=8*double(sampleOutSize)/ele_num;   
+   
+    bitrate=8*double(totalOutSize)/ele_num;
+    
     bitrate*=profiling_coeff;
                     //std::cout<<bitrate<<std::endl;
     
@@ -1757,11 +1769,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 for (size_t j=0;j<beta_nums;j++){
                     double alpha=alpha_list[i];
                     double beta=beta_list[j];
-                    if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
+                    if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !use_sperr<T,N>(conf) )
                         continue;
                     conf.alpha=alpha;
                     conf.beta=beta; 
-                    if(conf.wavelet==1 and conf.sperr and conf.N==3)
+                    if(use_sperr<T,N>(conf))
                         conf.sperr_eb_coeff=alpha;
                     //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
@@ -1780,7 +1792,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                     }
                     else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
-                        if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
+                        if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf))
                             break;
 
                         continue;
@@ -1819,7 +1831,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                         }
                     }
-                    if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
+                    if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
                         break;
                 }
             }
@@ -1913,7 +1925,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.dims=global_dims;
         conf.num=global_num;  
         conf.wavelet=bestWave;
-        if(conf.wavelet==1 and conf.sperr and conf.N==3)
+        if(use_sperr<T,N>(conf))
             conf.sperr_eb_coeff=bestalpha;
         if(useInterp){ 
 
@@ -1956,7 +1968,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
-    if(conf.wavelet==1 and conf.waveletAutoTuning==0 and conf.sperr and N==3){
+    if(use_sperr<T,N>(conf)){
         conf.cmprAlgo = QoZ::ALGO_INTERP;
         
 
@@ -2065,7 +2077,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<"wavelet actively selected."<<std::endl;
         if(conf.wavelet==1){
 
-            if (conf.sperr and N==3){
+            if (use_sperr<T,N>(conf)){
                 conf.cmprAlgo = QoZ::ALGO_INTERP;
                 return SPERR_Compress<T,N>(conf,data,outSize);
             }
