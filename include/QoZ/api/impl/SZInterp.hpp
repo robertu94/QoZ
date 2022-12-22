@@ -1872,12 +1872,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         auto rtn = sperr::RTNType::Good;
       
         auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
-        rtn = compressor.copy_data(reinterpret_cast<const float*>data, conf.num,
+        rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                    {conf.dims[0], conf.dims[1], conf.dims[2]}, {chunks[0], chunks[1], chunks[2]});
         compressor.set_target_pwe(conf.absErrorBound);
         rtn = compressor.compress();
         auto stream = compressor.get_encoded_bitstream();
-        return reinterpret_cast<char *>stream.data();
+        return reinterpret_cast<char *>(stream.data());
         //rtn = sperr::write_n_bytes(output_file, stream.size(), stream.data());
 
       
