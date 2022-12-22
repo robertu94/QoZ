@@ -505,11 +505,11 @@ namespace QoZ {
 
             return decData;
         }
-        char *compress(Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+        uchar *compress(Config &conf, T *data, size_t &compressed_size,int tuning=0) {
             return compress(conf,data,compressed_size,tuning,0,0);
         }
         // compress given the error bound
-        char *compress( Config &conf, T *data, size_t &compressed_size,int tuning,int start_level,int end_level=0) {
+        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning,int start_level,int end_level=0) {
             
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
@@ -1023,7 +1023,7 @@ namespace QoZ {
 
 
         // compress given the error bound
-        char *compress_block( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
+        uchar *compress_block( Config &conf, T *data, size_t &compressed_size,int tuning=0,int start_level=0,int end_level=0) {
             
             //tuning 0: normal compress 1:tuning to return qbins and psnr 2: tuning to return prediction loss
             Timer timer;
@@ -1326,7 +1326,7 @@ namespace QoZ {
            
             //assert(quant_inds.size() == num_elements);
 
-            size_t bufferSize = 1.5 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
+            size_t bufferSize = 2 * (quant_inds.size() * sizeof(T) + quantizer.size_est());
             uchar *buffer = new uchar[bufferSize];
             uchar *buffer_pos = buffer;
 
@@ -1390,7 +1390,7 @@ namespace QoZ {
         }
 
 
-        char *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()) {
+        uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()) {
 
             if(q_inds.size()>0)
                 quant_inds=q_inds;
