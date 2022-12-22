@@ -27,7 +27,7 @@ namespace QoZ {
                           "must implement the lossless interface");
         }
 
-        char *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
+        uchar *compress( Config &conf, T *data, size_t &compressed_size,int tuning=0) {
 
             Timer timer(true);
             //std::cout<<"general1"<<std::endl;
@@ -73,7 +73,7 @@ namespace QoZ {
 
             return lossless_data;
         }
-        char *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()){
+        uchar *encoding_lossless(size_t &compressed_size,const std::vector<int> &q_inds=std::vector<int>()){
 
             if(q_inds.size()>0)
                 quant_inds=q_inds;

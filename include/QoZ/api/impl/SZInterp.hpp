@@ -909,7 +909,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
 
         }    
         else{
-            cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
+            cmprData = (char*)sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
             //std::cout<<"fuqindejian2"<<std::endl;     
             delete[]cmprData;
         }
