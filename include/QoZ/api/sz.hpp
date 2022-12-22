@@ -173,13 +173,13 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
     //timer.stop("alloc memory");
     //timer.start();
     if (conf.N == 1) {
-        SZ_decompress_impl<T, 1>(conf, cmpData, cmpSize, decData);
+        SZ_decompress_impl<T, 1>(conf, cmpData, (cmpSize - sizeof(int) - confSize), decData);
     } else if (conf.N == 2) {
-        SZ_decompress_impl<T, 2>(conf, cmpData, cmpSize, decData);
+        SZ_decompress_impl<T, 2>(conf, cmpData, (cmpSize - sizeof(int) - confSize), decData);
     } else if (conf.N == 3) {
-        SZ_decompress_impl<T, 3>(conf, cmpData, cmpSize, decData);
+        SZ_decompress_impl<T, 3>(conf, cmpData, (cmpSize - sizeof(int) - confSize), decData);
     } else if (conf.N == 4) {
-        SZ_decompress_impl<T, 4>(conf, cmpData, cmpSize, decData);
+        SZ_decompress_impl<T, 4>(conf, cmpData, (cmpSize - sizeof(int) - confSize), decData);
     } else {
        printf("Data dimension higher than 4 is not supported.\n");
         exit(0);

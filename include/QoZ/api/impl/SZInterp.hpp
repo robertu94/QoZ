@@ -20,6 +20,10 @@
 #include "QoZ/utils/CoeffRegression.hpp"
 #include "QoZ/utils/ExtractRegData.hpp"
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
+
+#include "QoZ/sperr/include/SPERR3D_OMP_C.h"
+#include "QoZ/sperr/include/SPERR3D_OMP_D.h"
+
 //#include <cunistd>
 #include <cmath>
 #include <memory>
@@ -81,6 +85,31 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     }
     
     else{
+
+
+        if(conf.wavelet==1 and conf.sperr and N==3){
+            std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
+            SPERR3D_OMP_D decompressor;
+            decompressor.set_num_threads(1);
+            if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
+                std::cerr << "Read compressed file error: "<< std::endl;
+                return;
+            }
+            if (decompressor.decompress(in_stream.data()) != sperr::RTNType::Good) {
+                std::cerr << "Decompression failed!" << std::endl;
+                return ;
+            }
+            in_stream.clear();
+            in_stream.shrink_to_fit();
+            const auto vol = decompressor.get_data<float>();
+            memcpy(decData,vol.data(),sizeof(T)*conf.num);
+            //decData=vol.data();
+            return;
+
+
+
+
+        }
         //std::cout<<"x1"<<std::endl;
         size_t first =conf.firstSize;
         size_t second=cmpSize-conf.firstSize;    
@@ -1836,6 +1865,25 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
+    if(conf.wavelet==1 and conf.waveletAutoTuning==0 and conf.sperr and N==3){
+        conf.cmprAlgo == QoZ::ALGO_INTERP;
+        SPERR3D_OMP_C compressor;
+        compressor.set_num_threads(1);
+        auto rtn = sperr::RTNType::Good;
+      
+        auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
+        rtn = compressor.copy_data(reinterpret_cast<const float*>data, conf.num,
+                                   {conf.dims[0], conf.dims[1], conf.dims[2]}, {chunks[0], chunks[1], chunks[2]});
+        compressor.set_target_pwe(conf.absErrorBound);
+        rtn = compressor.compress();
+        auto stream = compressor.get_encoded_bitstream();
+        return reinterpret_cast<char *>stream.data();
+        //rtn = sperr::write_n_bytes(output_file, stream.size(), stream.data());
+
+      
+
+    }
+    conf.sperr=0;
     std::vector<size_t> coeffs_size;
     std::vector<size_t> orig_dims=conf.dims;
     size_t orig_num=conf.num;
