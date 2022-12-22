@@ -896,6 +896,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         }      
     }
     size_t sampleOutSize;
+    std::cout<<q_bins.size()<<std::endl;
+    std::cout<<"muqindedao0.0"<<std::endl; 
     auto cmprData=sz->encoding_lossless(sampleOutSize,q_bins);                   
     delete[]cmprData;     
     std::cout<<"muqindedao"<<std::endl;         
