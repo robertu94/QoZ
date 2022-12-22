@@ -1885,6 +1885,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         auto stream = compressor.get_encoded_bitstream();
         
         char * outData=new char[stream.size()];
+        outSize=stream.size();
         memcpy(outData,stream.data(),stream.size());
 
         std::cout<<"s5"<<std::endl;
