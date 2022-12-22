@@ -23,11 +23,12 @@ endif()
 #
 # Also link zstd
 #
-if( USE_ZSTD )
+#USE_ZSTD
+#if( USE_ZSTD )
     # Declare dependency so that `zstd-download` is finished before SPERR is built.
     add_dependencies( SPERR zstd-download )
     target_link_libraries( SPERR PUBLIC zstd )
-endif()
+#endif()
 
 #
 # LTO
