@@ -1,4 +1,4 @@
-#include "SPECK_Storage.h"
+#include "../include/SPECK_Storage.h"
 
 #include <algorithm>
 #include <array>

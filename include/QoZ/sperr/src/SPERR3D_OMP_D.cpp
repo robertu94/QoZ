@@ -1,5 +1,5 @@
 
-#include "SPERR3D_OMP_D.h"
+#include "../include/SPERR3D_OMP_D.h"
 
 #include <algorithm>
 #include <cassert>

@@ -1,10 +1,10 @@
-#include "SPERR_C_API.h"
+#include "../include/SPERR_C_API.h"
 
-#include "SPERR2D_Compressor.h"
-#include "SPERR2D_Decompressor.h"
+#include "../include/SPERR2D_Compressor.h"
+#include "../include/SPERR2D_Decompressor.h"
 
-#include "SPERR3D_OMP_C.h"
-#include "SPERR3D_OMP_D.h"
+#include "../include/SPERR3D_OMP_C.h"
+#include "../include/SPERR3D_OMP_D.h"
 
 int C_API::sperr_comp_2d(const void* src,
                          int32_t is_float,

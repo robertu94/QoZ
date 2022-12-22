@@ -1,4 +1,4 @@
-#include "SPECK3D.h"
+#include "../include/SPECK3D.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>

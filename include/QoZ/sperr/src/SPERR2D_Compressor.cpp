@@ -1,4 +1,4 @@
-#include "SPERR2D_Compressor.h"
+#include "../include/SPERR2D_Compressor.h"
 
 #include <algorithm>
 #include <cassert>

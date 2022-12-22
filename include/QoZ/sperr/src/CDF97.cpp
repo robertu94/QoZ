@@ -1,4 +1,4 @@
-#include "CDF97.h"
+#include "../include/CDF97.h"
 
 #include <algorithm>
 #include <cassert>

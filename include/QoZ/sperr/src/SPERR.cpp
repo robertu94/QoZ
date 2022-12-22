@@ -1,4 +1,4 @@
-#include "SPERR.h"
+#include "../include/SPERR.h"
 
 #include <algorithm>  // std::lower_bound()
 #include <cassert>

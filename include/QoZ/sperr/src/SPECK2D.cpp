@@ -1,4 +1,4 @@
-#include "SPECK2D.h"
+#include "../include/SPECK2D.h"
 #include <algorithm>
 #include <array>
 #include <cassert>

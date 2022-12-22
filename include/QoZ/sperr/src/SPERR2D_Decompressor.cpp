@@ -1,4 +1,4 @@
-#include "SPERR2D_Decompressor.h"
+#include "../include/SPERR2D_Decompressor.h"
 
 #include <cassert>
 #include <cstring>
