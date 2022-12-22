@@ -241,11 +241,11 @@ auto SPERR3D_OMP_C::m_generate_header() const -> sperr::vec8_type
   // bool[4-7]: undefined
   //
   const auto b8 = std::array<bool, 8>{
-//#ifdef USE_ZSTD
+#ifdef USE_ZSTD
       true,  // using ZSTD
-//#else
-//      false,  // NOT using ZSTD
-//#endif
+#else
+      false,  // NOT using ZSTD
+#endif
       true,  // 3D
       m_orig_is_float,
       (num_chunks > 1),

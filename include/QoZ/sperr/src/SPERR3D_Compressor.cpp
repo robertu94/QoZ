@@ -183,7 +183,7 @@ auto sperr::SPERR3D_Compressor::m_assemble_encoded_bitstream() -> RTNType
               m_encoded_stream.begin() + condi_speck_len);
   }
 
-//#ifdef USE_ZSTD
+#ifdef USE_ZSTD
   if (m_cctx == nullptr) {
     auto* ctx_p = ZSTD_createCCtx();
     if (ctx_p == nullptr)
@@ -205,7 +205,7 @@ auto sperr::SPERR3D_Compressor::m_assemble_encoded_bitstream() -> RTNType
     m_encoded_stream.resize(comp_size);
     std::copy(m_zstd_buf.cbegin(), m_zstd_buf.cbegin() + comp_size, m_encoded_stream.begin());
   }
-//#endif
+#endif
 
   return RTNType::Good;
 }
