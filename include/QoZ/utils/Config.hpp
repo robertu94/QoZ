@@ -210,6 +210,7 @@ namespace QoZ {
             waveletAutoTuning = cfg.GetInteger("AlgoSettings", "waveletAutoTuning", waveletAutoTuning);
             var_first = cfg.GetInteger("AlgoSettings", "var_first", var_first);
             profStride = cfg.GetInteger("AlgoSettings", "profStride", profStride);
+            sperr = cfg.GetInteger("AlgoSettings", "sperr", sperr);
 
 
 
@@ -264,6 +265,7 @@ namespace QoZ {
             write(coeffs_num, c);
             write(pid, c);
             write(blockOrder, c);
+            write(sperr, c);
             //write(trimToZero, c);
             //write(prewave_absErrorBound, c);
 
@@ -314,6 +316,7 @@ namespace QoZ {
             read(coeffs_num, c);
             read(pid, c);
             read(blockOrder, c);
+            read(sperr, c);
             //read(trimToZero, c);
             //read(prewave_absErrorBound, c);
         }
@@ -414,6 +417,7 @@ namespace QoZ {
         double waveletMseFix2 = 1.0;
         int var_first=0;
         size_t profStride=0;
+        int sperr=0;
 
         
 

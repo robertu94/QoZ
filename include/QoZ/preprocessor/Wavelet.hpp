@@ -3,7 +3,7 @@
 
 #ifdef ENABLE_GSL 
 #include "QoZ/preprocessor/PreProcessor.hpp"
-#include "QoZ/preprocessor/CDF97.h"
+#include "QoZ/sperr/include/CDF97.h"
 #include <gsl/gsl_wavelet.h>
 #include "QoZ/utils/FileUtil.hpp"
 
@@ -158,7 +158,7 @@ namespace QoZ {
                 dwtdata[i] = data[i];
             }
 
-            CDF97 m_cdf;
+            sperr::CDF97 m_cdf;
 
             m_cdf.take_data(std::move(dwtdata), m_dims);
             /*
@@ -242,7 +242,7 @@ namespace QoZ {
                 dwtdata[i] = data[i];
             }
 
-            CDF97 m_cdf;
+            sperr::CDF97 m_cdf;
 
             m_cdf.take_data(std::move(dwtdata), m_dims);
             /*
