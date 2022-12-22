@@ -84,13 +84,13 @@ auto SPERR3D_OMP_D::use_bitstream(const void* p, size_t total_len) -> RTNType
   const auto b8 = sperr::unpack_8_booleans(u8p[loc]);
   loc++;
 
-#ifdef USE_ZSTD
+//#ifdef USE_ZSTD
   if (b8[0] == false)
     return RTNType::ZSTDMismatch;
-#else
-  if (b8[0] == true)
-    return RTNType::ZSTDMismatch;
-#endif
+//#else
+//  if (b8[0] == true)
+//    return RTNType::ZSTDMismatch;
+//#endif
 
   if (b8[1] == false)
     return RTNType::SliceVolumeMismatch;
