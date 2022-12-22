@@ -77,7 +77,7 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
         
         size_t newSize = (char *) cmpDataPos - cmpData;
         QoZ::write(int(newSize - outSize), cmpDataPos);
-        
+        std::cout<<"s6"<<std::endl;
 
         
         

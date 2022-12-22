@@ -150,6 +150,7 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
     }
    
     QoZ::writefile(outputFilePath, bytes, outSize);
+    std::cout<<"s7"<<std::endl;
     
 
     
