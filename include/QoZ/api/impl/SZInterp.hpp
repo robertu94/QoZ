@@ -1876,7 +1876,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
       
         auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
         rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
-                                   {conf.dims[0], conf.dims[1], conf.dims[2]}, {chunks[0], chunks[1], chunks[2]});
+                                   {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
         std::cout<<"s2"<<std::endl;
         compressor.set_target_pwe(conf.absErrorBound);
         std::cout<<"s3"<<std::endl;
