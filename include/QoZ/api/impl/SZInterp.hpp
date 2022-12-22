@@ -21,9 +21,9 @@
 #include "QoZ/utils/ExtractRegData.hpp"
 #include "QoZ/api/impl/SZLorenzoReg.hpp"
 
-#include "QoZ/sperr/include/SPERR3D_OMP_C.h"
+#include "QoZ/sperr/SPERR3D_OMP_C.h"
 
-#include "QoZ/sperr/include/SPERR3D_OMP_D.h"
+#include "QoZ/sperr/SPERR3D_OMP_D.h"
 
 
 //#include <cunistd>
