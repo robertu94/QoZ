@@ -5,7 +5,7 @@
 #include <numeric>  // std::accumulate()
 #include <vector>
 
-#include "Conditioner.h"
+#include "../include/Conditioner.h"
 
 void sperr::Conditioner::toggle_all_settings(std::array<bool, 4> b4)
 {
