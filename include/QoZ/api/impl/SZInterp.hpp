@@ -1022,7 +1022,22 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
     return std::pair<double,double>(cur_alpha,cur_beta);
 }
 
+void setFixRates(QoZ::Config &conf,double rel_bound){
+    conf.waveletBrFix=0.9;
+    conf.waveletMseFix=1.0;
+    conf.waveletMseFix2=0.9;
+    if (rel_bound>=1e-3){
+        conf.waveletBrFix2=0.6;
+    }
+    else if (rel_bound<=1e-4){
+        conf.waveletBrFix2=0.55;
 
+    }
+    else{
+        conf.waveletBrFix2=0.55+0.05*(rel_bound-1e-4)/(1e-3-1e-4);
+    }
+
+}
 
 template<class T, QoZ::uint N>
 double Tuning(QoZ::Config &conf, T *data){
@@ -1044,6 +1059,8 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.sampleBlockSize = (N==2?64:32);
 
     }   
+    if(conf.waveletAutoTuning>0)
+        setFixRates(conf,rel_bound);
     size_t sampling_num, sampling_block;
     double best_interp_cr=0.0;
     double best_lorenzo_ratio=0.0;
@@ -1763,7 +1780,7 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         if(conf.verbose){
             printf("Autotuning finished.\n");
-            printf("Selected wavelet: %d.\n",bestWave);
+            printf("Selected wavelet: %d\n",bestWave);
             if (useInterp)
                 printf("Interp selected. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
             else
