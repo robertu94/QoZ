@@ -90,13 +90,16 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
 
 
         if(conf.wavelet==1 and conf.sperr and N==3){
+            std::cout<<cmpSize<<std::endl;
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
+            std::cout<<"d1"<<std::endl;
             decompressor.set_num_threads(1);
             if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
                 std::cerr << "Read compressed file error: "<< std::endl;
                 return;
             }
+
             if (decompressor.decompress(in_stream.data()) != sperr::RTNType::Good) {
                 std::cerr << "Decompression failed!" << std::endl;
                 return ;
@@ -105,6 +108,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             in_stream.shrink_to_fit();
             const auto vol = decompressor.get_data<float>();
             memcpy(decData,vol.data(),sizeof(T)*conf.num);
+            std::cout<<"d2"<<std::endl;
             //decData=vol.data();
             return;
 
@@ -1871,24 +1875,25 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         conf.cmprAlgo = QoZ::ALGO_INTERP;
         SPERR3D_OMP_C compressor;
         compressor.set_num_threads(1);
-        std::cout<<"s1"<<std::endl;
+        //std::cout<<"s1"<<std::endl;
         auto rtn = sperr::RTNType::Good;
       
         auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
         rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                    {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
-        std::cout<<"s2"<<std::endl;
+        //std::cout<<"s2"<<std::endl;
         compressor.set_target_pwe(conf.absErrorBound);
-        std::cout<<"s3"<<std::endl;
+        //std::cout<<"s3"<<std::endl;
         rtn = compressor.compress();
-        std::cout<<"s4"<<std::endl;
+        //std::cout<<"s4"<<std::endl;
         auto stream = compressor.get_encoded_bitstream();
         
         char * outData=new char[stream.size()];
         outSize=stream.size();
+        std::cout<<outSize<<std::endl;
         memcpy(outData,stream.data(),stream.size());
 
-        std::cout<<"s5"<<std::endl;
+        //std::cout<<"s5"<<std::endl;
         return reinterpret_cast<char *>(outData);
         //rtn = sperr::write_n_bytes(output_file, stream.size(), stream.data());
 

@@ -77,11 +77,12 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
         
         size_t newSize = (char *) cmpDataPos - cmpData;
         QoZ::write(int(newSize - outSize), cmpDataPos);
-        std::cout<<"s6"<<std::endl;
+        
 
         
         
         outSize = (char *) cmpDataPos - cmpData;
+        std::cout<<outSize<<std::endl;
     }
     
     if(conf.peTracking){
@@ -153,6 +154,7 @@ char *SZ_compress(const QoZ::Config &config, T *data, size_t &outSize) {
 template<class T>
 void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
     //QoZ::Timer timer(true);
+    std::cout<<cmpSize<<std::endl;
     QoZ::Config conf(config);
     //{
         //load config
@@ -170,6 +172,7 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
         else
             decData = new T[conf.num];
     }
+    std::cout<<(cmpSize - sizeof(int) - confSize)<<std::endl;
     //timer.stop("alloc memory");
     //timer.start();
     if (conf.N == 1) {
