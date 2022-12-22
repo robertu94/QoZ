@@ -1883,6 +1883,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         rtn = compressor.compress();
         std::cout<<"s4"<<std::endl;
         auto stream = compressor.get_encoded_bitstream();
+        outSize=stream.size();
         std::cout<<"s5"<<std::endl;
         return reinterpret_cast<char *>(stream.data());
         //rtn = sperr::write_n_bytes(output_file, stream.size(), stream.data());
