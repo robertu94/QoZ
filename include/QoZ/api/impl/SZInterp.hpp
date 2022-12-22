@@ -565,6 +565,12 @@ char *SZ_compress_AutoSelectiveInterp_with_sampling(QoZ::Config &conf, T *data, 
 
 
 inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bound, QoZ::Config &conf){
+
+    if (conf.wavelet==1 and conf.dims.size()==3 and conf.sperr)
+    {
+        alpha_list={0.5,0.75,1,1.25,1.5,1.75,2};
+        return;
+    }
     if(conf.linearReduce){
         alpha_list={0,0.1,0.2,0.3,0.4,0.5};
 
@@ -594,6 +600,11 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
 }
 
 inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound, QoZ::Config &conf){
+    if (conf.wavelet==1 and conf.dims.size()==3 and conf.sperr)
+    {
+        beta_list={-1};
+        return;
+    }
     if(conf.linearReduce){
         beta_list={1,0.75,0.5,0.33,0.25};
     }
@@ -836,16 +847,29 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             cur_block=sampled_blocks[k];
         else
             cur_block=waveleted_input[k];
-        //std::cout<<"fuqindejian1"<<std::endl;        
-        auto cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
-        //std::cout<<"fuqindejian2"<<std::endl;     
-        delete[]cmprData;
+        //std::cout<<"fuqindejian1"<<std::endl;
+        char *cmprData;
+        if(testConfig.wavelet==1 and testConfig.sperr and N==3){
+            cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
+
+        }    
+        else{
+            cmprData = sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
+            //std::cout<<"fuqindejian2"<<std::endl;     
+            delete[]cmprData;
+        }
 
         if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
             //std::cout<<"test with wave"<<std::endl;
             if(testConfig.wavelet==1){
-                QoZ::Wavelet<T,N> wlt;
-                wlt.postProcess_cdf97(cur_block.data(),conf.dims);
+                if(testConfig.wavelet==1 and testConfig.sperr and N==3){
+                    SPERR_Decompress<T,N>(testConfig,cmprData,sampleOutSize,cur_block.data());
+
+                }
+                else{
+                    QoZ::Wavelet<T,N> wlt;
+                    wlt.postProcess_cdf97(cur_block.data(),conf.dims);
+                }
                 //std::cout<<"fuqindejian"<<std::endl; 
             }
             else{
@@ -1731,10 +1755,12 @@ double Tuning(QoZ::Config &conf, T *data){
                 for (size_t j=0;j<beta_nums;j++){
                     double alpha=alpha_list[i];
                     double beta=beta_list[j];
-                    if ((alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1))
+                    if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
                         continue;
                     conf.alpha=alpha;
                     conf.beta=beta; 
+                    if(conf.wavelet==1 and conf.sperr and conf.N==3)
+                        conf.sperr_eb_coeff=alpha;
                     //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                     std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                         orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
@@ -1752,7 +1778,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                     }
                     else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
-                        if ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta) )
+                        if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
                             break;
 
                         continue;
@@ -1791,7 +1817,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
                         }
                     }
-                    if ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta) )
+                    if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !(conf.wavelet==1 and conf.sperr and conf.N==3) )
                         break;
                 }
             }
@@ -1885,6 +1911,8 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.dims=global_dims;
         conf.num=global_num;  
         conf.wavelet=bestWave;
+        if(conf.wavelet==1 and conf.sperr and conf.N==3)
+            conf.sperr_eb_coeff=bestalpha;
         if(useInterp){ 
 
             if(conf.levelwisePredictionSelection>0){
