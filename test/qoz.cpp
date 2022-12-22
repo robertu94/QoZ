@@ -521,33 +521,41 @@ int main(int argc, char *argv[]) {
 
         if (dataType == SZ_FLOAT) {
             compress<float>(inPath, cmpPath, conf);
-        } else if (dataType == SZ_DOUBLE) {
+        } 
+        /*else if (dataType == SZ_DOUBLE) {
             compress<double>(inPath, cmpPath, conf);
         } else if (dataType == SZ_INT32) {
             compress<int32_t>(inPath, cmpPath, conf);
         } else if (dataType == SZ_INT64) {
             compress<int64_t>(inPath, cmpPath, conf);
-        } else {
+        }
+        */
+         else {
             printf("Error: data type not supported \n");
             usage();
             exit(0);
         }
+        std::cout<<"fuqin"<<std::endl;
     }
     if (decompression) {
         if (printCmpResults && inPath == nullptr) {
             printf("Error: Since you add -a option (analysis), please specify the original data path by -i <path>.\n");
             exit(0);
         }
-
+        std::cout<<"fuqin2"<<std::endl;
         if (dataType == SZ_FLOAT) {
             decompress<float>(inPath, cmpPath, decPath, conf, binaryOutput, printCmpResults);
-        } else if (dataType == SZ_DOUBLE) {
+
+        } 
+        /*else if (dataType == SZ_DOUBLE) {
             decompress<double>(inPath, cmpPath, decPath, conf, binaryOutput, printCmpResults);
         } else if (dataType == SZ_INT32) {
             decompress<int32_t>(inPath, cmpPath, decPath, conf, binaryOutput, printCmpResults);
         } else if (dataType == SZ_INT64) {
             decompress<int64_t>(inPath, cmpPath, decPath, conf, binaryOutput, printCmpResults);
-        } else {
+        }
+         */
+        else {
             printf("Error: data type not supported \n");
             usage();
             exit(0);
