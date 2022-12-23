@@ -133,7 +133,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
 
 
 template<class T, QoZ::uint N>
-char * outlier_compress(QoZ::Config &conf,T *data,size_t outSize){
+char * outlier_compress(QoZ::Config &conf,T *data,size_t &outSize){
 
     char * outlier_compress_output;
     if (conf.offsetPredictor ==0){
@@ -2653,6 +2653,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         size_t outlier_outSize=0;
         char * outlier_compress_output;
         outlier_compress_output=outlier_compress<T,N>(newconf,decData,outlier_outSize);
+        std::cout<<outlier_outSize<<std::endl;
 
         size_t totalsize=outSize+outlier_outSize;
         char * final_output=new char[totalsize+conf.size_est()];
