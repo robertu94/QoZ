@@ -823,7 +823,10 @@ inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bou
     }
    
     else{
-         gamma_list={0.5,0.75,1,1.25,1.5};
+        if(conf.wavelet==0)
+            gamma_list={1};
+        else
+            gamma_list={0.5,0.75,1,1.25,1.5};
         
     }
 }
