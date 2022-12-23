@@ -154,7 +154,7 @@ namespace QoZ {
             waveletBrFix2 = cfg.GetReal("AlgoSettings", "waveletBrFix2", waveletBrFix2);
             waveletMseFix = cfg.GetReal("AlgoSettings", "waveletMseFix", waveletMseFix);
             waveletMseFix2 = cfg.GetReal("AlgoSettings", "waveletMseFix2", waveletMseFix2);
-            sperr_eb_coeff = cfg.GetReal("AlgoSettings", "sperr_eb_coeff", sperr_eb_coeff);
+            //sperr_eb_coeff = cfg.GetReal("AlgoSettings", "sperr_eb_coeff", sperr_eb_coeff);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
             lorenzo = cfg.GetBoolean("AlgoSettings", "Lorenzo", lorenzo);
@@ -215,6 +215,7 @@ namespace QoZ {
             sperr = cfg.GetInteger("AlgoSettings", "sperr", sperr);
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
             conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
+            fixWave = cfg.GetInteger("AlgoSettings", "fixWave", fixWave);
 
 
 
@@ -441,13 +442,14 @@ namespace QoZ {
         int var_first=0;
         size_t profStride=0;
         int sperr=0;
-        double sperr_eb_coeff = 1.5;
+        //double sperr_eb_coeff = 1.5;
         int waveAutoFix=1;
 
         int conditioning=0;
         size_t meta_size=0;
         sperr::Conditioner::meta_type meta;
         std::vector<sperr::Conditioner::meta_type>block_metas;
+        int fixWave=-1;
 
         
 

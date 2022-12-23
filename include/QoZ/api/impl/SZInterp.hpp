@@ -75,7 +75,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
         
     SPERR3D_OMP_C compressor;
     compressor.set_num_threads(1);
-    compressor.set_eb_coeff(conf.sperr_eb_coeff);
+    compressor.set_eb_coeff(conf.wavelet_rel_coeff);
     if(conf.wavelet>1)
         compressor.set_skip_wave(true);
     //std::cout<<"s1"<<std::endl;
@@ -86,6 +86,8 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
                                 {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
     //std::cout<<"s2"<<std::endl;
     compressor.set_target_pwe(conf.absErrorBound);
+
+    
     //std::cout<<"s3"<<std::endl;
     rtn = compressor.compress();
     //std::cout<<"s4"<<std::endl;
@@ -129,6 +131,146 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
     return;
 }
 
+
+template<class T, QoZ::uint N>
+char * outlier_compress(QoZ::config &conf,T *data,size_t outSize){
+
+    char * outlier_compress_output;
+    if (conf.offsetPredictor ==0){
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+                                                                       QoZ::Lossless_zstd());  
+        outlier_compress_output =  (char *)sz->compress(conf,data,outSize);
+        delete sz;
+        //std::cout<<"p6"<<std::endl;
+        //std::cout<<outlier_outSize<<std::endl;
+    }
+    else if (conf.offsetPredictor ==1){
+        conf.lorenzo = true;
+        conf.lorenzo2 = true;
+        conf.regression = false;
+        conf.regression2 = false;
+        conf.openmp = false;
+        conf.blockSize = 16;//original 5
+        conf.quantbinCnt = 65536 * 2;
+
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+        outlier_compress_output =  (char *)sz->compress(conf,data,outSize);
+        delete sz;
+    }
+    else if (conf.offsetPredictor == 2){
+        conf.setDims(conf.dims.begin(),conf.dims.end());
+        conf.lorenzo = true;
+        conf.lorenzo2 = true;
+        conf.regression = false;
+        conf.regression2 = false;
+        conf.openmp = false;
+        conf.blockSize = 5;
+        conf.quantbinCnt = 65536 * 2;
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+        outlier_compress_output =  (char *)sz->compress(conf,data,outSize);
+        delete sz;
+    }
+
+    else if (conf.offsetPredictor == 3){
+        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpDirection=0;
+        auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::HuffmanEncoder<int>(),
+        QoZ::Lossless_zstd());
+        outlier_compress_output =  (char *)sz.compress(conf,data,outSize);
+        delete sz;
+    }
+
+    else if (conf.offsetPredictor == 4){
+            
+        conf.setDims(conf.dims.begin(),conf.dims.end());
+        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpDirection=0;
+        auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::HuffmanEncoder<int>(),
+        QoZ::Lossless_zstd());
+            
+       
+        outlier_compress_output =  (char *)sz.compress(conf,data,outSize);
+        delete sz;
+    }
+    return outlier_compress_output;
+
+}
+
+template<class T, QoZ::uint N>
+char * outlier_decompress(QoZ::config &conf,char *cmprData,size_t outSize,T*decData{
+    if (conf.offsetPredictor ==0){
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
+        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+                                                                       QoZ::Lossless_zstd());
+       
+        sz->decompress(cmprData,outSize,decData);
+    }
+
+    else if (conf.offsetPredictor ==1){
+        conf.lorenzo = true;
+        conf.lorenzo2 = true;
+        conf.regression = false;
+        conf.regression2 = false;
+        conf.openmp = false;
+        conf.blockSize = 16;//original 5
+        conf.quantbinCnt = 65536 * 2;
+
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+                  
+        sz->decompress(cmprData,outSize,decData);
+        delete sz;
+    }
+    else if (conf.offsetPredictor == 2){
+        conf.setDims(conf.dims.begin(),conf.dims.end());
+        conf.lorenzo = true;
+        conf.lorenzo2 = true;
+        conf.regression = false;
+        conf.regression2 = false;
+        conf.openmp = false;
+        conf.blockSize = 5;
+        conf.quantbinCnt = 65536 * 2;
+
+        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
+        sz->decompress(cmprData,outSize,decData);
+        delete sz;
+    }
+
+    else if (conf.offsetPredictor == 3){
+        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpDirection=0;
+
+           
+        auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::HuffmanEncoder<int>(),
+        QoZ::Lossless_zstd());      
+        sz->decompress(cmprData,outSize,decData);
+        delete sz;
+    }
+
+    else if (conf.offsetPredictor == 4){
+            
+        conf.setDims(conf.dims.begin(),conf.dims.end());
+        conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
+        conf.interpDirection=0;          
+        auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::HuffmanEncoder<int>(),
+        QoZ::Lossless_zstd());      
+        sz->decompress(cmprData,outSize,decData);
+        delete sz;
+    }
+    
+}
 
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp(QoZ::Config &conf, T *data, size_t &outSize) {
@@ -290,67 +432,8 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         QoZ::Config newconf(conf.num);
 
         //newconf.blockSize=32768;
-
-        if (conf.offsetPredictor ==0){
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz2 = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
-                                                                       QoZ::Lossless_zstd());
-       
-             sz2->decompress(cmpDataPos+first,second,offsets);
-        }
-
-        else if (conf.offsetPredictor ==1){
-            newconf.lorenzo = true;
-            newconf.lorenzo2 = true;
-            newconf.regression = false;
-            newconf.regression2 = false;
-            newconf.openmp = false;
-            newconf.blockSize = 16;//original 5
-            newconf.quantbinCnt = 65536 * 2;
-
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz2 = make_lorenzo_regression_compressor<T, 1>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
-                  
-              sz2->decompress(cmpDataPos+first,second,offsets);
-        }
-        else if (conf.offsetPredictor == 2){
-            newconf.setDims(conf.dims.begin(),conf.dims.end());
-            newconf.lorenzo = true;
-            newconf.lorenzo2 = true;
-            newconf.regression = false;
-            newconf.regression2 = false;
-            newconf.openmp = false;
-            newconf.blockSize = 5;
-            newconf.quantbinCnt = 65536 * 2;
-
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz2 = make_lorenzo_regression_compressor<T, N>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
-            sz2->decompress(cmpDataPos+first,second,offsets);
-        }
-
-        else if (conf.offsetPredictor == 3){
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;
-
-           
-            auto sz2 = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
-            QoZ::HuffmanEncoder<int>(),
-            QoZ::Lossless_zstd());      
-            sz2.decompress(cmpDataPos+first,second,offsets);
-        }
-
-        else if (conf.offsetPredictor == 4){
-            
-            newconf.setDims(conf.dims.begin(),conf.dims.end());
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;          
-            auto sz2 = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
-            QoZ::HuffmanEncoder<int>(),
-            QoZ::Lossless_zstd());      
-            sz2.decompress(cmpDataPos+first,second,offsets);
-        }
+        outlier_decompress<T,N>(newconf,cmpDataPos+first,second,offsets);
+        
         //QoZ::writefile<T>("waved.qoz.dec.offset", offsets, conf.num); 
         //std::cout<<"x4"<<std::endl;
         for(size_t i=0;i<conf.num;i++)
@@ -673,7 +756,7 @@ inline void init_alphalist(std::vector<double> &alpha_list,const double &rel_bou
 
     if (use_sperr<T,N>(conf))
     {
-        alpha_list={0.5,0.75,1,1.25,1.5,1.75,2};
+        alpha_list={1};
         return;
     }
     if(conf.linearReduce){
@@ -707,7 +790,7 @@ template<class T, QoZ::uint N>
 inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound, QoZ::Config &conf){
     if (use_sperr<T,N>(conf))
     {
-        beta_list={-1};
+        beta_list={1};
         return;
     }
     if(conf.linearReduce){
@@ -728,6 +811,19 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
             else
                  beta_list={-1,1.5,2};
         }
+    }
+}
+
+inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bound, QoZ::Config &conf){
+    if (use_sperr<T,N>(conf))
+    {
+        gamma_list={0.5,0.75,1,1.25,1.5};
+       
+    }
+   
+    else{
+         gamma_list={0.5,0.75,1,1.25,1.5};
+        
     }
 }
 /*
@@ -889,8 +985,6 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
 }
 
 
-
-
 template<class T, QoZ::uint N>
 std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector< std::vector<T> > & sampled_blocks,QoZ::ALGO algo = QoZ::ALGO_INTERP,
                     QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,double profiling_coeff=1,const std::vector<double> &orig_means=std::vector<double>(),
@@ -960,12 +1054,46 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         //std::cout<<"fuqindejian1"<<std::endl;
         char *cmprData;
         if(use_sperr<T,N>(testConfig)){
-            cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
-            totalOutSize+=sampleOutSize;
+            if(testConfig.wavelet==1){
+                cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
+                totalOutSize+=sampleOutSize;
+                SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
+                
+            }
+            else{
+                cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
+                //std::vector<T> sperr_wave_dec(cur_block.size());
+                totalOutSize+=sampleOutSize;
+                SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
+                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
+                T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+                //std::cout<<"fuqindejian3"<<std::endl;     
+
+                cur_block.resize(per_block_ele_num);
+                for(size_t i=0;i<per_block_ele_num;i++)
+                    cur_block[i]=idwtData[i];
+                delete []idwtData;
+                std::vector<T> offsets(per_block_ele_num);
+                for(size_t i=0;i<per_block_ele_num;i++)
+                    offsets[i]=sampled_blocks[k][i]-cur_block[i];
+
+                size_t oc_size;
+               
+                char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
+                delete []offsetsCmprData;
+                totalOutSize+=oc_size;
+                for(size_t i=0;i<per_block_ele_num;i++)
+                    cur_block[i]+=offsets[i];
 
 
-            SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
-           
+
+            }
+
+            
+
+            
+            
+               
             delete []cmprData;
                   
         }    
@@ -1714,7 +1842,9 @@ double Tuning(QoZ::Config &conf, T *data){
         
         double bestalpha=1;
         double bestbeta=1;
+        double bestgamma=1;
         double bestb=9999;
+
         double bestm=0;
         size_t num_sampled_blocks=sampled_blocks.size();
         //std::cout<<num_sampled_blocks<<std::endl;
@@ -1774,6 +1904,9 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         double oriabseb=conf.absErrorBound;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
+
+            if(conf.fixWave>=1 and wave_idx!=conf.fixWave)
+                continue;
         //std::vector<double> flattened_cur_blocks;
             conf.wavelet=wave_idx;
 
@@ -1787,9 +1920,9 @@ double Tuning(QoZ::Config &conf, T *data){
             }
 
             std::vector <std::vector<T> > waveleted_input;
-            if (wave_idx>0 and !use_sperr<T,N>(conf)){
+            if (wave_idx>0 and (wave_idx>1 or!use_sperr<T,N>(conf)) ){
                 
-                conf.absErrorBound*=conf.wavelet_rel_coeff;
+                
                 waveleted_input=sampled_blocks;
                 if(conf.conditioning){
                     conf.block_metas.clear();
@@ -1837,74 +1970,84 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>beta_list;
             init_betalist<T,N>(beta_list,rel_bound,conf);
             size_t beta_nums=beta_list.size();  
-            for (size_t i=0;i<alpha_nums;i++){
-                for (size_t j=0;j<beta_nums;j++){
-                    double alpha=alpha_list[i];
-                    double beta=beta_list[j];
-                    if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !use_sperr<T,N>(conf) )
-                        continue;
-                    conf.alpha=alpha;
-                    conf.beta=beta; 
-                    if(use_sperr<T,N>(conf))
-                        conf.sperr_eb_coeff=alpha;
-                    //std::cout<<"fuqindejian0.1"<<std::endl;                                      
-                    std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
-                                                                        orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                    //std::cout<<"fuqindejian0.2"<<std::endl;  
-                    double bitrate=results.first;
-                    double metric=results.second;
-                    printf("%d %.2f %.2f %.4f %.2f\n",wave_idx,alpha,beta,bitrate,metric);
-                    if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
-                        bestalpha=alpha;
-                        bestbeta=beta;
-                        bestb=bitrate;
-                        bestm=metric;
-                        bestWave=wave_idx;
-                        useInterp=true;
-                        printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
-                    }
-                    else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
-                        if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf))
-                            break;
-
-                        continue;
-                    }
-                    else{
-                        double eb_fixrate;
-                        /*
-                        if (metric>bestm)
-                            eb_fixrate=rel_bound>1e-4?1.2:1.1;
-                        else
-                            eb_fixrate=rel_bound>1e-4?0.8:0.9;
-                            */
-                        eb_fixrate=bitrate/bestb;
-                        double orieb=conf.absErrorBound;
-                        conf.absErrorBound*=eb_fixrate;
-                            
+            std::vector<double>gamma_list;
+            init_gammalist<T,N>(gamma_list,rel_bound,conf);
+            size_t gamma_nums=gamma_list.size();  
+            for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma++){
+                for (size_t i=0;i<alpha_nums;i++){
+                    for (size_t j=0;j<beta_nums;j++){
+                        double alpha=alpha_list[i];
+                        double beta=beta_list[j];
+                        if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !use_sperr<T,N>(conf) )
+                            continue;
+                        conf.alpha=alpha;
+                        conf.beta=beta; 
+                        //if(use_sperr<T,N>(conf))
+                         //   conf.sperr_eb_coeff=alpha;
+                        conf.wavelet_rel_coeff=gamma;
+                        if(wave_idx>0 and !use_sperr<T,N>(conf))
+                            conf.absErrorBound*=conf.wavelet_rel_coeff;
+                        //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
-                        conf.absErrorBound=orieb;
-
-                        double bitrate_r=results.first;
-                        double metric_r=results.second;
-                        double a=(metric-metric_r)/(bitrate-bitrate_r);
-                        double b=metric-a*bitrate;
-                        double reg=a*bestb+b;
-                            printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bitrate_r,metric_r);
-                            printf("%.2f %.2f %.4f %.2f\n",alpha,beta,bestb,reg);      
-                            //conf.absErrorBound=orig_eb;
-                        if (reg>bestm){
+                        //std::cout<<"fuqindejian0.2"<<std::endl;  
+                        double bitrate=results.first;
+                        double metric=results.second;
+                        printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
+                        if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                             bestalpha=alpha;
-                            bestbeta=beta;           
+                            bestbeta=beta;
+                            bestgamma=gamma;
                             bestb=bitrate;
                             bestm=metric;
                             bestWave=wave_idx;
                             useInterp=true;
-                                printf("Best: %.2f %.2f %.4f %.2f\n",bestalpha,bestbeta,bestb,bestm);
+                            printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
                         }
+                        else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
+                            if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf))
+                                break;
+
+                            continue;
+                        }
+                        else{
+                            double eb_fixrate;
+                            /*
+                            if (metric>bestm)
+                                eb_fixrate=rel_bound>1e-4?1.2:1.1;
+                            else
+                                eb_fixrate=rel_bound>1e-4?0.8:0.9;
+                                */
+                            eb_fixrate=bitrate/bestb;
+                            double orieb=conf.absErrorBound;
+                            conf.absErrorBound*=eb_fixrate;
+                                
+                            std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
+                                                                                orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                            conf.absErrorBound=orieb;
+
+                            double bitrate_r=results.first;
+                            double metric_r=results.second;
+                            double a=(metric-metric_r)/(bitrate-bitrate_r);
+                            double b=metric-a*bitrate;
+                            double reg=a*bestb+b;
+                                printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bitrate_r,metric_r);
+                                printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bestb,reg);      
+                                //conf.absErrorBound=orig_eb;
+                            if (reg>bestm){
+                                bestalpha=alpha;
+                                bestbeta=beta;
+                                bestgamma=gamma;           
+                                bestb=bitrate;
+                                bestm=metric;
+                                bestWave=wave_idx;
+                                useInterp=true;
+                                    printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
+                            }
+                        }
+                        if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
+                            break;
                     }
-                    if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
-                        break;
                 }
             }
                // delete sz;
@@ -1987,18 +2130,19 @@ double Tuning(QoZ::Config &conf, T *data){
             printf("Autotuning finished.\n");
             printf("Selected wavelet: %d\n",bestWave);
             if (useInterp)
-                printf("Interp selected. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
+                printf("Interp selected. Selected gamma: %f. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestgamma,bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
             else
                 printf("Lorenzo selected. Best bitrate: %f. Best %s: %f.\n",bestb, const_cast<char*>(metric_name.c_str()),bestm);
 
         }
         conf.alpha=bestalpha;
         conf.beta=bestbeta;
+        conf.wavelet_rel_coeff=bestgamma;
         conf.dims=global_dims;
         conf.num=global_num;  
         conf.wavelet=bestWave;
-        if(use_sperr<T,N>(conf))
-            conf.sperr_eb_coeff=bestalpha;
+        //if(use_sperr<T,N>(conf))
+        //   conf.sperr_eb_coeff=bestalpha;
         if(useInterp){ 
 
             if(conf.levelwisePredictionSelection>0){
@@ -2494,64 +2638,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //newconf.blockSize=32768;
         size_t outlier_outSize=0;
         char * outlier_compress_output;
-        if (conf.offsetPredictor ==0){
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(newconf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
-                                                                       QoZ::Lossless_zstd());  
-            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-            //std::cout<<"p6"<<std::endl;
-            //std::cout<<outlier_outSize<<std::endl;
-        }
-        else if (conf.offsetPredictor ==1){
-            newconf.lorenzo = true;
-            newconf.lorenzo2 = true;
-            newconf.regression = false;
-            newconf.regression2 = false;
-            newconf.openmp = false;
-            newconf.blockSize = 16;//original 5
-            newconf.quantbinCnt = 65536 * 2;
-
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz = make_lorenzo_regression_compressor<T, 1>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
-            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-        }
-        else if (conf.offsetPredictor == 2){
-            newconf.setDims(conf.dims.begin(),conf.dims.end());
-            newconf.lorenzo = true;
-            newconf.lorenzo2 = true;
-            newconf.regression = false;
-            newconf.regression2 = false;
-            newconf.openmp = false;
-            newconf.blockSize = 5;
-            newconf.quantbinCnt = 65536 * 2;
-            auto quantizer = QoZ::LinearQuantizer<T>(newconf.absErrorBound, newconf.quantbinCnt / 2);
-            auto sz = make_lorenzo_regression_compressor<T, N>(newconf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
-            outlier_compress_output =  (char *)sz->compress(newconf,decData,outlier_outSize);
-        }
-
-        else if (conf.offsetPredictor == 3){
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;
-            auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
-            QoZ::HuffmanEncoder<int>(),
-            QoZ::Lossless_zstd());
-            outlier_compress_output =  (char *)sz.compress(newconf,decData,outlier_outSize);
-        }
-
-        else if (conf.offsetPredictor == 4){
-            
-            newconf.setDims(conf.dims.begin(),conf.dims.end());
-            newconf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
-            newconf.interpDirection=0;
-            auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-            QoZ::LinearQuantizer<T>(newconf.absErrorBound),
-            QoZ::HuffmanEncoder<int>(),
-            QoZ::Lossless_zstd());
-            
-       
-            outlier_compress_output =  (char *)sz.compress(newconf,decData,outlier_outSize);
-        }
+        outlier_compress_output=outlier_compress<T,N>(newconf,decData,outlier_outSize);
 
         size_t totalsize=outSize+outlier_outSize;
         char * final_output=new char[totalsize+conf.size_est()];
