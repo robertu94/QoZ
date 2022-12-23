@@ -862,7 +862,7 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
 }
 
 template<class T, QoZ::uint N>
-auto post_Condition(const QoZ::Config &conf,T * data,const sperr::meta_type& meta){
+auto post_Condition(const QoZ::Config &conf,T * data,const sperr::Conditioner::meta_type& meta){
 
     std::vector<double> buf(conf.num,0);
     for(size_t i=0;i<conf.num;i++)
