@@ -379,7 +379,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
                 sz.decompress_block(cmpDataPos, first, decData);
             }
         }
-        std::cout<<"x2"<<std::endl;
+      
         //QoZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
         /*
         if(conf.transformation==1){
@@ -423,13 +423,13 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(decData,conf.dims);
         }
-        std::cout<<"x2.5"<<std::endl;
+       
         if(conf.conditioning){
             auto rtn=post_Condition<T,N>(conf,decData,conf.meta);
                 
         }
 
-        std::cout<<"x3"<<std::endl;
+       
         //QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
        
         
