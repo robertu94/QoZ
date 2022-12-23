@@ -2119,7 +2119,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             */
             //QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);    
     }
-    conf.wavelet=0; 
+    if (!use_sperr<T,N>(conf))
+        conf.wavelet=0; 
 
 
     if(conf.preTrim>0){
