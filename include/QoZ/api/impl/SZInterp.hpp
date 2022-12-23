@@ -46,6 +46,10 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
         buf[i]=data[i];
 
     sperr::Conditioner conditioner;
+    if(conf.conditioning==2){
+        std::array<bool, 4> b4{true,true,false,false};
+        conditioner.toggle_all_settings(b4);
+    }
     auto [rtn, condi_meta] = conditioner.condition(buf);
     for(size_t i=0;i<conf.num;i++)
         data[i]=buf[i];
