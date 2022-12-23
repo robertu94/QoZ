@@ -182,7 +182,7 @@ char * outlier_compress(QoZ::Config &conf,T *data,size_t outSize){
         QoZ::HuffmanEncoder<int>(),
         QoZ::Lossless_zstd());
         outlier_compress_output =  (char *)sz.compress(conf,data,outSize);
-        delete sz;
+        
     }
 
     else if (conf.offsetPredictor == 4){
@@ -197,7 +197,7 @@ char * outlier_compress(QoZ::Config &conf,T *data,size_t outSize){
             
        
         outlier_compress_output =  (char *)sz.compress(conf,data,outSize);
-        delete sz;
+        
     }
     return outlier_compress_output;
 
@@ -814,6 +814,7 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
     }
 }
 
+template<class T, QoZ::uint N>
 inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bound, QoZ::Config &conf){
     if (use_sperr<T,N>(conf))
     {
@@ -1973,11 +1974,12 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>gamma_list;
             init_gammalist<T,N>(gamma_list,rel_bound,conf);
             size_t gamma_nums=gamma_list.size();  
-            for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma++){
+            for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
                         double alpha=alpha_list[i];
                         double beta=beta_list[j];
+                        double gamma=gamma_list[gamma_idx];
                         if (( (alpha>=1 and alpha>beta) or (alpha<0 and beta!=-1) ) and !use_sperr<T,N>(conf) )
                             continue;
                         conf.alpha=alpha;
