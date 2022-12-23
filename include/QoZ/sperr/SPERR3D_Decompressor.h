@@ -152,7 +152,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     return RTNType::Good;
   }
 
-  std::cout<<"fuqin1"<<std::endl;
+ 
 
 
   // Step 1: SPECK decode.
@@ -162,10 +162,10 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
   auto rtn = m_decoder.parse_encoded_bitstream(m_speck_stream.data(), m_speck_stream.size());
   if (rtn != RTNType::Good)
     return rtn;
-  std::cout<<"fuqin2"<<std::endl;
+  
   m_decoder.set_dimensions(m_dims);
   rtn = m_decoder.decode();
-  std::cout<<"fuqin3"<<std::endl;
+ 
   if (rtn != RTNType::Good)
     return rtn;
   const auto& decoder_out = m_decoder.view_data();
@@ -173,9 +173,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
   auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
 
   bool skip_wave=b8[2];
-  std::cout<<skip_wave<<std::endl;
-  std::cout<<"fuqin4"<<std::endl;
-
+  
   if(!skip_wave){
 
     // Step 2: Inverse Wavelet Transform
@@ -199,10 +197,10 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
   }
   else{
-    std::cout<<"fuqin5"<<std::endl;
+  
     m_val_buf.resize(decoder_out.size());
     std::copy(decoder_out.begin(), decoder_out.end(), m_val_buf.begin());
-    std::cout<<"fuqin6"<<std::endl;
+   
 
   }
 
