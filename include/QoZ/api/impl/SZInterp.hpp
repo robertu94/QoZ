@@ -38,7 +38,33 @@ bool use_sperr(const QoZ::Config & conf){
     return (conf.wavelet==1 and conf.sperr and N==3);
 }
 
+template<class T, QoZ::uint N>
+auto pre_Condition(const QoZ::Config &conf,T * data){
 
+    std::vector<double> buf(conf.num,0);
+    for(size_t i=0;i<conf.num;i++)
+        buf[i]=data[i];
+
+    sperr::Conditioner conditioner;
+    auto [rtn, condi_meta] = conditioner.condition(buf);
+    for(size_t i=0;i<conf.num;i++)
+        data[i]=buf[i];
+    return {rtn,condi_meta};
+}
+
+template<class T, QoZ::uint N>
+auto post_Condition(const QoZ::Config &conf,T * data,const sperr::Conditioner::meta_type& meta){
+
+    std::vector<double> buf(conf.num,0);
+    for(size_t i=0;i<conf.num;i++)
+        buf[i]=data[i];
+
+    sperr::Conditioner conditioner;
+    auto rtn = conditioner.inverse_condition(buf,meta);
+    for(size_t i=0;i<conf.num;i++)
+        data[i]=buf[i];
+    return rtn;
+}
 
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp(QoZ::Config &conf, T *data, size_t &outSize) {
@@ -847,33 +873,7 @@ void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T 
     return;
 }
 
-template<class T, QoZ::uint N>
-auto pre_Condition(const QoZ::Config &conf,T * data){
 
-    std::vector<double> buf(conf.num,0);
-    for(size_t i=0;i<conf.num;i++)
-        buf[i]=data[i];
-
-    sperr::Conditioner conditioner;
-    auto [rtn, condi_meta] = conditioner.condition(buf);
-    for(size_t i=0;i<conf.num;i++)
-        data[i]=buf[i];
-    return {rtn,condi_meta};
-}
-
-template<class T, QoZ::uint N>
-auto post_Condition(const QoZ::Config &conf,T * data,const sperr::Conditioner::meta_type& meta){
-
-    std::vector<double> buf(conf.num,0);
-    for(size_t i=0;i<conf.num;i++)
-        buf[i]=data[i];
-
-    sperr::Conditioner conditioner;
-    auto rtn = conditioner.inverse_condition(buf,meta);
-    for(size_t i=0;i<conf.num;i++)
-        data[i]=buf[i];
-    return rtn;
-}
 
 template<class T, QoZ::uint N>
 std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector< std::vector<T> > & sampled_blocks,QoZ::ALGO algo = QoZ::ALGO_INTERP,
