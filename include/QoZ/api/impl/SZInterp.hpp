@@ -49,7 +49,7 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
     auto [rtn, condi_meta] = conditioner.condition(buf);
     for(size_t i=0;i<conf.num;i++)
         data[i]=buf[i];
-    return {rtn,condi_meta};
+    return condi_meta;
 }
 
 template<class T, QoZ::uint N>
@@ -1394,7 +1394,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 if(conf.conditioning){
                     //because no decomp,so dont need to save meta and do reverse;
                     for(size_t i=0;i<sampled_blocks.size();i++)
-                        auto [rtn,meta]=pre_Condition(conf,sampled_blocks[i].data());
+                        auto meta=pre_Condition(conf,sampled_blocks[i].data());
                 }
                 if(wave_idx==1){
 
@@ -1779,7 +1779,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.block_metas.clear();
                     conf.block_metas.resize(waveleted_input.size());
                     for(size_t i=0;i<waveleted_input.size();i++){
-                        auto [rtn,meta]=pre_Condition<T,N>(conf,waveleted_input[i].data());
+                        auto meta=pre_Condition<T,N>(conf,waveleted_input[i].data());
                         conf.block_metas[i]=meta;
                     }
                     
@@ -2044,7 +2044,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
 
         if(conf.conditioning){
-            auto [rtn,meta]=pre_Condition<T,N>(conf,data);
+            auto meta=pre_Condition<T,N>(conf,data);
             conf.meta=meta;
         }
         
@@ -2140,7 +2140,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<"wavelet actively selected."<<std::endl;
 
         if(conf.conditioning){
-            auto [rtn,meta]=pre_Condition<T,N>(conf,data);
+            auto meta=pre_Condition<T,N>(conf,data);
             conf.meta=meta;
         }
 
