@@ -211,7 +211,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   else
     speck_budget = m_bit_budget - m_condi_stream.size() * 8;
   m_encoder.set_eb_coeff(eb_coeff);
-  rtn = m_encoder.set_comp_params(speck_budget, m_target_psnr, m_target_pwe);
+  auto rtn = m_encoder.set_comp_params(speck_budget, m_target_psnr, m_target_pwe);
 
   if (rtn != RTNType::Good)
     return rtn;

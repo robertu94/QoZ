@@ -217,7 +217,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         //memcpy(cmpDataSecond,cmpData+first,second);
 
         if(use_sperr<T,N>(conf))
-            SPERR_Decompress<T,N>(cmpDataPos, first,decData);
+            SPERR_Decompress<T,N>((char*)cmpDataPos, first,decData);
         else{
             auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                     QoZ::LinearQuantizer<T>(),
