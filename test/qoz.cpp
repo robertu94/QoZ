@@ -161,6 +161,8 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
 
     delete[]data;
     delete[]bytes;
+
+    std::cout<<"eeend"<<std::endl;
    
 }
 
@@ -172,7 +174,7 @@ void decompress(char *inPath, char *cmpPath, char *decPath,
     size_t cmpSize;
    
     auto cmpData = QoZ::readfile<char>(cmpPath, cmpSize);
-    //std::cout<<cmpSize<<std::endl;
+    std::cout<<cmpSize<<std::endl;
 
     QoZ::Timer timer(true);
     T *decData = SZ_decompress<T>(conf, cmpData.get(), cmpSize);
