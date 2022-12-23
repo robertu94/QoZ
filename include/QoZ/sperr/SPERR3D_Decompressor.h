@@ -200,6 +200,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
   }
   else{
     std::cout<<"fuqin5"<<std::endl;
+    m_val_buf.resize(decoder_out.size());
     std::copy(decoder_out.begin(), decoder_out.end(), m_val_buf.begin());
     std::cout<<"fuqin6"<<std::endl;
 
