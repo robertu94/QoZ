@@ -2654,7 +2654,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         size_t outlier_outSize=0;
         char * outlier_compress_output;
         outlier_compress_output=outlier_compress<T,N>(newconf,decData,outlier_outSize);
-        std::cout<<outlier_outSize<<std::endl;
+        //std::cout<<outlier_outSize<<std::endl;
 
         size_t totalsize=outSize+outlier_outSize;
         char * final_output=new char[totalsize+conf.size_est()];
