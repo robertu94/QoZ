@@ -173,7 +173,7 @@ void decompress(char *inPath, char *cmpPath, char *decPath,
     size_t cmpSize;
    
     auto cmpData = QoZ::readfile<char>(cmpPath, cmpSize);
-    std::cout<<"woshinidie"<<std::endl;
+    //std::cout<<"woshinidie"<<std::endl;
     
 
     QoZ::Timer timer(true);

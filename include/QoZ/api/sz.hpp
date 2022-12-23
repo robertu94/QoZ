@@ -166,7 +166,7 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
     //}
     //timer.stop("load config");
     //timer.start();
-    std::cout<<"woshiniba"<<std::endl;
+    //std::cout<<"woshiniba"<<std::endl;
     if (decData == nullptr) {
         if(conf.wavelet>1)
             decData = new T[conf.coeffs_num];
