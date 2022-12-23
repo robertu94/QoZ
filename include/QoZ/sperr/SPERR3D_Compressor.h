@@ -42,6 +42,8 @@ class SPERR3D_Compressor {
   auto release_encoded_bitstream() -> std::vector<uint8_t>&&;
   void set_eb_coeff(const double & coeff);
 
+  void set_skip_wave(const bool & skip);
+
  private:
   dims_type m_dims = {0, 0, 0};
   vecd_type m_val_buf;
@@ -60,6 +62,7 @@ class SPERR3D_Compressor {
   double m_target_psnr = sperr::max_d;
   double m_target_pwe = 0.0;
   double eb_coeff=1.5;
+  bool skip_wave=false;
 
   SPERR m_sperr;
   vec8_type m_sperr_stream;
@@ -75,6 +78,11 @@ class SPERR3D_Compressor {
 };
 
 };  // namespace sperr
+
+
+void sperr::SPERR3D_Compressor::set_skip_wave(const bool & skip){
+  skip_wave=skip;
+}
 
 
 void sperr::SPERR3D_Compressor::set_eb_coeff(const double & coeff){
@@ -157,27 +165,45 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   }
 
   // Step 1: data goes through the conditioner
-  m_conditioner.toggle_all_settings(m_conditioning_settings);
-  auto [rtn, condi_meta] = m_conditioner.condition(m_val_buf);
-  if (rtn != RTNType::Good)
-    return rtn;
-  m_condi_stream = condi_meta;
+  if(!skip wave){
+    m_conditioner.toggle_all_settings(m_conditioning_settings);
+    auto [rtn, condi_meta] = m_conditioner.condition(m_val_buf);
+    if (rtn != RTNType::Good)
+      return rtn;
+    m_condi_stream = condi_meta;
 
-  // Step 2: wavelet transform
-  rtn = m_cdf.take_data(std::move(m_val_buf), m_dims);
-  if (rtn != RTNType::Good)
-    return rtn;
-  m_cdf.dwt3d();
+    // Step 2: wavelet transform
+    rtn = m_cdf.take_data(std::move(m_val_buf), m_dims);
+    if (rtn != RTNType::Good)
+      return rtn;
+    m_cdf.dwt3d();
 
-  // Step 3: SPECK encoding
+    // Step 3: SPECK encoding
+    const auto & coeffs=m_cdf.release_data();
 
-  const auto & coeffs=m_cdf.release_data();
+    //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
 
-  //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
+    rtn = m_encoder.take_data(m_cdf.release_data(), m_dims);
+    if (rtn != RTNType::Good)
+      return rtn;
 
-  rtn = m_encoder.take_data(m_cdf.release_data(), m_dims);
-  if (rtn != RTNType::Good)
-    return rtn;
+  }
+  else{
+
+    // Step 1: Direct SPECK encoding
+    //const auto & coeffs=m_cdf.release_data();
+
+    //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
+    auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
+    b8[2]=true;
+    m_condi_stream[0]=sperr::pack_8_booleans(b8);
+    rtn = m_encoder.take_data(m_val_buf, m_dims);
+    if (rtn != RTNType::Good)
+      return rtn;
+
+  }
+
+  
 
   auto speck_budget = size_t{0};
   if (m_bit_budget == sperr::max_size)
@@ -204,8 +230,8 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   std::copy(speck_stream.cbegin(), speck_stream.cend(),
             m_encoded_stream.begin() + m_condi_stream.size());
 
-  // Step 4: Outlier correction if in FixedPWE mode.
-  if (mode == sperr::CompMode::FixedPWE) {
+  // Step 4: Outlier correction if in FixedPWE mode and not using speck only.
+  if (mode == sperr::CompMode::FixedPWE and !skip_wave) {
     // Step 4.1: IDWT using quantized coefficients to have a reconstruction.
     auto qz_coeff = m_encoder.release_quantized_coeff();
 

@@ -152,6 +152,8 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     return RTNType::Good;
   }
 
+
+
   // Step 1: SPECK decode.
   if (m_speck_stream.empty())
     return RTNType::Error;
@@ -163,26 +165,39 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
   rtn = m_decoder.decode();
   if (rtn != RTNType::Good)
     return rtn;
-
-  // Step 2: Inverse Wavelet Transform
-  //
-  // (Here we ask `m_cdf` to make a copy of coefficients from `m_decoder` instead of
-  //  transfer the ownership, because `m_decoder` will reuse that memory when
-  //  processing the next chunk. For the same reason, `m_cdf` keeps its memory.)
   const auto& decoder_out = m_decoder.view_data();
 
-   
-  //sperr::write_n_bytes("sperr.dwt.dec",decoder_out.size()*sizeof(double),decoder_out.data());
+  auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
+
+  bool skip_wave=b8[2];
+
+  if(!skip_wave){
+
+    // Step 2: Inverse Wavelet Transform
+    //
+    // (Here we ask `m_cdf` to make a copy of coefficients from `m_decoder` instead of
+    //  transfer the ownership, because `m_decoder` will reuse that memory when
+    //  processing the next chunk. For the same reason, `m_cdf` keeps its memory.)
+    
+
+     
+    //sperr::write_n_bytes("sperr.dwt.dec",decoder_out.size()*sizeof(double),decoder_out.data());
 
 
-  m_cdf.copy_data(decoder_out.data(), decoder_out.size(), m_dims);
-  m_cdf.idwt3d();
+    m_cdf.copy_data(decoder_out.data(), decoder_out.size(), m_dims);
+    m_cdf.idwt3d();
 
-  // Step 3: Inverse Conditioning
-  const auto& cdf_out = m_cdf.view_data();
-  m_val_buf.resize(cdf_out.size());
-  std::copy(cdf_out.begin(), cdf_out.end(), m_val_buf.begin());
-  m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
+    // Step 3: Inverse Conditioning
+    const auto& cdf_out = m_cdf.view_data();
+    m_val_buf.resize(cdf_out.size());
+    std::copy(cdf_out.begin(), cdf_out.end(), m_val_buf.begin());
+    m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
+  }
+  else{
+
+    std::copy(decoder_out.begin(), decoder_out.end(), m_val_buf.begin());
+
+  }
 
   // Step 4: If there's SPERR data, then do the correction.
   if (!m_sperr_stream.empty()) {

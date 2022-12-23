@@ -35,7 +35,7 @@
 
 template<class T, QoZ::uint N>
 bool use_sperr(const QoZ::Config & conf){
-    return (conf.wavelet==1 and conf.sperr and N==3);
+    return (conf.sperr>=conf.wavelet and N==3);
 }
 
 template<class T, QoZ::uint N>
@@ -123,7 +123,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     else{
 
 
-        if(use_sperr<T,N>(conf)){
+        if(use_sperr<T,N>(conf) and conf.wavelet==1){
             //std::cout<<cmpSize<<std::endl;
             std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
             SPERR3D_OMP_D decompressor;
@@ -158,16 +158,21 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
        // memcpy(cmpDataFirst,cmpData,first);
         //memcpy(cmpDataSecond,cmpData+first,second);
 
-
-        auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-                QoZ::LinearQuantizer<T>(),
-                QoZ::HuffmanEncoder<int>(),
-                QoZ::Lossless_zstd());
-        if (!conf.blockwiseTuning)
-            sz.decompress(cmpDataPos, first, decData);
+        if(use_sperr<T,N>(conf))
+            SPERR_Decompress<T,N>(cmpDataPos, first,decData);
         else{
-            //std::cout<<"block decomp"<<std::endl;
-            sz.decompress_block(cmpDataPos, first, decData);
+            auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
+                    QoZ::LinearQuantizer<T>(),
+                    QoZ::HuffmanEncoder<int>(),
+                    QoZ::Lossless_zstd());
+
+        
+            if (!conf.blockwiseTuning)
+                sz.decompress(cmpDataPos, first, decData);
+            else{
+                //std::cout<<"block decomp"<<std::endl;
+                sz.decompress_block(cmpDataPos, first, decData);
+            }
         }
         //std::cout<<"x2"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.sigmo", decData, conf.num);
@@ -829,6 +834,8 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
     SPERR3D_OMP_C compressor;
     compressor.set_num_threads(1);
     compressor.set_eb_coeff(conf.sperr_eb_coeff);
+    if(conf.wavelet>1)
+        compressor.set_skip_wave(true);
     //std::cout<<"s1"<<std::endl;
     auto rtn = sperr::RTNType::Good;
       
@@ -854,7 +861,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
 
 }
 template<class T, QoZ::uint N> 
-void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T *decData){
+void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
 
     std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
     SPERR3D_OMP_D decompressor;
@@ -872,7 +879,7 @@ void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T 
     in_stream.clear();
     in_stream.shrink_to_fit();
     const auto vol = decompressor.get_data<float>();
-    memcpy(decData,vol.data(),sizeof(T)*conf.num);
+    memcpy(decData,vol.data(),sizeof(T)*vol.size());
     //std::cout<<"d2"<<std::endl;
     //decData=vol.data();
     return;
@@ -953,7 +960,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             totalOutSize+=sampleOutSize;
 
 
-            SPERR_Decompress<T,N>(testConfig,cmprData,sampleOutSize,cur_block.data());
+            SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
            
             delete []cmprData;
                   
@@ -2029,7 +2036,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
-    if(use_sperr<T,N>(conf) and conf.waveletAutoTuning==0){
+    if(use_sperr<T,N>(conf) and conf.waveletAutoTuning==0 and conf.wavelet==1){
         conf.cmprAlgo = QoZ::ALGO_INTERP;
         
 
@@ -2133,8 +2140,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     QoZ::Timer timer(true);
     double best_lorenzo_ratio=1.0;
     if(ori_wave>1){   
-
-        best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
+        if(!use_sperr<T,N>(conf))
+            best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
+        else
+            conf.cmprAlgo = QoZ::ALGO_INTERP;
     }
     else{    
         best_lorenzo_ratio=Tuning<T,N>(conf,data);
@@ -2223,8 +2232,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         */
         if (conf.predictorTuningRate<1){      
             if(conf.wavelet >1)
-
-                compress_output = SZ_compress_Interp<T, N>(conf, coeffData, outSize);
+                if(use_sperr<T,N>(conf)){
+                    compress_output = SPERR_Compress<T,N>(conf, coeffData, outSize);
+                }
+                else
+                    compress_output = SZ_compress_Interp<T, N>(conf, coeffData, outSize);
             else
                 compress_output = SZ_compress_Interp<T, N>(conf, data, outSize);        
         }
@@ -2401,10 +2413,18 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //run system()
             //read back the decdata
             //std::cout<<"coeffdatadel"<<std::endl;
-
+            
+            if(!use_sperr<T,N>(conf)){
 
             
-            decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+                decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+                
+            }
+            else{
+                decData=new T[orig_num];
+                SPERR_Decompress<T,N>(compress_output,outSize,decData);
+
+            }
             delete []coeffData;
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;

@@ -48,6 +48,8 @@ class SPERR3D_OMP_C {
 
   void set_eb_coeff(const double & coeff);
 
+  void set_skip_wave(const bool & skip);
+
  private:
   sperr::dims_type m_dims = {0, 0, 0};        // Dimension of the entire volume
   sperr::dims_type m_chunk_dims = {0, 0, 0};  // Preferred dimensions for a chunk
@@ -70,6 +72,7 @@ class SPERR3D_OMP_C {
   // Outlier stats include 1) the number of outliers, and 2) the num of bytes used to encode them.
   std::vector<std::pair<size_t, size_t>> m_outlier_stats;
   double eb_coeff=1.5;
+  bool skip_wave=false;
 
 
   //
@@ -78,6 +81,9 @@ class SPERR3D_OMP_C {
   auto m_generate_header() const -> sperr::vec8_type;
 };
 
+void SPERR3D_OMP_C::set_skip_wave(const double & skip){
+  skip_wave=skip;
+}
 
 void SPERR3D_OMP_C::set_eb_coeff(const double & coeff){
   eb_coeff=coeff;
@@ -219,6 +225,7 @@ auto SPERR3D_OMP_C::compress() -> RTNType
     // Prepare for compression
     compressor.take_data(std::move(m_chunk_buffers[i]), {chunks[i][1], chunks[i][3], chunks[i][5]});
     compressor.toggle_conditioning(m_conditioning_settings);
+    compressor.set_skip_wave(skip_wave);
 
     // Figure out the bit budget for this chunk
     auto my_budget = size_t{0};
