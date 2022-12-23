@@ -124,7 +124,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
     in_stream.clear();
     in_stream.shrink_to_fit();
     const auto vol = decompressor.get_data<float>();
-    std::cout<<vol.size()<<std::endl;
+    //std::cout<<vol.size()<<std::endl;
     memcpy(decData,vol.data(),sizeof(T)*vol.size());
     
     //decData=vol.data();
