@@ -406,7 +406,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
           
             delete []decData;
             decData = new T [conf.num];
-            std::cout<<conf.num
+            std::cout<<conf.num;
             memcpy(decData,newDecData,sizeof(T)*conf.num);
             delete []newDecData;
 
