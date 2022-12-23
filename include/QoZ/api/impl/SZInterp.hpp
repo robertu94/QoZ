@@ -107,7 +107,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
 
     std::vector<uint8_t> in_stream(cmpData,cmpData+cmpSize);
     SPERR3D_OMP_D decompressor;
-    //std::cout<<"d1"<<std::endl;
+    
     decompressor.set_num_threads(1);
     if (decompressor.use_bitstream(in_stream.data(), in_stream.size()) != sperr::RTNType::Good) {
         std::cerr << "Read compressed file error: "<< std::endl;
@@ -121,8 +121,9 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
     in_stream.clear();
     in_stream.shrink_to_fit();
     const auto vol = decompressor.get_data<float>();
+
     memcpy(decData,vol.data(),sizeof(T)*vol.size());
-    //std::cout<<"d2"<<std::endl;
+    
     //decData=vol.data();
     return;
 }
@@ -2417,21 +2418,22 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //run system()
             //read back the decdata
             //std::cout<<"coeffdatadel"<<std::endl;
-            std::cout<<"a1"<<std::endl;
+            //std::cout<<"a1"<<std::endl;
             if(use_sperr<T,N>(conf)){
-                std::cout<<"a2"<<std::endl;
-                coeffData=new T[orig_num];
+                //std::cout<<"a2"<<std::endl;
+                //std::cout<<orig_num<<std::endl;
+                coeffData=new T[conf.num];
                 SPERR_Decompress<T,N>(compress_output,outSize,coeffData);
             
                 
                 
             }
-            std::cout<<"a3"<<std::endl;
+           // std::cout<<"a3"<<std::endl;
             decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
 
-            std::cout<<"a4"<<std::endl;
+            //std::cout<<"a4"<<std::endl;
             delete []coeffData;
-            std::cout<<"a5"<<std::endl;
+           // std::cout<<"a5"<<std::endl;
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
             conf.num=orig_num;
