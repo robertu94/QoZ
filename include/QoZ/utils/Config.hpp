@@ -440,7 +440,7 @@ namespace QoZ {
         int conditioning=0;
         size_t meta_size=0;
         sperr::Conditioner::meta_type meta;
-        std::vector<meta_type>block_metas;
+        std::vector<sperr::Conditioner::meta_type>block_metas;
 
         
 
