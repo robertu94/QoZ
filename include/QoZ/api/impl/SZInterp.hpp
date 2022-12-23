@@ -35,7 +35,7 @@
 
 template<class T, QoZ::uint N>
 bool use_sperr(const QoZ::Config & conf){
-    return (conf.sperr>=conf.wavelet and N==3);
+    return (conf.wavelet>0 and conf.sperr>=conf.wavelet and N==3);
 }
 
 template<class T, QoZ::uint N>
@@ -2038,7 +2038,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
    // T* coeffs;
-    if(use_sperr<T,N>(conf) and conf.waveletAutoTuning==0 and conf.wavelet==1){
+    bool useSperr=use_sperr<T,N>(conf);
+    if(useSperr and conf.waveletAutoTuning==0 and conf.wavelet==1){
         conf.cmprAlgo = QoZ::ALGO_INTERP;
         
 
@@ -2119,8 +2120,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             */
             //QoZ::writefile<T>("waved.qoz.ori.sigmo", data, conf.num);    
     }
-    if (!use_sperr<T,N>(conf))
-        conf.wavelet=0; 
+   
+    conf.wavelet=0; 
 
 
     if(conf.preTrim>0){
@@ -2143,7 +2144,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     QoZ::Timer timer(true);
     double best_lorenzo_ratio=1.0;
     if(ori_wave>1){   
-        if(!use_sperr<T,N>(conf))
+        if(!useSperr)
             best_lorenzo_ratio=Tuning<T,N>(conf,coeffData);
         else
             conf.cmprAlgo = QoZ::ALGO_INTERP;
