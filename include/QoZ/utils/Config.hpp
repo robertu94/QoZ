@@ -332,15 +332,15 @@ namespace QoZ {
             //read(prewave_absErrorBound, c);
             read(conditioning, c);
             if(conditioning>0){
-                std::cout<<"dwad"<<std::endl;
+               // std::cout<<"dwad"<<std::endl;
                 read(meta_size,c);
-                std::cout<<meta_size<<std::endl;
-                std::vector<uint8_t> temp_meta;
+                //std::cout<<meta_size<<std::endl;
+                std::vector<uint8_t> temp_meta(meta_size);
 
                 read(temp_meta.data(),meta_size,c);
-                std::cout<<"dwad2"<<std::endl;
+               // std::cout<<"dwad2"<<std::endl;
                 std::copy(temp_meta.begin(),temp_meta.end(),meta.begin());
-                std::cout<<"dwad3"<<std::endl;
+                //std::cout<<"dwad3"<<std::endl;
             }
         }
 
