@@ -335,6 +335,7 @@ namespace QoZ {
                 read(meta_size,c);
                 std::vector<uint8_t> temp_meta;
                 read(temp_meta.data(),meta_size,c);
+                meta.resize(meta_size);
                 std::copy(temp_meta.begin(),temp_meta.end(),meta.begin());
             }
         }
