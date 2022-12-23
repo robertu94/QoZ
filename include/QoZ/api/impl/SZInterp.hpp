@@ -1394,7 +1394,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 if(conf.conditioning){
                     //because no decomp,so dont need to save meta and do reverse;
                     for(size_t i=0;i<sampled_blocks.size();i++)
-                        auto meta=pre_Condition(conf,sampled_blocks[i].data());
+                        auto meta=pre_Condition<T,N>(conf,sampled_blocks[i].data());
                 }
                 if(wave_idx==1){
 
