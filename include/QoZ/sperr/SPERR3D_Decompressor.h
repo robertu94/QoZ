@@ -217,7 +217,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     for (const auto& outlier : los)
       m_val_buf[outlier.location] += outlier.error;
   }
-  std::cout<<"fuqin7"<<std::endl;
+  //std::cout<<"fuqin7"<<std::endl;
   return RTNType::Good;
 }
 

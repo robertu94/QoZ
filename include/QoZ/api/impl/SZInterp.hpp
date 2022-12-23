@@ -2031,8 +2031,9 @@ double Tuning(QoZ::Config &conf, T *data){
 template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
-    double prewave_absErrorBound=conf.absErrorBound;
     QoZ::calAbsErrorBound(conf, data);
+    double prewave_absErrorBound=conf.absErrorBound;
+    
     T *origdata,*coeffData;
     if (conf.rng<0)
         conf.rng=QoZ::data_range<T>(data,conf.num);
@@ -2084,7 +2085,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //conf.relErrorBound/=conf.wavelet_rel_coeff;
             //QoZ::calAbsErrorBound(conf, data);
         }
-        conf.absErrorBound*=conf.wavelet_rel_coeff;
+        if(!useSperr)
+            conf.absErrorBound*=conf.wavelet_rel_coeff;
         if(conf.coeffTracking%2==1)
             QoZ::writefile<T>("waved.qoz.ori.dwt", data, conf.num);
         if(conf.coeffTracking>1){
