@@ -209,8 +209,11 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
-       
+
+        std::cout<<"dwa"<<std::endl;
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
+        std::cout<<"dwa"<<std::endl;
+        delete sz;
     }
 
     else if (conf.offsetPredictor ==1){
@@ -406,11 +409,11 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
           
             delete []decData;
             decData = new T [conf.num];
-            std::cout<<conf.num;
+            //std::cout<<conf.num;
             memcpy(decData,newDecData,sizeof(T)*conf.num);
             delete []newDecData;
 
-            std::cout<<decData[100000]<<std::endl;
+           // std::cout<<decData[100000]<<std::endl;
 
 
             
