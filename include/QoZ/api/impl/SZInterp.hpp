@@ -432,13 +432,13 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         std::cout<<"x3"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
        
-        T *offsets =new T [conf.num];
-        QoZ::Config newconf(conf.num);
+        
 
         //newconf.blockSize=32768;
-        std::cout<<first<<std::endl;
-        std::cout<<second<<std::endl;
+        
         if(second>0){
+            T *offsets =new T [conf.num];
+                QoZ::Config newconf(conf.num);
             outlier_decompress<T,N>(newconf,(char*)(cmpDataPos+first),second,offsets);
         
         
@@ -446,10 +446,11 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         //std::cout<<"x4"<<std::endl;
             for(size_t i=0;i<conf.num;i++)
                 decData[i]+=offsets[i];
+            delete [] offsets;
         }
         //delete [] cmpDataFirst;
         //delete [] cmpDataSecond;
-        delete [] offsets;
+        
     }    
 }
 
