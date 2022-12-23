@@ -210,9 +210,9 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
 
-        std::cout<<"dwa"<<std::endl;
+        //std::cout<<"dwa"<<std::endl;
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
-        std::cout<<"dwa"<<std::endl;
+        //std::cout<<"dwa"<<std::endl;
         delete sz;
     }
 
