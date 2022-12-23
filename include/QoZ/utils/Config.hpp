@@ -275,8 +275,9 @@ namespace QoZ {
             write(conditioning, c);
             if(conditioning>0){
                 meta_size=meta.size();
+                std::vector<uint8_t> temp_meta(meta.begin(),meta.end());
                 write(meta_size,c);
-                write(meta,meta_size,c);
+                write(temp_meta,meta_size,c);
             }
 
             
@@ -332,8 +333,9 @@ namespace QoZ {
             read(conditioning, c);
             if(conditioning>0){
                 read(meta_size,c);
-                
-                read(meta,meta_size,c);
+                std::vector<uint8_t> temp_meta;
+                read(temp_meta,meta_size,c);
+                std::copy(temp_meta.begin(),temp_meta.end(),meta.begin());
             }
         }
 
