@@ -2417,19 +2417,21 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //run system()
             //read back the decdata
             //std::cout<<"coeffdatadel"<<std::endl;
+            std::cout<<"a1"<<std::endl;
+            if(use_sperr<T,N>(conf)){
+                std::cout<<"a2"<<std::endl;
+                coeffData=new T[orig_num];
+                SPERR_Decompress<T,N>(compress_output,outSize,coeffData);
             
-            if(!use_sperr<T,N>(conf)){
-
-            
-                decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
+                
                 
             }
-            else{
-                decData=new T[orig_num];
-                SPERR_Decompress<T,N>(compress_output,outSize,decData);
+            std::cout<<"a3"<<std::endl;
+            decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
 
-            }
+            std::cout<<"a4"<<std::endl;
             delete []coeffData;
+            std::cout<<"a5"<<std::endl;
             conf.coeffs_dims=conf.dims;
             conf.coeffs_num=conf.num;
             conf.num=orig_num;
