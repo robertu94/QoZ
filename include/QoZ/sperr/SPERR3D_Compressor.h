@@ -165,7 +165,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   }
 
   // Step 1: data goes through the conditioner
-  if(!skip wave){
+  if(!skip_wave){
     m_conditioner.toggle_all_settings(m_conditioning_settings);
     auto [rtn, condi_meta] = m_conditioner.condition(m_val_buf);
     if (rtn != RTNType::Good)
@@ -197,7 +197,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
     b8[2]=true;
     m_condi_stream[0]=sperr::pack_8_booleans(b8);
-    rtn = m_encoder.take_data(m_val_buf, m_dims);
+    auto rtn = m_encoder.take_data(std::move(m_val_buf), m_dims);
     if (rtn != RTNType::Good)
       return rtn;
 

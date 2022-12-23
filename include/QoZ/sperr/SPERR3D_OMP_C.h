@@ -81,7 +81,7 @@ class SPERR3D_OMP_C {
   auto m_generate_header() const -> sperr::vec8_type;
 };
 
-void SPERR3D_OMP_C::set_skip_wave(const double & skip){
+void SPERR3D_OMP_C::set_skip_wave(const bool & skip){
   skip_wave=skip;
 }
 
