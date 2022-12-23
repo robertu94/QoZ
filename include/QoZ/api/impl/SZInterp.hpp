@@ -181,6 +181,12 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             QoZ::Wavelet<T,N> wlt;
             wlt.postProcess_cdf97(decData,conf.dims);
         }
+
+        if(conf.conditioning){
+            auto rtn=post_Condition<T,N>(conf,decData,conf.meta);
+                
+        }
+
         //std::cout<<"x3"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.dec.idwt", decData, conf.num);
        
@@ -842,6 +848,34 @@ void SPERR_Decompress(const QoZ::Config &conf, char *cmpData, size_t cmpSize, T 
 }
 
 template<class T, QoZ::uint N>
+auto pre_Condition(const QoZ::Config &conf,T * data){
+
+    std::vector<double> buf(conf.num,0);
+    for(size_t i=0;i<conf.num;i++)
+        buf[i]=data[i];
+
+    sperr::Conditioner conditioner;
+    auto [rtn, condi_meta] = conditioner.condition(buf);
+    for(size_t i=0;i<conf.num;i++)
+        data[i]=buf[i];
+    return {rtn,condi_meta};
+}
+
+template<class T, QoZ::uint N>
+auto post_Condition(const QoZ::Config &conf,T * data,const meta_type& meta){
+
+    std::vector<double> buf(conf.num,0);
+    for(size_t i=0;i<conf.num;i++)
+        buf[i]=data[i];
+
+    sperr::Conditioner conditioner;
+    auto rtn = conditioner.inverse_condition(buf,meta);
+    for(size_t i=0;i<conf.num;i++)
+        data[i]=buf[i];
+    return rtn;
+}
+
+template<class T, QoZ::uint N>
 std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector< std::vector<T> > & sampled_blocks,QoZ::ALGO algo = QoZ::ALGO_INTERP,
                     QoZ::TUNING_TARGET tuningTarget=QoZ::TUNING_TARGET_RD,bool useFast=true,double profiling_coeff=1,const std::vector<double> &orig_means=std::vector<double>(),
                     const std::vector<double> &orig_sigma2s=std::vector<double>(),const std::vector<double> &orig_ranges=std::vector<double>(),const std::vector<T> &flattened_sampled_data=std::vector<T>(),const std::vector< std::vector<T> > & waveleted_input=std::vector< std::vector<T> >()){
@@ -945,6 +979,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
                 //std::cout<<"fuqindejian4"<<std::endl;  
+            }
+            if(testConfig.conditioning){
+                post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
             }
 
         }
@@ -1288,6 +1325,7 @@ double Tuning(QoZ::Config &conf, T *data){
             cur_block=sampled_blocks[i];
             gathered_blocks.insert(gathered_blocks.end(),cur_block.begin(),cur_block.end());
             QoZ::Wavelet<T,N> wlt;
+            //any condition?
             wlt.preProcess_cdf97(cur_block.data(),conf.dims);
             for(size_t i=0;i<conf.num;i++){
                 if(fabs(cur_block[i])>wave_eb)
@@ -1353,6 +1391,11 @@ double Tuning(QoZ::Config &conf, T *data){
                
 
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
+                if(conf.conditioning){
+                    //because no decomp,so dont need to save meta and do reverse;
+                    for(size_t i=0;i<sampled_blocks.size();i++)
+                        auto [rtn,meta]=pre_Condition(conf,sampled_blocks[i].data());
+                }
                 if(wave_idx==1){
 
                     for(size_t i=0;i<sampled_blocks.size();i++){
@@ -1732,6 +1775,15 @@ double Tuning(QoZ::Config &conf, T *data){
                 
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 waveleted_input=sampled_blocks;
+                if(conf.conditioning){
+                    conf.block_metas.clear();
+                    conf.block_metas.resize(waveleted_input.size());
+                    for(size_t i=0;i<waveleted_input.size();i++){
+                        auto [rtn,meta]=pre_Condition<T,N>(conf,waveleted_input[i].data());
+                        conf.block_metas[i]=meta;
+                    }
+                    
+                }
                 if(wave_idx==1){
                     for(size_t i=0;i<waveleted_input.size();i++){
                         QoZ::Wavelet<T,N> wlt;
@@ -1989,6 +2041,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     size_t orig_num=conf.num;
     int ori_wave=0;
     if(conf.wavelet>0 and conf.waveletAutoTuning==0){       
+
+
+        if(conf.conditioning){
+            auto [rtn,meta]=pre_Condition<T,N>(conf,data);
+            conf.meta=meta;
+        }
         
         
         if(conf.wavelet>1){
@@ -2002,6 +2060,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
            // std::cout<<"origdatanew"<<std::endl;
             origdata=new T[conf.num];
             memcpy(origdata,data,conf.num*sizeof(T));
+
             QoZ::Wavelet<T,N> wlt;
             wlt.preProcess_cdf97(data,conf.dims);
             //conf.errorBoundMode = QoZ::EB_REL;
@@ -2079,6 +2138,12 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     if(conf.waveletAutoTuning>0 and conf.wavelet>0){
         //std::cout<<"wavelet actively selected."<<std::endl;
+
+        if(conf.conditioning){
+            auto [rtn,meta]=pre_Condition<T,N>(conf,data);
+            conf.meta=meta;
+        }
+
         if(conf.wavelet==1){
 
             if (use_sperr<T,N>(conf)){
@@ -2324,6 +2389,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         */
         //QoZ::writefile<T>("waved.qoz.cmp.logit", decData, conf.num);
 
+
+
         if(conf.wavelet>1){
             //save data to file
             //run system()
@@ -2345,6 +2412,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             
             if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+            if(conf.conditioning){
+                auto rtn=post_Condition<T,N>(conf,decData,conf.meta);
+                
+            }
             //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=data[i]-decData[i];
@@ -2357,6 +2428,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             decData=data;//maybe need to fix
             if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", data, conf.num);
+            if(conf.conditioning){
+                auto rtn=post_Condition<T,N>(conf,data,conf.meta);
+            }
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
             }

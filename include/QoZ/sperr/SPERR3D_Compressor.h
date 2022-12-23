@@ -173,7 +173,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
 
   const auto & coeffs=m_cdf.release_data();
 
-  sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
+  //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
 
   rtn = m_encoder.take_data(m_cdf.release_data(), m_dims);
   if (rtn != RTNType::Good)

@@ -172,7 +172,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
   const auto& decoder_out = m_decoder.view_data();
 
    
-  sperr::write_n_bytes("sperr.dwt.dec",decoder_out.size()*sizeof(double),decoder_out.data());
+  //sperr::write_n_bytes("sperr.dwt.dec",decoder_out.size()*sizeof(double),decoder_out.data());
 
 
   m_cdf.copy_data(decoder_out.data(), decoder_out.size(), m_dims);

@@ -213,6 +213,7 @@ namespace QoZ {
             profStride = cfg.GetInteger("AlgoSettings", "profStride", profStride);
             sperr = cfg.GetInteger("AlgoSettings", "sperr", sperr);
             waveAutoFix = cfg.GetInteger("AlgoSettings", "waveAutoFix", waveAutoFix);
+            conditioning = cfg.GetInteger("AlgoSettings", "conditioning", conditioning);
 
 
 
@@ -270,6 +271,12 @@ namespace QoZ {
             write(sperr, c);
             //write(trimToZero, c);
             //write(prewave_absErrorBound, c);
+            write(conditioning, c);
+            if(conditioning>0){
+                meta_size=meta.size();
+                write(meta_size,c);
+                write(meta,meta_size,c);
+            }
 
             
         };
@@ -321,6 +328,12 @@ namespace QoZ {
             read(sperr, c);
             //read(trimToZero, c);
             //read(prewave_absErrorBound, c);
+            read(conditioning, c);
+            if(conditioning>0){
+                read(meta_size,c);
+                
+                read(meta,meta_size,c);
+            }
         }
 
         void print() {
@@ -422,6 +435,11 @@ namespace QoZ {
         int sperr=0;
         double sperr_eb_coeff = 1.5;
         int waveAutoFix=1;
+
+        int conditioning=0;
+        size_t meta_size=0;
+        meta_type meta;
+        std::vector<meta_type>block_metas;
 
         
 
