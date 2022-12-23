@@ -210,7 +210,7 @@ char * outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decD
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
        
-        sz->decompress(cmprData,outSize,decData);
+        sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
     }
 
     else if (conf.offsetPredictor ==1){
@@ -225,7 +225,7 @@ char * outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decD
         auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
         auto sz = make_lorenzo_regression_compressor<T, 1>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
                   
-        sz->decompress(cmprData,outSize,decData);
+        sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
     }
     else if (conf.offsetPredictor == 2){
@@ -240,7 +240,7 @@ char * outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decD
 
         auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
         auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
-        sz->decompress(cmprData,outSize,decData);
+        sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
     }
 
@@ -253,8 +253,8 @@ char * outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decD
         QoZ::LinearQuantizer<T>(conf.absErrorBound),
         QoZ::HuffmanEncoder<int>(),
         QoZ::Lossless_zstd());      
-        sz->decompress(cmprData,outSize,decData);
-        delete sz;
+        sz.decompress((QoZ::uchar *)cmprData,outSize,decData);
+        
     }
 
     else if (conf.offsetPredictor == 4){
@@ -266,8 +266,8 @@ char * outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decD
         QoZ::LinearQuantizer<T>(conf.absErrorBound),
         QoZ::HuffmanEncoder<int>(),
         QoZ::Lossless_zstd());      
-        sz->decompress(cmprData,outSize,decData);
-        delete sz;
+        sz.decompress((QoZ::uchar *)cmprData,outSize,decData);
+        
     }
     
 }
