@@ -2022,6 +2022,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         conf.wavelet_rel_coeff=gamma;
                         if(wave_idx>0 and !use_sperr<T,N>(conf))
                             conf.absErrorBound*=conf.wavelet_rel_coeff;
+                        std::cout<<conf.absErrorBound::std::endl;
                         //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
