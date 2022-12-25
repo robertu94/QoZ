@@ -209,15 +209,18 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, const meta_type& meta
   assert(pos == meta.size());
 
   m_adjust_strides(buf.size());
+  std::cout<<mean<<std::endl;
 
   // Perform inverse of divide_by_rms, which is multiply by rms
   if (b8[1]) {
+    std::cout<<"rmsmul"<<std::endl;
     auto mul_rms = [rms](auto& v) { v *= rms; };
     std::for_each(buf.begin(), buf.end(), mul_rms);
   }
 
   // Perform inverse of subtract_mean, which is add mean.
   if (b8[0]) {
+    std::cout<<"madd"<<std::endl;
     auto plus_mean = [mean](auto& v) { v += mean; };
     std::for_each(buf.begin(), buf.end(), plus_mean);
   }
