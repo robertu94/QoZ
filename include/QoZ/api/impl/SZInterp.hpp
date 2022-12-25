@@ -1075,7 +1075,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
                 totalOutSize+=sampleOutSize;
                 //std::cout<<sampleOutSize<<std::endl;
-                SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
+                if(tuningTarget!=QoZ::TUNING_TARGET_CR){
+                    SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
+                    QoZ::Wavelet<T,N> wlt;
+                    wlt.postProcess_cdf97(cur_block.data(),conf.dims);
+                }
                 
             }
             else{
@@ -1086,80 +1090,75 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::vector<T> sperr_wave_dec(cur_block.size());
                 //std::cout<<sampleOutSize<<std::endl;
                 totalOutSize+=sampleOutSize;
-                SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
-                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
-                T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
-                
+                if(0){//tuningTarget!=QoZ::TUNING_TARGET_CR){
+                    SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
+                    std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
+                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+                    
 
-                //std::cout<<"fuqindejian3"<<std::endl;     
+                    //std::cout<<"fuqindejian3"<<std::endl;     
 
-                cur_block.resize(per_block_ele_num);
-                for(size_t i=0;i<per_block_ele_num;i++)
-                    cur_block[i]=idwtData[i];
-                delete []idwtData;
-                if(testConfig.conditioning){
-                    post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
+                    cur_block.resize(per_block_ele_num);
+                    for(size_t i=0;i<per_block_ele_num;i++)
+                        cur_block[i]=idwtData[i];
+                    delete []idwtData;
+                    if(testConfig.conditioning){
+                        post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
+                    }
+                    std::vector<T> offsets(per_block_ele_num);
+                    
+                    for(size_t i=0;i<per_block_ele_num;i++)
+                        offsets[i]=sampled_blocks[k][i]-cur_block[i];
+                    
+                    size_t oc_size;
+                   
+                    char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
+                    delete []offsetsCmprData;
+                    totalOutSize+=oc_size;
+                    //std::cout<<oc_size<<std::endl;
+                    for(size_t i=0;i<per_block_ele_num;i++)
+                        cur_block[i]+=offsets[i];
                 }
-                std::vector<T> offsets(per_block_ele_num);
-                
-                for(size_t i=0;i<per_block_ele_num;i++)
-                    offsets[i]=sampled_blocks[k][i]-cur_block[i];
-                
-                size_t oc_size;
-               
-                char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
-                delete []offsetsCmprData;
-                totalOutSize+=oc_size;
-                //std::cout<<oc_size<<std::endl;
-                for(size_t i=0;i<per_block_ele_num;i++)
-                    cur_block[i]+=offsets[i];
                 
 
 
 
             }
-
-            
-
-            
-            
-               
-            delete []cmprData;
-                  
+   
+            delete []cmprData;          
         }    
         else{
             cmprData = (char*)sz->compress(testConfig, cur_block.data(), sampleOutSize,1);
             //std::cout<<"fuqindejian2"<<std::endl;     
             delete[]cmprData;
+            if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
+                //std::cout<<"test with wave"<<std::endl;
+                if(testConfig.wavelet==1){
+                    QoZ::Wavelet<T,N> wlt;
+                    wlt.postProcess_cdf97(cur_block.data(),conf.dims);
+                    
+                    //std::cout<<"fuqindejian"<<std::endl; 
+                }
+                else{
+                    std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
+                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+                    //std::cout<<"fuqindejian3"<<std::endl;     
+
+                    cur_block.resize(per_block_ele_num);
+                    for(size_t i=0;i<per_block_ele_num;i++)
+                        cur_block[i]=idwtData[i];
+                    delete []idwtData;
+                    //std::cout<<"fuqindejian4"<<std::endl;  
+                }
+                if(testConfig.conditioning){
+                    
+                    post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
+                }
+
+            }
         }
 
-        if(testConfig.wavelet>0 and waveleted_input.size()>0 and tuningTarget!=QoZ::TUNING_TARGET_CR){
-            //std::cout<<"test with wave"<<std::endl;
-            if(testConfig.wavelet==1){
-                
-                
-                QoZ::Wavelet<T,N> wlt;
-                wlt.postProcess_cdf97(cur_block.data(),conf.dims);
-                
-                //std::cout<<"fuqindejian"<<std::endl; 
-            }
-            else{
-                std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
-                T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
-                //std::cout<<"fuqindejian3"<<std::endl;     
-
-                cur_block.resize(per_block_ele_num);
-                for(size_t i=0;i<per_block_ele_num;i++)
-                    cur_block[i]=idwtData[i];
-                delete []idwtData;
-                //std::cout<<"fuqindejian4"<<std::endl;  
-            }
-            if(testConfig.conditioning){
-                std::cout<<testConfig.block_metas[k][1]<<std::endl;
-                post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
-            }
-
-        }
+        
         if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig)))
             block_q_bins.push_back(testConfig.quant_bins);
 
