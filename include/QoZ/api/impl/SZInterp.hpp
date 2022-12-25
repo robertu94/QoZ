@@ -1079,8 +1079,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                     QoZ::Wavelet<T,N> wlt;
                     wlt.postProcess_cdf97(cur_block.data(),conf.dims);
-                }
-                
+                    if(testConfig.conditioning){
+                        post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
+                    }
+                } 
             }
             else{
                 //for (size_t i=0;i<N;i++)
@@ -1090,7 +1092,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::vector<T> sperr_wave_dec(cur_block.size());
                 //std::cout<<sampleOutSize<<std::endl;
                 totalOutSize+=sampleOutSize;
-                if(0){//tuningTarget!=QoZ::TUNING_TARGET_CR){
+                if(1){//tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                     std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
                     T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
