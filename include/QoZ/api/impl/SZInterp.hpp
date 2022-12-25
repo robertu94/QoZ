@@ -2009,6 +2009,7 @@ double Tuning(QoZ::Config &conf, T *data){
             for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
+                        conf.absErrorBound=oriabseb;
                         double alpha=alpha_list[i];
                         double beta=beta_list[j];
                         double gamma=gamma_list[gamma_idx];
@@ -2081,11 +2082,13 @@ double Tuning(QoZ::Config &conf, T *data){
                         }
                         if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
                             break;
+
                     }
                 }
             }
                // delete sz;
             //add lorenzo
+            conf.absErrorBound=oriabseb;
             if(conf.testLorenzo and conf.wavelet==0){    
 
 
@@ -2146,6 +2149,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 }          
             }
             conf.absErrorBound=oriabseb;
+            
         }
         if(conf.tuningTarget==QoZ::TUNING_TARGET_AC){
             bestm=1-bestm;
