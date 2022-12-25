@@ -57,15 +57,15 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
 }
 
 template<class T, QoZ::uint N>
-auto post_Condition(const QoZ::Config &conf,T * data,const sperr::Conditioner::meta_type& meta){
+auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_type& meta){
 
-    std::vector<double> buf(conf.num,0);
-    for(size_t i=0;i<conf.num;i++)
+    std::vector<double> buf(num,0);
+    for(size_t i=0;i<num;i++)
         buf[i]=data[i];
 
     sperr::Conditioner conditioner;
     auto rtn = conditioner.inverse_condition(buf,meta);
-    for(size_t i=0;i<conf.num;i++)
+    for(size_t i=0;i<num;i++)
         data[i]=buf[i];
     return rtn;
 }
@@ -425,7 +425,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         }
        
         if(conf.conditioning){
-            auto rtn=post_Condition<T,N>(conf,decData,conf.meta);
+            auto rtn=post_Condition<T,N>(decData,conf,num,conf.meta);
                 
         }
 
@@ -1098,7 +1098,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
                 if(testConfig.conditioning){
-                    post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
+                    post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
                 }
                 std::vector<T> offsets(per_block_ele_num);
                 
@@ -1155,7 +1155,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::cout<<"fuqindejian4"<<std::endl;  
             }
             if(testConfig.conditioning){
-                post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
+                post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
             }
 
         }
@@ -2628,7 +2628,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             if(conf.conditioning){
-                auto rtn=post_Condition<T,N>(conf,decData,conf.meta);
+                auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 
             }
             //std::cout<<"p4"<<std::endl;
@@ -2644,7 +2644,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(conf.coeffTracking%2==1)
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", data, conf.num);
             if(conf.conditioning){
-                auto rtn=post_Condition<T,N>(conf,data,conf.meta);
+                auto rtn=post_Condition<T,N>(data,conf.num,conf.meta);
             }
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
