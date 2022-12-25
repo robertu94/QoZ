@@ -75,7 +75,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
         
     SPERR3D_OMP_C compressor;
     compressor.set_num_threads(1);
-    std::cout<<conf.wavelet_rel_coeff<<std::endl;
+    //std::cout<<conf.wavelet_rel_coeff<<std::endl;
     compressor.set_eb_coeff(conf.wavelet_rel_coeff);
     if(conf.wavelet>1)
         compressor.set_skip_wave(true);
@@ -86,7 +86,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
     rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                 {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
     //std::cout<<"s2"<<std::endl;
-    std::cout<<conf.absErrorBound<<std::endl;
+    //std::cout<<conf.absErrorBound<<std::endl;
     compressor.set_target_pwe(conf.absErrorBound);
 
 
