@@ -1089,9 +1089,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                 std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
                 T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
-                if(testConfig.conditioning){
-                    post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
-                }
+                
 
                 //std::cout<<"fuqindejian3"<<std::endl;     
 
@@ -1099,6 +1097,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
+                if(testConfig.conditioning){
+                    post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
+                }
                 std::vector<T> offsets(per_block_ele_num);
                 
                 for(size_t i=0;i<per_block_ele_num;i++)
