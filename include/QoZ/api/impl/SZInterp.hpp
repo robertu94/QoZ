@@ -1066,7 +1066,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             cur_block=sampled_blocks[k];
         else{
             cur_block=waveleted_input[k];
-            std::cout<<"fuqindejian1"<<std::endl;
+            //std::cout<<"fuqindejian1"<<std::endl;
 
         }
         char *cmprData;
@@ -1096,10 +1096,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
                 std::vector<T> offsets(per_block_ele_num);
-
+                T count1=0;
                 for(size_t i=0;i<per_block_ele_num;i++)
                     offsets[i]=sampled_blocks[k][i]-cur_block[i];
-
+                for(size_t i=0;i<per_block_ele_num;i++){
+                    if(fabs(offsets[i])>testConfig.absErrorBound)
+                        count1++;
+                }
+                std::cout<<count1<<std::endl;
                 size_t oc_size;
                
                 char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
@@ -1108,6 +1112,12 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::cout<<oc_size<<std::endl;
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]+=offsets[i];
+                T count2=0;
+                for(size_t i=0;i<per_block_ele_num;i++){
+                    if(fabs(sampled_blocks[k][i]-cur_block[i])>testConfig.absErrorBound)
+                        count2++;
+                }
+                std::cout<<count2<<std::endl;
 
 
 
