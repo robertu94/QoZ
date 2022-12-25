@@ -1092,7 +1092,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 if(testConfig.conditioning){
                     post_Condition<T,N>(testConfig,cur_block.data(),testConfig.block_metas[k]);
                 }
-                
+
                 //std::cout<<"fuqindejian3"<<std::endl;     
 
                 cur_block.resize(per_block_ele_num);
@@ -1269,7 +1269,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         double mse=square_error/ele_num;
                    // std::cout<<mse<<std::endl;      
         mse*=profiling_coeff;      
-        if(testConfig.wavelet==1 and )
+        if(testConfig.wavelet==1)
             mse*=testConfig.waveletMseFix;
         else if(testConfig.wavelet>1)
             mse*=testConfig.waveletMseFix2;
