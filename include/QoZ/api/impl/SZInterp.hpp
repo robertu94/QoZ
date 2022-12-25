@@ -830,8 +830,11 @@ inline void init_betalist(std::vector<double> &beta_list,const double &rel_bound
 template<class T, QoZ::uint N>
 inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bound, QoZ::Config &conf){
     if (use_sperr<T,N>(conf))
-    {
-        gamma_list={0.5,0.75,1,1.25,1.5};
+    {   
+        if(conf.wavelet==1)
+            gamma_list={0.5,0.75,1,1.25,1.5};
+        else
+            gamma_list={1.5,3,5,10,20};
        
     }
    
