@@ -1077,9 +1077,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 
             }
             else{
-                for (size_t i=0;i<N;i++)
-                    std::cout<<testConfig.dims[i]<<" ";
-                std::cout<<cur_block.size()<<std::endl;
+                //for (size_t i=0;i<N;i++)
+                   // std::cout<<testConfig.dims[i]<<" ";
+                //std::cout<<cur_block.size()<<std::endl;
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
                 //std::vector<T> sperr_wave_dec(cur_block.size());
                 //std::cout<<sampleOutSize<<std::endl;
@@ -1537,7 +1537,7 @@ double Tuning(QoZ::Config &conf, T *data){
         double o_beta=conf.beta;
                     
         if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate or conf.profiling>0){
-            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
+            sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
         }        
         num_sampled_blocks=sampled_blocks.size();
         per_block_ele_num=pow(sampleBlockSize+1,N);
@@ -1690,7 +1690,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 interpDirection_lists.push_back(interpDirection_list);
                 if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                         //recover sample if real compression used                  
-                    sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts);
+                    sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
                 }
                     
                 if(conf.autoTuningRate==0){              
