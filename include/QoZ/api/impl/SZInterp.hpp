@@ -425,7 +425,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         }
        
         if(conf.conditioning){
-            auto rtn=post_Condition<T,N>(decData,conf,num,conf.meta);
+            auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 
         }
 
