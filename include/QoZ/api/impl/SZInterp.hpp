@@ -2641,10 +2641,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             if(conf.conditioning){
                 auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
+                auto rtn=post_Condition<T,N>(data,conf.num,conf.meta);
                 
             }
-            if(conf.coeffTracking%2==1)
-                QoZ::writefile<T>("waved.qoz.cmp.idwt.aftercond", decData, conf.num);
+            
             //std::cout<<"p4"<<std::endl;
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=data[i]-decData[i];
