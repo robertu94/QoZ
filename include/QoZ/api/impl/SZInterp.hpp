@@ -1088,6 +1088,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
                 std::vector<T> offsets(per_block_ele_num);
+                
                 for(size_t i=0;i<per_block_ele_num;i++)
                     offsets[i]=sampled_blocks[k][i]-cur_block[i];
 
@@ -1096,6 +1097,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
                 delete []offsetsCmprData;
                 totalOutSize+=oc_size;
+                std::cout<<oc_size<<std::endl;
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]+=offsets[i];
 
@@ -1150,10 +1152,13 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig)) )
                 square_error+=testConfig.decomp_square_error;
             else{
+                T maxval=0;
                 for(size_t j=0;j<per_block_ele_num;j++){
                     T value=sampled_blocks[k][j]-cur_block[j];
                     square_error+=value*value;
+                    maxval=fabs(value)>maxval?value:maxval;
                 }
+                std::cout<<maxval<<std::endl;
                 //std::cout<<square_error<<std::endl;
             }
         }
