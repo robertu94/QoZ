@@ -1103,6 +1103,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     if(testConfig.conditioning){
                         post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
                     }
+                    /*
                     std::vector<T> offsets(per_block_ele_num);
                     
                     for(size_t i=0;i<per_block_ele_num;i++)
@@ -1116,6 +1117,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     //std::cout<<oc_size<<std::endl;
                     for(size_t i=0;i<per_block_ele_num;i++)
                         cur_block[i]+=offsets[i];
+                    */
                 }
                 
 
