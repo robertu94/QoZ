@@ -2641,7 +2641,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
             if(conf.conditioning){
                 auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
-                auto rtn=post_Condition<T,N>(data,conf.num,conf.meta);
+                rtn=post_Condition<T,N>(data,conf.num,conf.meta);
                 
             }
             
