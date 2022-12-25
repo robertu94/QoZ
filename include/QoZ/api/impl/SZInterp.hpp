@@ -1158,7 +1158,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 for(size_t j=0;j<per_block_ele_num;j++){
                     T value=sampled_blocks[k][j]-cur_block[j];
                     square_error+=value*value;
-                    maxval=fabs(value)>maxval?fabs(value):maxval;
+                    //maxval=fabs(value)>maxval?fabs(value):maxval;
                 }
                 //std::cout<<maxval<<std::endl;
                 std::cout<<square_error<<std::endl;
