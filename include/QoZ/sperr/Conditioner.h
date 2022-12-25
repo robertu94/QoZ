@@ -184,7 +184,7 @@ auto sperr::Conditioner::condition(vecd_type& buf) -> std::pair<RTNType, meta_ty
 
   // pack meta
   meta[0] = sperr::pack_8_booleans(m_settings);
-  std::cout<<mean<<std::endl;
+  //std::cout<<mean<<std::endl;
   size_t pos = 1;
   std::memcpy(meta.data() + pos, &mean, sizeof(mean));
   pos += sizeof(mean);
