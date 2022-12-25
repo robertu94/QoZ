@@ -1071,12 +1071,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             if(testConfig.wavelet==1){
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
                 totalOutSize+=sampleOutSize;
+                std::cout<<sampleOutSize<<std::endl;
                 SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                 
             }
             else{
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
                 //std::vector<T> sperr_wave_dec(cur_block.size());
+                std::cout<<sampleOutSize<<std::endl;
                 totalOutSize+=sampleOutSize;
                 SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                 std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
@@ -1088,7 +1090,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     cur_block[i]=idwtData[i];
                 delete []idwtData;
                 std::vector<T> offsets(per_block_ele_num);
-                
+
                 for(size_t i=0;i<per_block_ele_num;i++)
                     offsets[i]=sampled_blocks[k][i]-cur_block[i];
 
@@ -1152,14 +1154,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             if(algo==QoZ::ALGO_INTERP and !(use_sperr<T,N>(testConfig)) )
                 square_error+=testConfig.decomp_square_error;
             else{
-                T maxval=0;
+                //T maxval=0;
                 for(size_t j=0;j<per_block_ele_num;j++){
                     T value=sampled_blocks[k][j]-cur_block[j];
                     square_error+=value*value;
-                    maxval=fabs(value)>maxval?value:maxval;
+                    maxval=fabs(value)>maxval?fabs(value):maxval;
                 }
-                std::cout<<maxval<<std::endl;
-                //std::cout<<square_error<<std::endl;
+                //std::cout<<maxval<<std::endl;
+                std::cout<<square_error<<std::endl;
             }
         }
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
@@ -1260,7 +1262,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             mse*=testConfig.waveletMseFix;
         else if(testConfig.wavelet>1)
             mse*=testConfig.waveletMseFix2;
-                    //std::cout<<mse<<std::endl;
+                    std::cout<<mse<<std::endl;
         metric=QoZ::PSNR(testConfig.rng,mse);
                     //std::cout<<metric<<std::endl;
                     //std::cout<<"---"<<std::endl;
