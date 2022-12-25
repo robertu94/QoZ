@@ -1077,9 +1077,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::cout<<sampleOutSize<<std::endl;
                 if(tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
-                    if(testConfig.conditioning){
-                        post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
-                    }
+                    
                 } 
             }
             else{
