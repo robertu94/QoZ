@@ -911,6 +911,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             for(size_t i=0;i<sampled_block_num;i++){
                 std::vector<T> s_block;
                 QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
+                std::cout<<block_heap.front().first;
                 sampled_blocks.push_back(s_block);
                 std::pop_heap(block_heap.begin(),block_heap.end());
                 block_heap.pop_back();
@@ -1076,9 +1077,12 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 
             }
             else{
+                for (size_t i=0;i<N;i++)
+                    std::cout<<testConfig.dims[i]<<" ";
+                std::cout<<cur_block.size()<<std::endl;
                 cmprData=SPERR_Compress<T,N>(testConfig,cur_block.data(),sampleOutSize);
                 //std::vector<T> sperr_wave_dec(cur_block.size());
-                std::cout<<sampleOutSize<<std::endl;
+                //std::cout<<sampleOutSize<<std::endl;
                 totalOutSize+=sampleOutSize;
                 SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                 std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
@@ -1099,7 +1103,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
                 delete []offsetsCmprData;
                 totalOutSize+=oc_size;
-                std::cout<<oc_size<<std::endl;
+                //std::cout<<oc_size<<std::endl;
                 for(size_t i=0;i<per_block_ele_num;i++)
                     cur_block[i]+=offsets[i];
 
@@ -1161,7 +1165,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     //maxval=fabs(value)>maxval?fabs(value):maxval;
                 }
                 //std::cout<<maxval<<std::endl;
-                std::cout<<square_error<<std::endl;
+                //std::cout<<square_error<<std::endl;
             }
         }
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
