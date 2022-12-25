@@ -2673,8 +2673,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(fabs(decData[i])>prewave_absErrorBound)
                 count++;
         }
-          */  
+          
         std::cout<<count<<std::endl;
+        */
         
         //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
