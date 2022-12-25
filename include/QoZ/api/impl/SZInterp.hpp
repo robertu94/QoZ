@@ -911,7 +911,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             for(size_t i=0;i<sampled_block_num;i++){
                 std::vector<T> s_block;
                 QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
-                std::cout<<block_heap.front().first;
+                
                 sampled_blocks.push_back(s_block);
                 std::pop_heap(block_heap.begin(),block_heap.end());
                 block_heap.pop_back();
@@ -1064,9 +1064,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         std::vector<T> cur_block;
         if(testConfig.wavelet==0 or waveleted_input.size()==0)
             cur_block=sampled_blocks[k];
-        else
+        else{
             cur_block=waveleted_input[k];
-        //std::cout<<"fuqindejian1"<<std::endl;
+            std::cout<<"fuqindejian1"<<std::endl;
+
+        }
         char *cmprData;
         if(use_sperr<T,N>(testConfig)){
             if(testConfig.wavelet==1){
