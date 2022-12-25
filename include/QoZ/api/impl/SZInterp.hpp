@@ -1155,6 +1155,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 //std::cout<<"fuqindejian4"<<std::endl;  
             }
             if(testConfig.conditioning){
+                std::cout<<testConfig.block_metas[k][1]<<std::endl;
                 post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
             }
 
