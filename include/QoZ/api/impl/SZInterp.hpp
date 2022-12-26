@@ -2267,7 +2267,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet>0 and conf.waveletAutoTuning==0){       
 
 
-        if(conf.conditioning){
+        if(conf.conditioning and (use_sperr or conf.wavelet>1)){
             auto meta=pre_Condition<T,N>(conf,data);
             conf.meta=meta;
         }
@@ -2376,6 +2376,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             if (use_sperr<T,N>(conf)){
                 conf.cmprAlgo = QoZ::ALGO_INTERP;
+                if(conf.verbose){
+                    std::cout << "Tuning time = " << tuning_time << "s" << std::endl;
+                    std::cout << "====================================== END TUNING ======================================" << std::endl;
+                }
                 return SPERR_Compress<T,N>(conf,data,outSize);
             }
 
@@ -2571,7 +2575,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         compress_output = SZ_compress_LorenzoReg<T, N>(conf, data, outSize);
     }
-    //std::cout<<conf.wavelet<<std::endl;
+    std::cout<<conf.wavelet<<std::endl;
 
     if(conf.wavelet>0){
         //if(conf.coeffTracking>0)
