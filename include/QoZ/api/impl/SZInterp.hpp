@@ -40,7 +40,7 @@ bool use_sperr(const QoZ::Config & conf){
 
 template<class T, QoZ::uint N>
 auto pre_Condition(const QoZ::Config &conf,T * data){
-
+    std::cout<<"pre"<<std::endl;
     std::vector<double> buf(conf.num,0);
     for(size_t i=0;i<conf.num;i++)
         buf[i]=data[i];
@@ -58,7 +58,7 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
 
 template<class T, QoZ::uint N>
 auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_type& meta){
-
+    std::cout<<"post"<<std::endl;
     std::vector<double> buf(num,0);
     for(size_t i=0;i<num;i++)
         buf[i]=data[i];
@@ -2575,7 +2575,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         compress_output = SZ_compress_LorenzoReg<T, N>(conf, data, outSize);
     }
-    std::cout<<conf.wavelet<<std::endl;
+    //std::cout<<conf.wavelet<<std::endl;
 
     if(conf.wavelet>0){
         //if(conf.coeffTracking>0)
