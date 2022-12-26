@@ -2376,6 +2376,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
             if (use_sperr<T,N>(conf)){
                 conf.cmprAlgo = QoZ::ALGO_INTERP;
+                double tuning_time = timer.stop();
                 if(conf.verbose){
                     std::cout << "Tuning time = " << tuning_time << "s" << std::endl;
                     std::cout << "====================================== END TUNING ======================================" << std::endl;
