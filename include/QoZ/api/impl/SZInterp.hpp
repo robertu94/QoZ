@@ -427,7 +427,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             wlt.postProcess_cdf97(decData,conf.dims);
         }
        
-        if(conf.conditioning){
+        if(conf.conditioning and (!use_sperr<T,N>(conf) or wavelet>1)){
             auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 
         }
@@ -2658,6 +2658,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(conf.conditioning){
                 auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 rtn=post_Condition<T,N>(data,conf.num,conf.meta);
+                if(conf.coeffTracking%2==1)
+                    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
                 
             }
             
@@ -2667,19 +2669,34 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
         }
         else{
+            if(use_sperr<T,N>(conf)){
+                //std::cout<<"a2"<<std::endl;
+                //std::cout<<conf.num<<std::endl;
+                //std::cout<<conf.num<<std::endl;
+                
+                SPERR_Decompress<T,N>(compress_output,outSize,data);
             
-            QoZ::Wavelet<T,N> wlt;
-            wlt.postProcess_cdf97(data,conf.dims);
+                
+                
+            }
+            else{
+                QoZ::Wavelet<T,N> wlt;
+                wlt.postProcess_cdf97(data,conf.dims);               
+            }
             decData=data;//maybe need to fix
             if(conf.coeffTracking%2==1)
-                QoZ::writefile<T>("waved.qoz.cmp.idwt", data, conf.num);
-            if(conf.conditioning){
-                auto rtn=post_Condition<T,N>(data,conf.num,conf.meta);
+                QoZ::writefile<T>("waved.qoz.cmp.idwt", decData, conf.num);
+                
+            
+            if(conf.conditioning and !use_sperr<T,N>(conf)){
+                auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
+                rtn=post_Condition<T,N>(origdata,conf.num,conf.meta);
+                if(conf.coeffTracking%2==1)
+                    QoZ::writefile<T>("waved.qoz.cmp.afterpost", decData, conf.num);
+                
             }
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
-            }
-            
 
             //std::cout<<"origdatadel"<<std::endl;
             delete []origdata;
