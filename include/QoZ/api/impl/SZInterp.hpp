@@ -427,7 +427,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             wlt.postProcess_cdf97(decData,conf.dims);
         }
        
-        if(conf.conditioning and (!use_sperr<T,N>(conf) or wavelet>1)){
+        if(conf.conditioning and (!use_sperr<T,N>(conf) or conf.wavelet>1)){
             auto rtn=post_Condition<T,N>(decData,conf.num,conf.meta);
                 
         }
@@ -2697,6 +2697,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             }
             for(size_t i=0;i<conf.num;i++){
                 decData[i]=origdata[i]-decData[i];
+
+            }
 
             //std::cout<<"origdatadel"<<std::endl;
             delete []origdata;
