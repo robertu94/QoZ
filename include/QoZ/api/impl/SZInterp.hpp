@@ -1377,18 +1377,30 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 }
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
-    conf.waveletBrFix=0.9;
+    if(conf.sperr>=1){
+        conf.waveletBrFix=1.0;
     conf.waveletMseFix=1.0;
-    conf.waveletMseFix2=0.9;
-    if (rel_bound>=1e-3){
-        conf.waveletBrFix2=0.6;
-    }
-    else if (rel_bound<=1e-4){
-        conf.waveletBrFix2=0.55;
-
     }
     else{
-        conf.waveletBrFix2=0.55+0.05*(rel_bound-1e-4)/(1e-3-1e-4);
+        conf.waveletBrFix=0.9;
+        conf.waveletMseFix=1.0;
+    }
+    if(conf.sperr>=2){
+        conf.waveletBrFix2=0.1;//Only fit for RTMs.
+        conf.waveletMseFix2=500.0;
+    }
+    else{
+        conf.waveletMseFix2=0.9;
+        if (rel_bound>=1e-3){
+            conf.waveletBrFix2=0.6;
+        }
+        else if (rel_bound<=1e-4){
+            conf.waveletBrFix2=0.55;
+
+        }
+        else{
+            conf.waveletBrFix2=0.55+0.05*(rel_bound-1e-4)/(1e-3-1e-4);
+        }
     }
 
 }
@@ -2112,6 +2124,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                     bestb=bitrate;
                     bestm=metric;
+                    bestalpha=-1;
+                    bestbeta=-1;
                     bestWave=wave_idx;
                     useInterp=false;
                     printf("Best: %.4f %.2f\n",bestb,bestm);
@@ -2149,6 +2163,8 @@ double Tuning(QoZ::Config &conf, T *data){
                                 //bestbeta=beta; 
                         bestb=bitrate;
                         bestm=metric;
+                        bestalpha=-1;
+                        bestbeta=-1;
                         bestWave=wave_idx;
                         useInterp=false;
 
