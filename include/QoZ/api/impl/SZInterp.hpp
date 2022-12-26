@@ -1587,7 +1587,7 @@ double Tuning(QoZ::Config &conf, T *data){
                
 
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
-                if(conf.conditioning){
+                if(conf.conditioning and (!use_sperr<T,N>(conf) or conf.wavelet>1)){
                     //because no decomp,so dont need to save meta and do reverse;
                     for(size_t i=0;i<sampled_blocks.size();i++)
                         auto meta=pre_Condition<T,N>(conf,sampled_blocks[i].data());
@@ -2367,7 +2367,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.waveletAutoTuning>0 and conf.wavelet>0){
         //std::cout<<"wavelet actively selected."<<std::endl;
 
-        if(conf.conditioning){
+        if(conf.conditioning and (!use_sperr<T,N>(conf) or conf.wavelet>1)){
             auto meta=pre_Condition<T,N>(conf,data);
             conf.meta=meta;
         }
@@ -2399,6 +2399,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     else if (conf.waveletAutoTuning==0){
         conf.wavelet=ori_wave;
     }
+
     
     //conf.cmprAlgo =QoZ::ALGO_INTERP; 
     /*
@@ -2465,6 +2466,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 compress_output = SZ_compress_AutoSelectiveInterp<T,N>(conf,data,outSize,op_candidates,dir_candidates,0);
         }
     } 
+
     else {
         QoZ::Config lorenzo_config = conf;
         size_t sampling_num, sampling_block;        
@@ -2569,6 +2571,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         compress_output = SZ_compress_LorenzoReg<T, N>(conf, data, outSize);
     }
+    std::cout<<conf.wavelet<<std::endl;
 
     if(conf.wavelet>0){
         //if(conf.coeffTracking>0)
