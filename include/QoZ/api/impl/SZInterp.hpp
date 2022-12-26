@@ -2267,7 +2267,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     if(conf.wavelet>0 and conf.waveletAutoTuning==0){       
 
 
-        if(conf.conditioning and (useSperror conf.wavelet>1)  ){
+        if(conf.conditioning and (useSperr or conf.wavelet>1)  ){
             auto meta=pre_Condition<T,N>(conf,data);
             conf.meta=meta;
         }
