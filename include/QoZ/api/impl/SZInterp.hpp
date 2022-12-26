@@ -2571,7 +2571,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
         compress_output = SZ_compress_LorenzoReg<T, N>(conf, data, outSize);
     }
-    std::cout<<conf.wavelet<<std::endl;
+    //std::cout<<conf.wavelet<<std::endl;
 
     if(conf.wavelet>0){
         //if(conf.coeffTracking>0)
