@@ -40,7 +40,7 @@ bool use_sperr(const QoZ::Config & conf){
 
 template<class T, QoZ::uint N>
 auto pre_Condition(const QoZ::Config &conf,T * data){
-    std::cout<<"pre"<<std::endl;
+    //std::cout<<"pre"<<std::endl;
     std::vector<double> buf(conf.num,0);
     for(size_t i=0;i<conf.num;i++)
         buf[i]=data[i];
@@ -58,7 +58,7 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
 
 template<class T, QoZ::uint N>
 auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_type& meta){
-    std::cout<<"post"<<std::endl;
+    //std::cout<<"post"<<std::endl;
     std::vector<double> buf(num,0);
     for(size_t i=0;i<num;i++)
         buf[i]=data[i];
@@ -1117,8 +1117,12 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                         offsets[i]=sampled_blocks[k][i]-cur_block[i];
                     
                     size_t oc_size;
-                   
+                    std::vector<size_t> ori_dims=testConfig.dims,temp_dims={per_block_ele_num};
+
+                    testConfig.setDims(temp_dims.begin(),temp_dims.end());
+
                     char * offsetsCmprData=outlier_compress<T,N>(testConfig,offsets.data(),oc_size);
+                    testConfig.setDims(ori_dims.begin(),ori_dims.end());
                     delete []offsetsCmprData;
                     totalOutSize+=oc_size;
                     //std::cout<<oc_size<<std::endl;
