@@ -1382,7 +1382,7 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
     if(conf.sperr>=1){
-        double e1=5e-3;
+        double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
         double f1=1;
