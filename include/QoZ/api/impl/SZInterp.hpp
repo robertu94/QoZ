@@ -1372,6 +1372,8 @@ double Tuning(QoZ::Config &conf, T *data){
    
     T rng=conf.rng;
     double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
+    if(rel_bound>1e-3)
+        conf.testLorenzo=0;
     //QoZ::Timer timer(true);
     //timer.stop("")
     if(conf.QoZ){
@@ -2082,6 +2084,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     
                     bestb=bitrate;
                     bestm=metric;
+                    bestalpha=-1;
+                    bestbeta=-1;
                     bestWave=wave_idx;
                     useInterp=false;
                     printf("Best: %.4f %.2f\n",bestb,bestm);
@@ -2119,6 +2123,8 @@ double Tuning(QoZ::Config &conf, T *data){
                                 //bestbeta=beta; 
                         bestb=bitrate;
                         bestm=metric;
+                        bestalpha=-1;
+                        bestbeta=-1;
                         bestWave=wave_idx;
                         useInterp=false;
 
