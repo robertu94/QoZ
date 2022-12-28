@@ -1382,8 +1382,22 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
     if(conf.sperr>=1){
+        double e1=5e-3;
+        double e2=1e-2;
+        double e3=1e-1;
+        double f1=1;
+        double f2=0.8;
+        double f3=0.6;
+        if(rel_bound<=e1)
+            conf.waveletBrFix=e1;
+        else if(rel_bound<=e2)
+            conf.waveletBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
+        else if (rel_bound<=e3)
+            conf.waveletBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
+        else 
+            conf.waveletBrFix=f3;
         conf.waveletBrFix=1.0;
-    conf.waveletMseFix=1.0;
+        conf.waveletMseFix=1.0;
     }
     else{
         conf.waveletBrFix=0.9;
