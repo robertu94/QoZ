@@ -19,6 +19,7 @@ namespace QoZ {
         QoZ::writefile<T>(input_filename.c_str(), data, num);
 
         std::string wavetype;
+        /*Interp
         if (wave_type==2)
             wavetype="sym16";//rtms
         else if(wave_type==3)
@@ -29,6 +30,16 @@ namespace QoZ {
             wavetype="coif6";//qmcpack
         else
             wavetype="bior6.8";//hurricane
+        */
+
+        
+        if (wave_type==2)
+            wavetype="sym13";//rtms,hurricane,nyx,miranda
+        else if(wave_type==3)
+            wavetype="bior3.3";//qmcpack
+        else if(wave_type==4)
+            wavetype="bior4.4";//scale
+        
 
      
 
