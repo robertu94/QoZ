@@ -2005,11 +2005,13 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpDirection=bestInterpDirections[wave_idx];
             }
 
-            std::vector <std::vector<T> > waveleted_input;
+            std::vector <std::vector<T> > waveleted_input(sampled_blocks.size());
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 
-                for(size_t i=0;i<sampled_blocks.size();i++)
-                    waveleted_input.push_back(sampled_blocks[i]);
+                for(size_t i=0;i<sampled_blocks.size();i++){
+                    waveleted_input[i].resize(per_block_ele_num);
+                    std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].first());
+                }
                 std::cout<<"t1"<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
@@ -2155,6 +2157,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 std::cout<<"t7"<<std::endl;
+                double sum = std::accumulate(sampled_blocks[4].begin(), sampled_blocks[4].end(), 0.0);
+                std::cout<<sum/per_block_ele_num<<std::endl;
             }
                // delete sz;
             //add lorenzo
