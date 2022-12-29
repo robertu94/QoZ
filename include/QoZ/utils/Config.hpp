@@ -441,7 +441,7 @@ namespace QoZ {
         double waveletMseFix2 = 1.0;
         int var_first=0;
         size_t profStride=0;
-        int sperr=0;
+        int sperr=-1;
         //double sperr_eb_coeff = 1.5;
         int waveAutoFix=1;
 
