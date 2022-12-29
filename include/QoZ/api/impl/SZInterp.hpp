@@ -2009,7 +2009,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 std::cout<<"t1"<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
-                    conf.block_metas.resize(waveleted_input.size());
+                    conf.block_metas.resize(waveleted_input.size()+1);
                     std::cout<<"t1.3"<<std::endl;
                     for(size_t i=0;i<waveleted_input.size();i++){
                         conf.block_metas[i]=pre_Condition<T,N>(conf,waveleted_input[i].data());
