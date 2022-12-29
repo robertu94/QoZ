@@ -40,19 +40,21 @@ bool use_sperr(const QoZ::Config & conf){
 
 template<class T, QoZ::uint N>
 auto pre_Condition(const QoZ::Config &conf,T * data){
-    //std::cout<<"pre"<<std::endl;
+    std::cout<<"pre"<<std::endl;
     std::vector<double> buf(conf.num,0);
     for(size_t i=0;i<conf.num;i++)
         buf[i]=data[i];
-
+    std::cout<<"pre2"<<std::endl;
     sperr::Conditioner conditioner;
     if(conf.conditioning==2){
         std::array<bool, 4> b4{true,true,false,false};
         conditioner.toggle_all_settings(b4);
     }
     auto [rtn, condi_meta] = conditioner.condition(buf);
+    std::cout<<"pre3"<<std::endl;
     for(size_t i=0;i<conf.num;i++)
         data[i]=buf[i];
+    std::cout<<"pre4"<<std::endl;
     return condi_meta;
 }
 
@@ -2000,7 +2002,7 @@ double Tuning(QoZ::Config &conf, T *data){
             }
 
             std::vector <std::vector<T> > waveleted_input;
-            if (wave_idx>0 and (wave_idx>1 or!use_sperr<T,N>(conf)) ){
+            if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 
                 waveleted_input.clear();
                 waveleted_input=sampled_blocks;
@@ -2008,9 +2010,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 if(conf.conditioning){
                     conf.block_metas.clear();
                     conf.block_metas.resize(waveleted_input.size());
+                    std::cout<<"t1.3"<<std::endl;
                     for(size_t i=0;i<waveleted_input.size();i++){
-                        auto meta=pre_Condition<T,N>(conf,waveleted_input[i].data());
-                        conf.block_metas[i]=meta;
+                        conf.block_metas[i]=pre_Condition<T,N>(conf,waveleted_input[i].data());
+                        std::cout<<"t1.6"<<std::endl;
+
                     }
                     
                 }
