@@ -30,6 +30,8 @@ namespace QoZ {
         else
             wavetype="bior6.8";//hurricane
 
+        std::cout<<wavetype<<std::endl;
+
        
         std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
         for (int i = N - 1; i >= 0; i--)
