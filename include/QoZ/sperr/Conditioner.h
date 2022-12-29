@@ -173,7 +173,7 @@ auto sperr::Conditioner::condition(vecd_type& buf) -> std::pair<RTNType, meta_ty
     mean = m_calc_mean(buf);
     auto minus_mean = [mean](auto& v) { v -= mean; };
     std::for_each(buf.begin(), buf.end(), minus_mean);
-    std::cout<<mean<<std::endl;
+    //std::cout<<mean<<std::endl;
   }
  
   // Perform divide_by_rms second
