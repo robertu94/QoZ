@@ -20,13 +20,17 @@ namespace QoZ {
 
         std::string wavetype;
         if (wave_type==2)
-            wavetype="sym16";
+            wavetype="sym16";//rtms
         else if(wave_type==3)
-            wavetype="bior3.1";
+            wavetype="bior3.1";//miranda scale
         else if(wave_type==4)
-            wavetype="sym13";
+            wavetype="bior4.4";//nyx (hurricane)
+        else if(wave_type==5)
+            wavetype="coif6";//qmcpack
         else
-            wavetype="sym18";
+            wavetype="bior6.8";//hurricane
+
+       
         std::string command = "python coeff_dwt.py " + input_filename + " " + wavetype + " " + std::to_string(pid);
         for (int i = N - 1; i >= 0; i--)
         {
