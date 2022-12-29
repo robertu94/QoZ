@@ -1995,6 +1995,8 @@ double Tuning(QoZ::Config &conf, T *data){
         //std::vector<double> flattened_cur_blocks;
             std::cout<<wave_idx<<std::endl;
             conf.wavelet=wave_idx;
+            conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
+            conf.num=per_block_ele_num;
 
             if(conf.levelwisePredictionSelection>0){
                 conf.interpAlgo_list=interpAlgo_lists[wave_idx];
