@@ -48,7 +48,7 @@ class Conditioner {
   //
   std::array<bool, 8> m_settings = {true,    // subtract mean
                                     false,   // divide by rms
-                                    false,   // unused
+                                    false,   // added: skip wavelet?
                                     false,   // unused
                                     false,   // [4]: is this a constant field?
                                     false,   // unused
@@ -173,8 +173,9 @@ auto sperr::Conditioner::condition(vecd_type& buf) -> std::pair<RTNType, meta_ty
     mean = m_calc_mean(buf);
     auto minus_mean = [mean](auto& v) { v -= mean; };
     std::for_each(buf.begin(), buf.end(), minus_mean);
+    std::cout<<mean<<std::endl;
   }
-
+ 
   // Perform divide_by_rms second
   if (m_settings[1]) {
     rms = m_calc_rms(buf);
@@ -184,7 +185,6 @@ auto sperr::Conditioner::condition(vecd_type& buf) -> std::pair<RTNType, meta_ty
 
   // pack meta
   meta[0] = sperr::pack_8_booleans(m_settings);
-  //std::cout<<mean<<std::endl;
   size_t pos = 1;
   std::memcpy(meta.data() + pos, &mean, sizeof(mean));
   pos += sizeof(mean);
@@ -209,18 +209,15 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, const meta_type& meta
   assert(pos == meta.size());
 
   m_adjust_strides(buf.size());
-  //std::cout<<mean<<std::endl;
 
   // Perform inverse of divide_by_rms, which is multiply by rms
   if (b8[1]) {
-    //std::cout<<"rmsmul"<<std::endl;
     auto mul_rms = [rms](auto& v) { v *= rms; };
     std::for_each(buf.begin(), buf.end(), mul_rms);
   }
 
   // Perform inverse of subtract_mean, which is add mean.
   if (b8[0]) {
-    //std::cout<<"madd"<<std::endl;
     auto plus_mean = [mean](auto& v) { v += mean; };
     std::for_each(buf.begin(), buf.end(), plus_mean);
   }

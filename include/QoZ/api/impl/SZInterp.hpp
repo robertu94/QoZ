@@ -51,6 +51,8 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
         conditioner.toggle_all_settings(b4);
     }
     auto [rtn, condi_meta] = conditioner.condition(buf);
+    if(rtn!=sperr::RTNType::Good)
+        std::cout<<"bad cond"<<std::endl;
     std::cout<<"pre3"<<std::endl;
     for(size_t i=0;i<conf.num;i++)
         data[i]=buf[i];
@@ -2004,12 +2006,13 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 
-                waveleted_input.clear();
-                waveleted_input=sampled_blocks;
+                for(size_t i=0;i<sampled_blocks.size();i++)
+                    waveleted_input.push_back(sampled_blocks[i]);
                 std::cout<<"t1"<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
-                    conf.block_metas.resize(waveleted_input.size()+1);
+                    conf.block_metas.resize(waveleted_input.size());
+                    std::cout<<conf.block_metas.size()<<std::endl;
                     std::cout<<"t1.3"<<std::endl;
                     for(size_t i=0;i<waveleted_input.size();i++){
                         conf.block_metas[i]=pre_Condition<T,N>(conf,waveleted_input[i].data());
@@ -2039,6 +2042,9 @@ double Tuning(QoZ::Config &conf, T *data){
                                 
                         }
                         std::cout<<"t3"<<std::endl;
+                        std::cout<<coeffs_num<<std::endl;
+
+                        waveleted_input[i].clear();
                         waveleted_input[i].resize(coeffs_num);
                         for (size_t j=0;j<coeffs_num;j++)
                             waveleted_input[i][j]=coeffData[j]; 
