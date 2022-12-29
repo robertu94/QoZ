@@ -314,7 +314,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP);
     QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData;
     //std::cout<<"x0"<<std::endl;
-    if (conf.wavelet==0){
+    if (conf.wavelet==0 and !use_sperr<T,N>(conf)){
         
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
                 QoZ::LinearQuantizer<T>(),
