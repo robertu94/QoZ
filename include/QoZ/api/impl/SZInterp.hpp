@@ -1073,11 +1073,13 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     for (int k=0;k<num_sampled_blocks;k++){
         size_t sampleOutSize;
         std::vector<T> cur_block;
-        if(testConfig.wavelet==0 or waveleted_input.size()==0)
-            cur_block=sampled_blocks[k];
+        if(testConfig.wavelet==0 or waveleted_input.size()==0){
+            std::cout<<"fuqindejian0"<<std::endl;
+            cur_block=std::copy(sampled_blocks[k].begin(),sampled_blocks[k].end());
+        }
         else{
-            cur_block=waveleted_input[k];
-            //std::cout<<"fuqindejian1"<<std::endl;
+            cur_block=std::copy(waveleted_input[k].begin(),waveleted_input[k].end());
+            std::cout<<"fuqindejian1"<<std::endl;
 
         }
         char *cmprData;
