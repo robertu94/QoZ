@@ -35,7 +35,7 @@
 
 template<class T, QoZ::uint N>
 bool use_sperr(const QoZ::Config & conf){
-    return ( conf.sperr>=conf.wavelet and N==3);
+    return ( (conf.wavelet>0 or conf.sperrWithoutWave) and conf.sperr>=conf.wavelet and N==3);
 }
 
 template<class T, QoZ::uint N>
@@ -1911,7 +1911,7 @@ double Tuning(QoZ::Config &conf, T *data){
     if (useInterp and conf.autoTuningRate>0){
             
         if(conf.verbose)
-            std::cout<<"Alpha beta tuning started."<<std::endl;
+            std::cout<<"B-M tuning started."<<std::endl;
        
         if (conf.autoTuningRate!=conf.predictorTuningRate and (conf.predictorTuningRate!=0 or conf.autoTuningRate!=conf.waveletTuningRate)){
               
