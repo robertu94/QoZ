@@ -2004,7 +2004,8 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.interpAlgo=bestInterpAlgos[wave_idx];
                 conf.interpDirection=bestInterpDirections[wave_idx];
             }
-
+            double sum = std::accumulate(sampled_blocks[4].begin(), sampled_blocks[4].end(), 0.0);
+            std::cout<<sum/per_block_ele_num<<std::endl;
             std::vector <std::vector<T> > waveleted_input(sampled_blocks.size());
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
                 
@@ -2013,6 +2014,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].begin());
                 }
                 std::cout<<"t1"<<std::endl;
+                double sum = std::accumulate(waveleted_input[4].begin(), waveleted_input[4].end(), 0.0);
+                std::cout<<sum/per_block_ele_num<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
                     conf.block_metas.resize(waveleted_input.size());
