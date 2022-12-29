@@ -22,13 +22,17 @@ namespace QoZ {
         if (wave_type==2)
             wavetype="sym16";//rtms
         else if(wave_type==3)
-            wavetype="bior3.1";//miranda scale
+            wavetype="coif11";//miranda 
         else if(wave_type==4)
             wavetype="bior4.4";//nyx (hurricane)
         else if(wave_type==5)
             wavetype="coif6";//qmcpack
+        else if(wave_type==5)
+            wavetype="db4";//scale
         else
             wavetype="bior6.8";//hurricane
+
+        //bior3.1 is bug
 
         std::cout<<wavetype<<std::endl;
 
