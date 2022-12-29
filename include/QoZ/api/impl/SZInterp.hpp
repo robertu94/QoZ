@@ -1580,8 +1580,8 @@ double Tuning(QoZ::Config &conf, T *data){
 
     }
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
-        int ori_sperr=conf.sperr;//temp
-        conf.sperr=0;
+        //int ori_sperr=conf.sperr;//temp
+        //conf.sperr=0;
         if (conf.verbose)
             std::cout<<"Predictor tuning started."<<std::endl;
         double o_alpha=conf.alpha;
@@ -1818,7 +1818,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.beta=o_beta;
         conf.dims=global_dims;
         conf.num=global_num;
-        conf.sperr=ori_sperr;
+        //conf.sperr=ori_sperr;
         useInterp= (best_interp_cr>=best_lorenzo_ratio) or best_lorenzo_ratio>=80 or best_interp_cr>=80;//orig 0.95*lorenzo_ratio
         if(conf.verbose and conf.waveletAutoTuning==0){
             if (conf.levelwisePredictionSelection<=0){
@@ -2022,6 +2022,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::vector<size_t> coeffs_size;
                     size_t coeffs_num=1;
                     for(size_t i=0;i<waveleted_input.size();i++){
+                        std::cout<<waveleted_input[i].size();
+                        std::cout<<conf.num<<std::endl;
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
                             //std::cout<<coeffs_size[0]<<std::endl;
