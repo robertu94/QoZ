@@ -2017,6 +2017,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     for(size_t i=0;i<waveleted_input.size();i++){
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
+                            std::cout<<coeffs_size[0]<<std::endl;
                             for (size_t j=0;j<N;j++)
                                 coeffs_num*=coeffs_size[j];
                                 
