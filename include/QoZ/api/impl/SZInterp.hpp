@@ -2010,7 +2010,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 
                 for(size_t i=0;i<sampled_blocks.size();i++){
                     waveleted_input[i].resize(per_block_ele_num);
-                    std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].first());
+                    std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].begin());
                 }
                 std::cout<<"t1"<<std::endl;
                 if(conf.conditioning){
