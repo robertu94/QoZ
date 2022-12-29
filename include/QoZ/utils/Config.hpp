@@ -419,7 +419,7 @@ namespace QoZ {
        //bool external_wave=0;
         std::vector<size_t> coeffs_dims;
         size_t coeffs_num=0;
-        double wavelet_rel_coeff = 1.0;
+        double wavelet_rel_coeff = 0.75;
         size_t firstSize;
         int coeffTracking=0;//0 no. 1: output coeff. 2: print stats of coeff 3: both
         int pid=0;

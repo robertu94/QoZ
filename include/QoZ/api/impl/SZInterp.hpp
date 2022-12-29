@@ -1602,7 +1602,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            if(wave_idx<=conf.sperr)
+            if(wave_idx>0 and wave_idx<=conf.sperr)
                 continue;
             
             double ori_eb=conf.absErrorBound;
@@ -1649,7 +1649,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }
 
-            if(conf.testLorenzo and conf.autoTuningRate==0){
+            if(conf.testLorenzo and conf.autoTuningRate==0 and wave_idx==0){
 
                 std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,QoZ::TUNING_TARGET_CR,false);
                 best_lorenzo_ratio=sizeof(T)*8.0/results.first;
@@ -1670,6 +1670,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     conf.alpha=conf.pdAlpha;
                     conf.beta=conf.pdBeta;
                 }
+                //conf.wavelet_rel_coeff=0.75;
      
             }
           
@@ -1739,8 +1740,8 @@ double Tuning(QoZ::Config &conf, T *data){
                                    
                 //conf.interpAlgo_list=interpAlgo_list;
                 //conf.interpDirection_list=interpDirection_list;
-                interpAlgo_lists.push_back(interpAlgo_list);
-                interpDirection_lists.push_back(interpDirection_list);
+                interpAlgo_lists[wave_idx]=interpAlgo_list;
+                interpDirection_lists[wave_idx]=interpDirection_list;
                 if(conf.pdTuningRealComp and conf.autoTuningRate>0 and conf.autoTuningRate==conf.predictorTuningRate){
                         //recover sample if real compression used                  
                     sampleBlocks<T,N>(data,global_dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
@@ -1794,8 +1795,8 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                 }
                 //delete sz;
-                bestInterpAlgos.push_back(bestInterpAlgo);
-                bestInterpDirections.push_back(bestDirection);
+                bestInterpAlgos[wave_idx]=bestInterpAlgo;
+                bestInterpDirections[wave_idx]=bestDirection;
                 if(conf.autoTuningRate==0){
                     if(cur_best_interp_cr>best_interp_cr){
                         conf.interpAlgo=bestInterpAlgo;
