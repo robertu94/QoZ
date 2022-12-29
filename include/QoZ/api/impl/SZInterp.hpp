@@ -1404,10 +1404,13 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         conf.waveletMseFix=1.0;
     }
     if(conf.sperr>=2){
-        conf.waveletBrFix2=0.1;//Only fit for RTMs.
-        conf.waveletMseFix2=500.0;
+        conf.waveletBrFix2=0.1;//Currently it is only for just select 2.
+        conf.waveletMseFix2=1;
     }
     else{
+        conf.waveletBrFix2=0.1;//Currently it is only for just select 2.
+        conf.waveletMseFix2=1;
+        /*
         conf.waveletMseFix2=0.9;
         if (rel_bound>=1e-3){
             conf.waveletBrFix2=0.6;
@@ -1419,6 +1422,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         else{
             conf.waveletBrFix2=0.55+0.05*(rel_bound-1e-4)/(1e-3-1e-4);
         }
+        */
     }
 
 }
@@ -2017,7 +2021,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     for(size_t i=0;i<waveleted_input.size();i++){
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
-                            std::cout<<coeffs_size[0]<<std::endl;
+                            //std::cout<<coeffs_size[0]<<std::endl;
                             for (size_t j=0;j<N;j++)
                                 coeffs_num*=coeffs_size[j];
                                 

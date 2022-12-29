@@ -22,6 +22,8 @@ namespace QoZ {
         if (wave_type==2)
             wavetype="sym16";
         else if(wave_type==3)
+            wavetype="bior3.1";
+        else if(wave_type==4)
             wavetype="sym13";
         else
             wavetype="sym18";
