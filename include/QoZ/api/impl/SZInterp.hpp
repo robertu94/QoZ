@@ -2008,9 +2008,9 @@ double Tuning(QoZ::Config &conf, T *data){
             }
             //double sum = std::accumulate(sampled_blocks[4].begin(), sampled_blocks[4].end(), 0.0);
             //std::cout<<sum/per_block_ele_num<<std::endl;
-            std::vector <std::vector<T> > waveleted_input(sampled_blocks.size());
+            std::vector <std::vector<T> > waveleted_input;
             if (wave_idx>0 and (wave_idx>1 or !use_sperr<T,N>(conf)) ){
-                
+                waveleted_input.resize(sampled_blocks.size());
                 for(size_t i=0;i<sampled_blocks.size();i++){
                     waveleted_input[i].resize(per_block_ele_num);
                     std::copy(sampled_blocks[i].begin(),sampled_blocks[i].end(),waveleted_input[i].begin());
