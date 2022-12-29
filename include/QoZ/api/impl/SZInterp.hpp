@@ -1498,10 +1498,10 @@ double Tuning(QoZ::Config &conf, T *data){
         dir_candidates.push_back(QoZ::factorial(N));
     }
 
-    std::vector<std::vector<uint8_t> > interpAlgo_lists;
-    std::vector<std::vector<uint8_t> > interpDirection_lists;
-    std::vector<uint8_t> bestInterpAlgos;
-    std::vector<uint8_t> bestInterpDirections;
+    std::vector<std::vector<uint8_t> > interpAlgo_lists(conf.waveletAutoTuning+1);
+    std::vector<std::vector<uint8_t> > interpDirection_lists(conf.waveletAutoTuning+1);
+    std::vector<uint8_t> bestInterpAlgos(conf.waveletAutoTuning+1);
+    std::vector<uint8_t> bestInterpDirections(conf.waveletAutoTuning+1);
            
     size_t totalblock_num=1;  
     for(int i=0;i<N;i++){                      
@@ -1602,6 +1602,8 @@ double Tuning(QoZ::Config &conf, T *data){
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
+            if(wave_idx<=conf.sperr)
+                continue;
             
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
