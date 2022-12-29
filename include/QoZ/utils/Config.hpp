@@ -191,6 +191,10 @@ namespace QoZ {
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
             QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
+            sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
+
+
+
             blockwiseSampleBlockSize=cfg.GetInteger("AlgoSettings", "blockwiseSampleBlockSize", blockwiseSampleBlockSize);
             pdTuningRealComp=cfg.GetBoolean("AlgoSettings", "pdTuningRealComp", pdTuningRealComp);
             pdTuningAbConf=cfg.GetInteger("AlgoSettings", "pdTuningAbConf", pdTuningAbConf);
@@ -271,6 +275,7 @@ namespace QoZ {
             write(pid, c);
             write(blockOrder, c);
             write(sperr, c);
+            write(sperrWithoutWave, c);
             //write(trimToZero, c);
             //write(prewave_absErrorBound, c);
             write(conditioning, c);
@@ -329,6 +334,7 @@ namespace QoZ {
             read(pid, c);
             read(blockOrder, c);
             read(sperr, c);
+            read(sperrWithoutWave, c);
             //read(trimToZero, c);
             //read(prewave_absErrorBound, c);
             read(conditioning, c);
@@ -450,6 +456,7 @@ namespace QoZ {
         sperr::Conditioner::meta_type meta;
         std::vector<sperr::Conditioner::meta_type>block_metas;
         int fixWave=-1;
+        bool sperrWithoutWave=false;
 
         
 
