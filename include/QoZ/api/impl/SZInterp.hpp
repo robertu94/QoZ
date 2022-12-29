@@ -1987,6 +1987,7 @@ double Tuning(QoZ::Config &conf, T *data){
             if(conf.fixWave>=1 and wave_idx!=conf.fixWave)
                 continue;
         //std::vector<double> flattened_cur_blocks;
+            std::cout<<wave_idx<<std::endl;
             conf.wavelet=wave_idx;
 
             if(conf.levelwisePredictionSelection>0){
@@ -2003,6 +2004,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 
                 waveleted_input.clear();
                 waveleted_input=sampled_blocks;
+                std::cout<<"t1"<<std::endl;
                 if(conf.conditioning){
                     conf.block_metas.clear();
                     conf.block_metas.resize(waveleted_input.size());
@@ -2012,6 +2014,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     }
                     
                 }
+                std::cout<<"t2"<<std::endl;
                 if(wave_idx==1){
                     for(size_t i=0;i<waveleted_input.size();i++){
                         QoZ::Wavelet<T,N> wlt;
@@ -2031,6 +2034,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 coeffs_num*=coeffs_size[j];
                                 
                         }
+                        std::cout<<"t3"<<std::endl;
                         waveleted_input[i].resize(coeffs_num);
                         for (size_t j=0;j<coeffs_num;j++)
                             waveleted_input[i][j]=coeffData[j]; 
@@ -2041,6 +2045,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         
                         delete[]coeffData;
                     }
+                    std::cout<<"t4"<<std::endl;
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
 
                 }
@@ -2055,6 +2060,7 @@ double Tuning(QoZ::Config &conf, T *data){
             std::vector<double>gamma_list;
             init_gammalist<T,N>(gamma_list,rel_bound,conf);
             size_t gamma_nums=gamma_list.size();  
+            std::cout<<"t5"<<std::endl;
             for(size_t gamma_idx=0;gamma_idx<gamma_nums;gamma_idx++){
                 for (size_t i=0;i<alpha_nums;i++){
                     for (size_t j=0;j<beta_nums;j++){
@@ -2075,6 +2081,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //std::cout<<"fuqindejian0.1"<<std::endl;                                      
                         std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_INTERP,(QoZ::TUNING_TARGET)conf.tuningTarget,false,profiling_coeff,orig_means,
                                                                             orig_sigma2s,orig_ranges,flattened_sampled_data,waveleted_input);
+                        std::cout<<"t6"<<std::endl;
                         //std::cout<<"fuqindejian0.2"<<std::endl;  
                         double bitrate=results.first;
                         double metric=results.second;
@@ -2135,6 +2142,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
                     }
                 }
+                std::cout<<"t7"<<std::endl;
             }
                // delete sz;
             //add lorenzo
