@@ -1602,7 +1602,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            if(wave_idx<=conf.sperr)
+            if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr))
                 continue;
             
             double ori_eb=conf.absErrorBound;
