@@ -1625,13 +1625,14 @@ double Tuning(QoZ::Config &conf, T *data){
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
             if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr) or (conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx))
                 continue;
-            
+            std::cout<<wave_idx<<std::endl;
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
+            std::cout<<"a1"<<std::endl;
             if(wave_idx>0){//later distinguish different i
-                //std::cout<<wave_idx<<std::endl;
+                
 
-               
+                std::cout<<"a2"<<std::endl;
 
                 conf.absErrorBound*=conf.wavelet_rel_coeff;
                 if(conf.conditioning and (!use_sperr<T,N>(conf) or conf.wavelet>1)){
@@ -1669,7 +1670,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 //std::cout<<"dawd"<<std::endl;
 
             }
-
+            std::cout<<"a3"<<std::endl;
             if(conf.testLorenzo and conf.autoTuningRate==0 and wave_idx==0){
 
                 std::pair<double,double> results=CompressTest<T,N>(conf, sampled_blocks,QoZ::ALGO_LORENZO_REG,QoZ::TUNING_TARGET_CR,false);
@@ -1679,7 +1680,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::cout << "lorenzo best cr = " << best_lorenzo_ratio << std::endl;
 
             }
-               
+             std::cout<<"a4"<<std::endl;
             if (conf.exhaustiveTuning==0 and conf.autoTuningRate>0){
 
                 if(conf.pdTuningAbConf<=2){               
@@ -1694,7 +1695,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 //conf.wavelet_rel_coeff=0.75;
      
             }
-          
+            std::cout<<"a5"<<std::endl;
             std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
             if(conf.multiDimInterp)
@@ -1758,7 +1759,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     }    
 
                 }
-                                   
+                std::cout<<"a6"<<std::endl;
                 //conf.interpAlgo_list=interpAlgo_list;
                 //conf.interpDirection_list=interpDirection_list;
                 interpAlgo_lists[wave_idx]=interpAlgo_list;
