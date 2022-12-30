@@ -1623,7 +1623,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if (conf.waveletAutoTuning>=1)
             ori_sampled_blocks=sampled_blocks;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
-            if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr))
+            if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr) or (conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx))
                 continue;
             
             double ori_eb=conf.absErrorBound;
@@ -2005,7 +2005,7 @@ double Tuning(QoZ::Config &conf, T *data){
         double oriabseb=conf.absErrorBound;
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
-            if(conf.fixWave>=1 and wave_idx!=conf.fixWave)
+            if(conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
                 continue;
         //std::vector<double> flattened_cur_blocks;
             //std::cout<<wave_idx<<std::endl;
