@@ -1418,7 +1418,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double e2=1e-3;
         double e3=1e-2;
         //double e4=1e-1;
-        double f1=0.9;
+        double f1=0.8;
         double f2=0.8;
         double f3=0.8;
         //double f4=0.15;
