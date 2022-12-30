@@ -1409,6 +1409,9 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         conf.waveletBrFix=0.9;
         conf.waveletMseFix=1.0;
     }
+
+
+    
     if(conf.sperr>=2){
         double e1=1e-4;
         double e2=1e-3;
@@ -1419,15 +1422,15 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double f3=0.2;
         //double f4=0.15;
         if(rel_bound<=e1)
-            conf.waveletBrFix=f1;
+            conf.waveletBrFix2=f1;
         else if(rel_bound<=e2)
-            conf.waveletBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
+            conf.waveletBrFix2=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
         else if (rel_bound<=e3)
-            conf.waveletBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
+            conf.waveletBrFix2=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
         else 
-            conf.waveletBrFix=f3;
+            conf.waveletBrFix2=f3;
         //conf.waveletBrFix=1.0;
-        conf.waveletMseFix=1.0;
+        conf.waveletMseFix2=1.0;
         
     }
     else{
@@ -1440,15 +1443,15 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double f3=0.2;
         //double f4=0.15;
         if(rel_bound<=e1)
-            conf.waveletBrFix=f1;
+            conf.waveletBrFix2=f1;
         else if(rel_bound<=e2)
-            conf.waveletBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
+            conf.waveletBrFix2=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
         else if (rel_bound<=e3)
-            conf.waveletBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
+            conf.waveletBrFix2=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
         else 
-            conf.waveletBrFix=f3;
+            conf.waveletBrFix2=f3;
         //conf.waveletBrFix=1.0;
-        conf.waveletMseFix=1.0;
+        conf.waveletMseFix2=1.0;
         /*
         conf.waveletMseFix2=0.9;
         if (rel_bound>=1e-3){
