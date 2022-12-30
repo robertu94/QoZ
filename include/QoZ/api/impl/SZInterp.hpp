@@ -1531,6 +1531,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     std::vector<std::vector<size_t> >starts;
     if((conf.waveletTuningRate>0 or conf.autoTuningRate>0 or conf.predictorTuningRate>0) and conf.profiling){      
+        conf.profStride=conf.sampleBlockSize/4;
         if(N==2){
             QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
         }
@@ -1545,7 +1546,7 @@ double Tuning(QoZ::Config &conf, T *data){
     double profiling_coeff=1;
     if(conf.profiling){
         profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
-        conf.profStride=conf.sampleBlockSize/4;
+
     }
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
