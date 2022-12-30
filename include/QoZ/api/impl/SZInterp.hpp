@@ -2056,10 +2056,10 @@ double Tuning(QoZ::Config &conf, T *data){
                     std::vector<size_t> coeffs_size;
                     size_t coeffs_num=1;
                     for(size_t i=0;i<waveleted_input.size();i++){
-                        if(conf.fixWave){
-                            std::cout<<waveleted_input[i].size()<<std::endl;
-                            std::cout<<conf.num<<std::endl;
-                        }
+                        //if(conf.fixWave){
+                         //   std::cout<<waveleted_input[i].size()<<std::endl;
+                        //    std::cout<<conf.num<<std::endl;
+                        //}
                         T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
                             //std::cout<<coeffs_size[0]<<std::endl;
