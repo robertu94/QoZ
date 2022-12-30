@@ -1543,8 +1543,10 @@ double Tuning(QoZ::Config &conf, T *data){
 
     size_t num_filtered_blocks=starts.size();
     double profiling_coeff=1;
-    if(conf.profiling)
+    if(conf.profiling){
         profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
+        conf.profStride=conf.sampleBlockSize;
+    }
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
 
