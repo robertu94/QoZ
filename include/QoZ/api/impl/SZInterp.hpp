@@ -1411,15 +1411,16 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
     }
 
 
-    
+
     if(conf.sperr>=2){
+        
         double e1=1e-4;
         double e2=1e-3;
         double e3=1e-2;
         //double e4=1e-1;
-        double f1=0.8;
-        double f2=0.6;
-        double f3=0.2;
+        double f1=0.9;
+        double f2=0.7;
+        double f3=0.5;
         //double f4=0.15;
         if(rel_bound<=e1)
             conf.waveletBrFix2=f1;
@@ -1429,8 +1430,10 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
             conf.waveletBrFix2=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
         else 
             conf.waveletBrFix2=f3;
-        //conf.waveletBrFix=1.0;
+            
+        //conf.waveletBrFix2=0.1;//just for select it.
         conf.waveletMseFix2=1.0;
+
         
     }
     else{
