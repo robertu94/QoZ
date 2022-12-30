@@ -16,7 +16,7 @@ namespace QoZ {
     T * external_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, int wave_type=2, size_t pid=0, bool inplace=true, std::vector<size_t> &coeffs_size=std::vector<size_t>())
     {
         std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
-       // std::cout<<num<<std::endl;
+        std::cout<<num<<std::endl;
         QoZ::writefile<T>(input_filename.c_str(), data, num);
 
         std::string wavetype;
