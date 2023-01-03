@@ -438,7 +438,7 @@ namespace QoZ {
         int trimToZero=0;//1: trim only when quantizing;2: also trim before compression.
         double preTrim=0.0;//trim small numbers to zero before compression.
         int blockOrder = 0;//order of blocks.
-        int waveletTest = 0;
+        int waveletTest = 1;
         double waveletTuningRate = 0.0;
         int waveletAutoTuning = 0;
         double waveletBrFix = 1.0;
