@@ -1412,15 +1412,15 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
 
 
 
-    if(conf.sperr>=2){
+    if(!conf.waveletTest){
         
         double e1=1e-4;
         double e2=1e-3;
         double e3=1e-2;
         //double e4=1e-1;
-        double f1=0.8;
-        double f2=0.8;
-        double f3=0.8;
+        double f1=0.8;//change to 1
+        double f2=0.8;//changt to 0.9
+        double f3=0.8;//0.8
         //double f4=0.15;
         if(rel_bound<=e1)
             conf.waveletBrFix2=f1;
@@ -1437,37 +1437,10 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         
     }
     else{
-        double e1=1e-4;
-        double e2=1e-3;
-        double e3=1e-2;
-        //double e4=1e-1;
-        double f1=0.8;
-        double f2=0.6;
-        double f3=0.2;
-        //double f4=0.15;
-        if(rel_bound<=e1)
-            conf.waveletBrFix2=f1;
-        else if(rel_bound<=e2)
-            conf.waveletBrFix2=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
-        else if (rel_bound<=e3)
-            conf.waveletBrFix2=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
-        else 
-            conf.waveletBrFix2=f3;
-        //conf.waveletBrFix=1.0;
+    
+        conf.waveletBrFix2=0.1;//just select it.
         conf.waveletMseFix2=1.0;
-        /*
-        conf.waveletMseFix2=0.9;
-        if (rel_bound>=1e-3){
-            conf.waveletBrFix2=0.6;
-        }
-        else if (rel_bound<=1e-4){
-            conf.waveletBrFix2=0.55;
-
-        }
-        else{
-            conf.waveletBrFix2=0.55+0.05*(rel_bound-1e-4)/(1e-3-1e-4);
-        }
-        */
+        
     }
 
 }
@@ -1575,7 +1548,8 @@ double Tuning(QoZ::Config &conf, T *data){
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
 
-    if(conf.waveletTest>0){        
+    if(conf.waveletTest>0 and conf.waveletAutoTuning>=2){        
+        /*
         if(conf.waveletTuningRate==0)
             conf.waveletTuningRate=conf.predictorTuningRate;
         sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.waveletTuningRate,0,starts);         
@@ -1616,16 +1590,23 @@ double Tuning(QoZ::Config &conf, T *data){
         if (normvar<1e-4 or sig_rate<0.01){
             useWave=true;
 
-        }*/
+        }
         if(conf.verbose){          
-            std::cout<<"Sigrate: "<<sig_rate<<" Normvar: "<<normvar<<std::endl;
+            
             std::cout<<"Orivar: "<<orivar<<" Varrate: "<<normvar/orivar<<std::endl;
             std::cout<<"Use wave: "<<useWave<<std::endl;
 
         }
         conf.dims=global_dims;
         conf.num=global_num;
-
+        */
+        double normvar=QoZ::calcNormedVariance(data,global_num);
+        std::cout<<" Normvar: "<<normvar<<std::endl;
+        double threshold=3e-3;
+        if(normvar>=threshold)
+            conf.waveletAutoTuning=1;
+        else
+            conf.fixWave=2;
     }
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
         //int ori_sperr=conf.sperr;//temp
@@ -1635,9 +1616,9 @@ double Tuning(QoZ::Config &conf, T *data){
         double o_alpha=conf.alpha;
         double o_beta=conf.beta;
                     
-        if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate or conf.profiling>0){
+        //if(!conf.waveletTest or conf.predictorTuningRate!=conf.waveletTuningRate or conf.profiling>0){
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.predictorTuningRate,conf.profiling,starts,conf.var_first);
-        }        
+        //}        
         //std::cout<<"a0"<<std::endl;
         num_sampled_blocks=sampled_blocks.size();
         per_block_ele_num=pow(sampleBlockSize+1,N);
@@ -1963,7 +1944,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if(conf.verbose)
             std::cout<<"B-M tuning started."<<std::endl;
        
-        if (conf.autoTuningRate!=conf.predictorTuningRate and (conf.predictorTuningRate!=0 or conf.autoTuningRate!=conf.waveletTuningRate)){
+        if (conf.autoTuningRate!=conf.predictorTuningRate){//} and (conf.predictorTuningRate!=0 or conf.autoTuningRate!=conf.waveletTuningRate)){
               
             sampleBlocks<T,N>(data,conf.dims,sampleBlockSize,sampled_blocks,conf.autoTuningRate,0,starts);
         }
