@@ -1600,13 +1600,23 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.dims=global_dims;
         conf.num=global_num;
         */
-        double normvar=QoZ::calcNormedVariance(data,global_num);
-        std::cout<<" Normvar: "<<normvar<<std::endl;
-        double threshold=3e-3;
-        if(normvar>=threshold)
+        size_t mindim=conf.dims[0];
+        for (size_t i=0;i<N;i++){
+            if (conf.dims[i]<mindim)
+                mindim=conf.dims[i];
+        }
+        size_t dimthres=128;
+        if (mindim<dimthres)
             conf.waveletAutoTuning=1;
-        else
-            conf.fixWave=2;
+        else{
+            double normvar=QoZ::calcNormedVariance(data,global_num);
+            std::cout<<" Normvar: "<<normvar<<std::endl;
+            double threshold=3e-3;
+            if(normvar>=threshold)
+                conf.waveletAutoTuning=1;
+            else
+                conf.fixWave=2;
+        }
     }
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
         //int ori_sperr=conf.sperr;//temp
