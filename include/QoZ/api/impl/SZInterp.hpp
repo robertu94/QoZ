@@ -835,8 +835,8 @@ template<class T, QoZ::uint N>
 inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bound, QoZ::Config &conf){
     if (use_sperr<T,N>(conf))
     {   
-        if(conf.wavelet==1)
-            gamma_list={0.5,0.75,1,1.25,1.5};
+        if(conf.tuningTarget==QoZ::TUNING_TARGET_CR)
+            gamma_list={1,1.25,1.5,1.75,2};
         else
             gamma_list={0.5,0.75,1,1.25,1.5};
             //gamma_list={1.5,3,5,10,20};
@@ -847,7 +847,12 @@ inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bou
         if(conf.wavelet==0)
             gamma_list={1};
         else
-            gamma_list={0.5,0.75,1,1.25,1.5};
+        {
+            if(conf.tuningTarget==QoZ::TUNING_TARGET_CR)
+                gamma_list={1,1.25,1.5,1.75,2};
+            else
+                gamma_list={0.5,0.75,1,1.25,1.5};
+        }
         
     }
 }
