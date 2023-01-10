@@ -17,7 +17,10 @@ namespace QoZ {
     {
         std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
         //std::cout<<num<<std::endl;
+        std::string del_command="rm -f "+ input_filename;
+        system(del_command.c_str());
         QoZ::writefile<T>(input_filename.c_str(), data, num);
+
 
         std::string wavetype;
         /*Interp
@@ -54,14 +57,17 @@ namespace QoZ {
         }
 
         system(command.c_str());
+        system(del_command.c_str());
 
         
 
         std::string coeffs_filename = std::to_string(pid) + "_external_wave_coeffs.tmp";
+        del_command="rm -f "+ coeffs_filename;
 
         if (inplace)
         {
             QoZ::readfile<T>(coeffs_filename.c_str(), num, data);
+            system(del_command.c_str());
             return data;
         }
         else
@@ -69,6 +75,7 @@ namespace QoZ {
             coeffs_size.resize(N);
             std::string size_filename = std::to_string(pid) + "_external_coeffs_size.tmp";
             QoZ::readfile<size_t>(size_filename.c_str(), N, coeffs_size.data());
+
 
             for (int i = 0; i <N; i++)
             {
@@ -82,6 +89,9 @@ namespace QoZ {
 
             T *coeffData = new T[coeffs_num];
             QoZ::readfile<T>(coeffs_filename.c_str(), coeffs_num, coeffData);
+            system(del_command.c_str());
+            del_command="rm -f "+ size_filename;
+            system(del_command.c_str());
             return coeffData;
         }
     }
@@ -92,16 +102,23 @@ namespace QoZ {
         
             
         std::string input_filename = std::to_string(pid) + "_external_wave_coeff_input.tmp";
-     
+        std::string del_command="rm -f "+ input_filename;
+        system(del_command.c_str());
+        
         QoZ::writefile<T>(input_filename.c_str(), data, num);
         std::string command = "python coeff_idwt.py " + input_filename;
                 
         system(command.c_str());
+       
+        system(del_command.c_str());
         std::string output_filename = std::to_string(pid) + "_external_deccoeff_idwt.tmp";
+        del_command="rm -f "+ output_filename;
       
         if (inplace)
         {
             QoZ::readfile<T>(output_filename.c_str(), num, data);
+            
+            system(del_command.c_str());
             return data;
         }
         else
@@ -112,6 +129,7 @@ namespace QoZ {
 
             T *outData = new T[outnum];
             QoZ::readfile<T>(output_filename.c_str(), outnum, outData);
+            system(del_command.c_str());
             
             return outData;
         }
