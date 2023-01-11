@@ -1204,7 +1204,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             std::cout<<ssim_block_num<<std::endl;                           
             double mean=0,sigma2=0,cov=0,range=0;
             double orig_mean=0,orig_sigma2=0,orig_range=0;  
-            std::vector<size_t>block_dims(sampleBlockSize+1,N);                      
+            std::vector<size_t>block_dims(N,sampleBlockSize+1);                      
             if(N==2){
                 for (size_t i=0;i+ssim_size<sampleBlockSize+1;i+=ssim_size){
                     for (size_t j=0;j+ssim_size<sampleBlockSize+1;j+=ssim_size){
