@@ -131,7 +131,10 @@ namespace QoZ {
                 for(size_t j=starty;j<starty+blocksize;j++){
                     for(size_t k=startz;k<startz+blocksize;k++){
                         size_t cur_idx=i*dimyz+j*dimz+k;
+                        std::cout<<cur_idx<<std::endl;
                         T value=data[cur_idx],value2=data2[cur_idx];
+                        std::cout<<value<<std::endl;
+                        std::cout<<value2<<std::endl;
                         covsum+=value*value2;
                     }
 

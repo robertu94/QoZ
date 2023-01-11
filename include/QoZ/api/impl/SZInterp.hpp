@@ -1222,8 +1222,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             }
             else if(N==3){
                 //std::cout<<idx<<std::endl;
-                std::cout<<sampled_blocks[k].size()<<std::endl;
-                std::cout<<cur_block.size()<<std::endl;
+                //std::cout<<sampled_blocks[k].size()<<std::endl;
+                //std::cout<<cur_block.size()<<std::endl;
                 for (size_t i=0;i+ssim_size<sampleBlockSize+1;i+=ssim_size){
                     for (size_t j=0;j+ssim_size<sampleBlockSize+1;j+=ssim_size){
                         for (size_t kk=0;kk+ssim_size<sampleBlockSize+1;kk+=ssim_size){
