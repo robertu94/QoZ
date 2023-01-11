@@ -1201,7 +1201,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
             std::cout<<"SSIM0"<<std::endl;  
             size_t ssim_block_num=orig_means.size();  
-            std::cout<<ssim_block_nums<<std::endl;                           
+            std::cout<<ssim_block_num<<std::endl;                           
             double mean=0,sigma2=0,cov=0,range=0;
             double orig_mean=0,orig_sigma2=0,orig_range=0;                        
             if(N==2){
