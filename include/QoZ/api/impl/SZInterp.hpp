@@ -1203,7 +1203,8 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             size_t ssim_block_num=orig_means.size();  
             std::cout<<ssim_block_num<<std::endl;                           
             double mean=0,sigma2=0,cov=0,range=0;
-            double orig_mean=0,orig_sigma2=0,orig_range=0;                        
+            double orig_mean=0,orig_sigma2=0,orig_range=0;  
+            std::vector<size_t>block_dims(sampleBlockSize,N);                      
             if(N==2){
                 for (size_t i=0;i+ssim_size<sampleBlockSize+1;i+=ssim_size){
                     for (size_t j=0;j+ssim_size<sampleBlockSize+1;j+=ssim_size){
@@ -1212,7 +1213,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                         orig_range=orig_ranges[idx];
                         std::vector<size_t> starts{i,j};
                         QoZ::blockwise_profiling<T>(cur_block.data(),testConfig.dims,starts,ssim_size,mean,sigma2,range);
-                        cov=QoZ::blockwise_cov<T>(sampled_blocks[k].data(),cur_block.data(),testConfig.dims,starts,ssim_size,orig_mean,mean);
+                        cov=QoZ::blockwise_cov<T>(sampled_blocks[k].data(),cur_block.data(),block_dims,starts,ssim_size,orig_mean,mean);
                         metric+=QoZ::SSIM(orig_range,orig_mean,orig_sigma2,mean,sigma2,cov)/ssim_block_num;
                         idx++;
 
@@ -1234,7 +1235,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                             std::cout<<i<<" "<<j<<" "<<kk<<" "<<std::endl;
                             QoZ::blockwise_profiling<T>(cur_block.data(),testConfig.dims,starts,ssim_size,mean,sigma2,range);
                             std::cout<<"SSIM1"<<std::endl;  
-                            cov=QoZ::blockwise_cov<T>(sampled_blocks[k].data(),cur_block.data(),testConfig.dims,starts,ssim_size,orig_mean,mean);
+                            cov=QoZ::blockwise_cov<T>(sampled_blocks[k].data(),cur_block.data(),block_dims,starts,ssim_size,orig_mean,mean);
                                             //printf("%.8f %.8f %.8f %.8f %.8f %.8f %.8f\n",orig_range,orig_sigma2,orig_mean,range,sigma2,mean,cov);
                             std::cout<<"SSIM2"<<std::endl;  
                             metric+=QoZ::SSIM(orig_range,orig_mean,orig_sigma2,mean,sigma2,cov)/ssim_block_num;
