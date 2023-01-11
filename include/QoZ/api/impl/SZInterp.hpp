@@ -1199,9 +1199,9 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
             }
         }
         else if (tuningTarget==QoZ::TUNING_TARGET_SSIM){
-            std::cout<<"SSIM0"<<std::endl;  
+            //std::cout<<"SSIM0"<<std::endl;  
             size_t ssim_block_num=orig_means.size();  
-            std::cout<<ssim_block_num<<std::endl;                           
+            //std::cout<<ssim_block_num<<std::endl;                           
             double mean=0,sigma2=0,cov=0,range=0;
             double orig_mean=0,orig_sigma2=0,orig_range=0;  
             std::vector<size_t>block_dims(N,sampleBlockSize+1);                      
@@ -1232,14 +1232,14 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                             orig_sigma2=orig_sigma2s[idx];
                             orig_range=orig_ranges[idx];
                             std::vector<size_t> starts{i,j,kk};
-                            std::cout<<i<<" "<<j<<" "<<kk<<" "<<std::endl;
+                            //std::cout<<i<<" "<<j<<" "<<kk<<" "<<std::endl;
                             QoZ::blockwise_profiling<T>(cur_block.data(),block_dims,starts,ssim_size,mean,sigma2,range);
-                            std::cout<<"SSIM1"<<std::endl;  
+                            //std::cout<<"SSIM1"<<std::endl;  
                             cov=QoZ::blockwise_cov<T>(sampled_blocks[k].data(),cur_block.data(),block_dims,starts,ssim_size,orig_mean,mean);
                                             //printf("%.8f %.8f %.8f %.8f %.8f %.8f %.8f\n",orig_range,orig_sigma2,orig_mean,range,sigma2,mean,cov);
-                            std::cout<<"SSIM2"<<std::endl;  
+                            //std::cout<<"SSIM2"<<std::endl;  
                             metric+=QoZ::SSIM(orig_range,orig_mean,orig_sigma2,mean,sigma2,cov)/ssim_block_num;
-                            std::cout<<"SSIM3"<<std::endl;  
+                            //std::cout<<"SSIM3"<<std::endl;  
                             idx++;
                         }
                     }
