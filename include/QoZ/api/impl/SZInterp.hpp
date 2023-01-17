@@ -41,9 +41,7 @@ bool use_sperr(const QoZ::Config & conf){
 template<class T, QoZ::uint N>
 auto pre_Condition(const QoZ::Config &conf,T * data){
     //std::cout<<"pre"<<std::endl;
-    std::vector<double> buf(conf.num,0);
-    for(size_t i=0;i<conf.num;i++)
-        buf[i]=data[i];
+    std::vector<double> buf(data,data+conf.num);//maybe not efficient
     //std::cout<<"pre2"<<std::endl;
     sperr::Conditioner conditioner;
     if(conf.conditioning==2){
@@ -54,8 +52,9 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
     //if(rtn!=sperr::RTNType::Good)
         //std::cout<<"bad cond"<<std::endl;
     //std::cout<<"pre3"<<std::endl;
-    for(size_t i=0;i<conf.num;i++)
-        data[i]=buf[i];
+    //for(size_t i=0;i<conf.num;i++)
+    //    data[i]=buf[i];
+    memcpy(data,buf.data(),conf.num);//maybe not efficient
     //std::cout<<"pre4"<<std::endl;
     return condi_meta;
 }
@@ -63,14 +62,15 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
 template<class T, QoZ::uint N>
 auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_type& meta){
     //std::cout<<"post"<<std::endl;
-    std::vector<double> buf(num,0);
-    for(size_t i=0;i<num;i++)
-        buf[i]=data[i];
+    std::vector<double> buf(data,data+num);//maybe not efficient
+    //for(size_t i=0;i<num;i++)
+    //    buf[i]=data[i];
 
     sperr::Conditioner conditioner;
     auto rtn = conditioner.inverse_condition(buf,meta);
-    for(size_t i=0;i<num;i++)
-        data[i]=buf[i];
+    //for(size_t i=0;i<num;i++)
+    //    data[i]=buf[i];
+    memcpy(data,buf.data(),num);//maybe not efficient
     return rtn;
 }
 
@@ -86,7 +86,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
     //std::cout<<"s1"<<std::endl;
     auto rtn = sperr::RTNType::Good;
       
-    auto chunks = std::vector<size_t>{1024,1024, 1024};//ori 256^3
+    auto chunks = std::vector<size_t>{1024,1024,1024};//ori 256^3, to tell the truth this is not large enough for scale but I just keep it, maybe set it large later.
     rtn = compressor.copy_data(reinterpret_cast<const float*>(data), conf.num,
                                 {conf.dims[2], conf.dims[1], conf.dims[0]}, {chunks[0], chunks[1], chunks[2]});
     //std::cout<<"s2"<<std::endl;
@@ -103,7 +103,7 @@ char *SPERR_Compress(QoZ::Config &conf, T *data, size_t &outSize){
     char * outData=new char[stream.size()+conf.size_est()];
     outSize=stream.size();
     //std::cout<<outSize<<std::endl;
-    memcpy(outData,stream.data(),stream.size());
+    memcpy(outData,stream.data(),stream.size());//maybe not efficient
     stream.clear();
     stream.shrink_to_fit();
 
@@ -132,7 +132,7 @@ void SPERR_Decompress(char *cmpData, size_t cmpSize, T *decData){
     in_stream.shrink_to_fit();
     const auto vol = decompressor.get_data<float>();
     //std::cout<<vol.size()<<std::endl;
-    memcpy(decData,vol.data(),sizeof(T)*vol.size());
+    memcpy(decData,vol.data(),sizeof(T)*vol.size());//maybe not efficient
     
     //decData=vol.data();
     return;
@@ -353,7 +353,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             in_stream.clear();
             in_stream.shrink_to_fit();
             const auto vol = decompressor.get_data<float>();
-            memcpy(decData,vol.data(),sizeof(T)*conf.num);
+            memcpy(decData,vol.data(),sizeof(T)*conf.num);//maybe not efficient
             //std::cout<<"d2"<<std::endl;
             //decData=vol.data();
             return;
@@ -417,7 +417,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             delete []decData;
             decData = new T [conf.num];
             //std::cout<<conf.num;
-            memcpy(decData,newDecData,sizeof(T)*conf.num);
+            memcpy(decData,newDecData,sizeof(T)*conf.num);//maybe not efficient
             delete []newDecData;
 
            // std::cout<<decData[100000]<<std::endl;
@@ -452,7 +452,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         //QoZ::writefile<T>("waved.qoz.dec.offset", offsets, conf.num); 
         //std::cout<<"x4"<<std::endl;
             for(size_t i=0;i<conf.num;i++)
-                decData[i]+=offsets[i];
+                decData[i]+=offsets[i];//maybe not efficient
             delete [] offsets;
         }
         //delete [] cmpDataFirst;
@@ -1109,14 +1109,15 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 if(1){//tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                     std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
-                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);//
                     
 
                     //std::cout<<"fuqindejian3"<<std::endl;     
 
-                    cur_block.resize(per_block_ele_num);
-                    for(size_t i=0;i<per_block_ele_num;i++)
-                        cur_block[i]=idwtData[i];
+                    //cur_block.resize(per_block_ele_num);
+                    //for(size_t i=0;i<per_block_ele_num;i++)
+                    //    cur_block[i]=idwtData[i];
+                    cur_block.assign(idwtData,idwtData+per_block_ele_num);//maybe not efficient, what about change the return type of ewp?
                     delete []idwtData;
                     if(testConfig.conditioning){
                         post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);
@@ -1166,9 +1167,10 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
                     //std::cout<<"fuqindejian3"<<std::endl;     
 
-                    cur_block.resize(per_block_ele_num);
-                    for(size_t i=0;i<per_block_ele_num;i++)
-                        cur_block[i]=idwtData[i];
+                    //cur_block.resize(per_block_ele_num);
+                    //for(size_t i=0;i<per_block_ele_num;i++)
+                    //    cur_block[i]=idwtData[i];
+                    cur_block.assign(idwtData,idwtData+per_block_ele_num);//maybe not efficient, what about change the return type of ewp?
                     delete []idwtData;
                     //std::cout<<"fuqindejian4"<<std::endl;  
                 }
@@ -1419,7 +1421,21 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         conf.waveletMseFix=1.0;
     }
     else{
-        conf.waveletBrFix=0.9;
+        double e1=1e-3;
+        double e2=1e-2;
+        double e3=1e-1;
+        double f1=1;
+        double f2=0.8;
+        double f3=0.6;
+        if(rel_bound<=e1)
+            conf.waveletBrFix=f1;
+        else if(rel_bound<=e2)
+            conf.waveletBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
+        else if (rel_bound<=e3)
+            conf.waveletBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
+        else 
+            conf.waveletBrFix=f3;
+        //conf.waveletBrFix=1.0;
         conf.waveletMseFix=1.0;
     }
 
@@ -1476,8 +1492,12 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.maxStep = (N==2?64:32);
         if (conf.levelwisePredictionSelection<=0)
             conf.levelwisePredictionSelection = (N==2?6:4);
-        if (conf.sampleBlockSize<=0)
-            conf.sampleBlockSize = (N==2?64:32);
+        if (conf.sampleBlockSize<=0){
+            if(conf.waveletAutoTuning>=2)
+                conf.sampleBlockSize = 64;
+            else
+                conf.sampleBlockSize = (N==2?64:32);
+        }
 
     }   
     if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
@@ -1657,7 +1677,7 @@ double Tuning(QoZ::Config &conf, T *data){
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
             if((wave_idx==0 and conf.sperrWithoutWave) or (wave_idx>0 and wave_idx<=conf.sperr) or (conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and conf.fixWave!=wave_idx))
                 continue;
-            std::cout<<wave_idx<<std::endl;
+            //std::cout<<wave_idx<<std::endl;
             double ori_eb=conf.absErrorBound;
             std::vector<size_t> coeffs_size;
             //std::cout<<"a1"<<std::endl;
@@ -1691,9 +1711,10 @@ double Tuning(QoZ::Config &conf, T *data){
                             
 
                         }
-                        sampled_blocks[i].resize(coeffs_num);
-                        for (size_t j=0;j<coeffs_num;j++)
-                            sampled_blocks[i][j]=coeffData[j]; 
+                        //sampled_blocks[i].resize(coeffs_num);
+                        //for (size_t j=0;j<coeffs_num;j++)
+                        //    sampled_blocks[i][j]=coeffData[j]; 
+                        sampled_blocks.assign(coeffData,coeffData+coeffs_num);//may not so efficient
                         delete[]coeffData;
                     }
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
@@ -2104,9 +2125,10 @@ double Tuning(QoZ::Config &conf, T *data){
                         //std::cout<<coeffs_num<<std::endl;
 
                         waveleted_input[i].clear();
-                        waveleted_input[i].resize(coeffs_num);
-                        for (size_t j=0;j<coeffs_num;j++)
-                            waveleted_input[i][j]=coeffData[j]; 
+                       // waveleted_input[i].resize(coeffs_num);
+                        //for (size_t j=0;j<coeffs_num;j++)
+                        //    waveleted_input[i][j]=coeffData[j]; 
+                        waveleted_input[i].assign(coeffData,coeffData+coeffs_num);//maybe not so coefficient
                         /*
                         std::string oname="waveleted_block_"+std::to_string(i)+"_"+std::to_string(wave_idx)+".tmp";
                         QoZ::writefile<T>(oname.c_str(), waveleted_input[i].data(), coeffs_num);
@@ -2154,7 +2176,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //std::cout<<"fuqindejian0.2"<<std::endl;  
                         double bitrate=results.first;
                         double metric=results.second;
-                        printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
+                        //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
                         if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                             bestalpha=alpha;
                             bestbeta=beta;
@@ -2163,7 +2185,7 @@ double Tuning(QoZ::Config &conf, T *data){
                             bestm=metric;
                             bestWave=wave_idx;
                             useInterp=true;
-                            printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
+                            //printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
                         }
                         else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
                             if ( ((alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf))
@@ -2192,8 +2214,8 @@ double Tuning(QoZ::Config &conf, T *data){
                             double a=(metric-metric_r)/(bitrate-bitrate_r);
                             double b=metric-a*bitrate;
                             double reg=a*bestb+b;
-                                printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bitrate_r,metric_r);
-                                printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bestb,reg);      
+                                //printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bitrate_r,metric_r);
+                                //printf("%.2f %.2f %.2f %.4f %.2f\n",gamma,alpha,beta,bestb,reg);      
                                 //conf.absErrorBound=orig_eb;
                             if (reg>bestm){
                                 bestalpha=alpha;
@@ -2203,7 +2225,7 @@ double Tuning(QoZ::Config &conf, T *data){
                                 bestm=metric;
                                 bestWave=wave_idx;
                                 useInterp=true;
-                                    printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
+                                //printf("Best: %.2f %.2f %.2f %.4f %.2f\n",bestgamma,bestalpha,bestbeta,bestb,bestm);
                             }
                         }
                         if ( ( (alpha>=1 and pow(alpha,max_interp_level-1)<=beta) or (alpha<1 and alpha*(max_interp_level-1)<=beta)) and !use_sperr<T,N>(conf) )
@@ -2228,7 +2250,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double metric=results.second;
 
                   
-                printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
+                //printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                     
                     bestb=bitrate;
@@ -2237,7 +2259,7 @@ double Tuning(QoZ::Config &conf, T *data){
                     bestbeta=-1;
                     bestWave=wave_idx;
                     useInterp=false;
-                    printf("Best: %.4f %.2f\n",bestb,bestm);
+                    //printf("Best: %.4f %.2f\n",bestb,bestm);
                        
                 }
                 else if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric<=bestm and bitrate>=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate>bestb) ){
@@ -2264,8 +2286,8 @@ double Tuning(QoZ::Config &conf, T *data){
                         continue;
                     double b=metric-a*bitrate;
                     double reg=a*bestb+b;
-                            printf("%.4f %.2f\n",bitrate_r,metric_r);
-                           printf("%.4f %.2f\n",bestb,reg);
+                            //printf("%.4f %.2f\n",bitrate_r,metric_r);
+                           //printf("%.4f %.2f\n",bestb,reg);
                             //conf.absErrorBound=orig_eb;
                     if (reg>bestm){
                                // bestalpha=alpha;
@@ -2277,7 +2299,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         bestWave=wave_idx;
                         useInterp=false;
 
-                                printf("Best: %.4f %.2f\n",bestb,bestm);
+                                //printf("Best: %.4f %.2f\n",bestb,bestm);
                     }
                 }          
             }
