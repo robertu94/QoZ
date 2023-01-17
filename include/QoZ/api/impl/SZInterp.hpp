@@ -1714,7 +1714,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //sampled_blocks[i].resize(coeffs_num);
                         //for (size_t j=0;j<coeffs_num;j++)
                         //    sampled_blocks[i][j]=coeffData[j]; 
-                        sampled_blocks.assign(coeffData,coeffData+coeffs_num);//may not so efficient
+                        sampled_blocks[i].assign(coeffData,coeffData+coeffs_num);//may not so efficient
                         delete[]coeffData;
                     }
                     conf.setDims(coeffs_size.begin(),coeffs_size.end());
