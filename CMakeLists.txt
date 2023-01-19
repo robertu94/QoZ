@@ -19,7 +19,7 @@ endif()
 
 find_package(PkgConfig)
 find_package(OpenMP)
-find_package(pybind11 REQUIRED)
+add_subdirectory(pybind11)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp)
 
 add_library(${PROJECT_NAME} INTERFACE)
