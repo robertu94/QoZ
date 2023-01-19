@@ -2383,11 +2383,13 @@ template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     QoZ::calAbsErrorBound(conf, data);
+    std::cout<<conf.absErrorBound<<std::endl;
     double prewave_absErrorBound=conf.absErrorBound;
     
     T *origdata,*coeffData;
     if (conf.rng<0)
         conf.rng=QoZ::data_range<T>(data,conf.num);
+    std::cout<<conf.rng<<std::endl;
     
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
