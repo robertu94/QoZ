@@ -2415,11 +2415,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
    
     std::string metadata;
 
-    if(conf.wavelet>1 and conf.pyBind){
+    //if(conf.wavelet>1 and conf.pyBind){
         std::string HOME = "/home/jinyang.liu";
         py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
         
-    }
+    //}
     if(conf.wavelet>0 and conf.waveletAutoTuning==0){       
 
 
