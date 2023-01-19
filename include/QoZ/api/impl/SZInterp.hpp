@@ -2416,6 +2416,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     std::string metadata;
 
     if(conf.wavelet>1 and conf.pyBind){
+        std::string HOME = "/home/jinyang.liu";
         py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
         
     }
@@ -2432,7 +2433,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //read a coeff array and a size information array
             if(conf.pyBind){
                 py::scoped_interpreter guard{};
-                std::string HOME = "/home/jinyang.liu";
+                
                 
                 auto pyModule = py::module_::import("pywt_wrapper");
                 
