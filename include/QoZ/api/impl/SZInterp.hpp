@@ -411,8 +411,8 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             T* newDecData;
             if(conf.pyBind){
                 py::scoped_interpreter guard{};
-                std::string HOME = "/home/jinyang.liu";
-                py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
+               // std::string HOME = "/home/jinyang.liu";
+                //py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 auto pyModule = py::module_::import("pywt_wrapper");
                 newDecData= QoZ::pybind_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, pyModule,conf.metadata,conf.wavelet, false,conf.dims);
             }
