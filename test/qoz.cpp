@@ -570,7 +570,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(conf.pyBind){
-        py::finaialize_interpreter();
+        py::finalize_interpreter();
     }
 
     if (delCmpPath) {
