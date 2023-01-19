@@ -58,9 +58,9 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
     //if(rtn!=sperr::RTNType::Good)
         //std::cout<<"bad cond"<<std::endl;
     //std::cout<<"pre3"<<std::endl;
-    //for(size_t i=0;i<conf.num;i++)
-    //    data[i]=buf[i];
-    memcpy(data,buf.data(),conf.num*sizeof(T));//maybe not efficient
+    for(size_t i=0;i<conf.num;i++)
+        data[i]=buf[i];
+    //memcpy(data,buf.data(),conf.num*sizeof(T));//maybe not efficient
     //std::cout<<"pre4"<<std::endl;
     return condi_meta;
 }
@@ -74,9 +74,9 @@ auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_ty
 
     sperr::Conditioner conditioner;
     auto rtn = conditioner.inverse_condition(buf,meta);
-    //for(size_t i=0;i<num;i++)
-    //    data[i]=buf[i];
-    memcpy(data,buf.data(),num*sizeof(T));//maybe not efficient
+    for(size_t i=0;i<num;i++)
+        data[i]=buf[i];
+    //memcpy(data,buf.data(),num*sizeof(T));//maybe not efficient
     return rtn;
 }
 
