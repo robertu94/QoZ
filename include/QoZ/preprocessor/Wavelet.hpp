@@ -187,7 +187,7 @@ namespace QoZ {
     }
 
     template<class T, QoZ::uint N>
-    T * pybind_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string & metadata, int wave_type=2, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
+    T * pybind_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string metadata, int wave_type=2, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
     {
         std::string wavetype;
         /*Interp
