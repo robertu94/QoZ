@@ -69,8 +69,10 @@ char *SZ_compress( QoZ::Config &config, const T *data, size_t &outSize) {
         exit(0);
     }
     //std::cout<<"szcf"<<std::endl;
-    if(conf.pybind_activated)
+    if(conf.pybind_activated){
+        std::cout<<"123"<<std::endl;
         config.pybind_activated=true;
+    }
 
     {
         
@@ -155,7 +157,7 @@ char *SZ_compress(const QoZ::Config &config, T *data, size_t &outSize) {
 
  */
 template<class T>
-void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
+void SZ_decompress( QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decData) {
     //QoZ::Timer timer(true);
    
     QoZ::Config conf(config);
@@ -190,6 +192,11 @@ void SZ_decompress(const QoZ::Config &config, char *cmpData, size_t cmpSize, T *
     } else {
        printf("Data dimension higher than 4 is not supported.\n");
         exit(0);
+    }
+    if(conf.pybind_activated){
+        std::cout<<"123"<<std::endl;
+        config.pybind_activated=true;
+
     }
     //timer.stop("decomp");
 }
