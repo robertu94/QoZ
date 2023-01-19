@@ -411,7 +411,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             T* newDecData;
             if(conf.pyBind){
                 //py::scoped_interpreter guard{};
-                py::finalize_interpreter();
+                //py::finalize_interpreter();
                 py::initialize_interpreter();
                 {
                     std::string HOME = "/home/jinyang.liu";
