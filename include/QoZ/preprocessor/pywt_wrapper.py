@@ -1,4 +1,4 @@
-#import numpy as np
+import numpy as np
 import pywt
 import pickle
 import time
@@ -16,7 +16,7 @@ def dwt(data, wave_type):
     structure = pickle.dumps(d[1])
     print(d[0].shape)
    
-    return d[0]#.astype(np.float32)
+    return d[0].astype(np.float32)
 
 def dwt_structure():
     global structure
@@ -36,4 +36,4 @@ def idwt(data, wave_structure, wave_type, ori_shape):
             b = b[:ori_shape[0], :ori_shape[1], :ori_shape[2]]
     end = time.time()
     print('pure python time without c++ binding', end - start)
-    return b#.astype(np.float32)
+    return b.astype(np.float32)
