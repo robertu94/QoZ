@@ -165,8 +165,8 @@ namespace QoZ {
             wavetype="bior4.4";//scale
 
         py::array_t<T> ori_data_py(dims, data);
-        py::array_t<T> dwt_data = pycode.attr("dwt")(ori_data_py, wavetype);
-        metadata = pycode.attr("dwt_structure")().cast<std::string>();
+        py::array_t<T> dwt_data = pyModule.attr("dwt")(ori_data_py, wavetype);
+        metadata = pyModule.attr("dwt_structure")().cast<std::string>();
         
 
         if(inplace){
@@ -215,7 +215,7 @@ namespace QoZ {
         py::array_t<float> idwt_data;
         if(inplace){
             idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,dims);
-            memcpy(data,idwt_data,num*sizeof(T));
+            memcpy(data,idwt_data.data(),num*sizeof(T));
             return data;
         }
         else{
@@ -225,7 +225,7 @@ namespace QoZ {
                 outnum *= output_dims[i];
 
             T *outData = new T[outnum];
-            memcpy(outDdata,idwt_data,outnum*sizeof(T));
+            memcpy(outData,idwt_data.data(),outnum*sizeof(T));
             
             return outData;
         }

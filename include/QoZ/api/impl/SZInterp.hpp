@@ -2812,8 +2812,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
            //std::cout<<"a3"<<std::endl;
 
             
-            if(conf.pybind)
-                decData=QoZ::pybind_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,pyModule,metadata,conf.wavelet, conf.pid, false,orig_dims);
+            if(conf.pyBind)
+                decData=QoZ::pybind_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,pyModule,metadata,conf.wavelet, false,orig_dims);
             else
                 decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
            // std::cout<<"a4"<<std::endl;
