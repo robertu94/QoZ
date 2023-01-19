@@ -20,7 +20,7 @@ namespace QoZ {
         std::string input_filename = std::to_string(pid) + "_external_wave_temp_input.tmp";
         //std::cout<<num<<std::endl;
         std::string del_command="rm -f "+ input_filename;
-        system(del_command.c_str());
+       // system(del_command.c_str());
         QoZ::writefile<T>(input_filename.c_str(), data, num);
 
 
