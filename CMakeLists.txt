@@ -20,7 +20,7 @@ endif()
 find_package(PkgConfig)
 find_package(OpenMP)
 find_package(pybind11 REQUIRED)
-target_link_libraries(${PROJECT_NAME} INTERFACE pybind11)
+target_link_libraries(${PROJECT_NAME} INTERFACE PkgConfig::pybind11)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp)
 
 add_library(${PROJECT_NAME} INTERFACE)
