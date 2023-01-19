@@ -32,7 +32,10 @@ target_include_directories(
 target_compile_features(${PROJECT_NAME}
     INTERFACE cxx_std_17
   )
-target_link_libraries(${PROJECT_NAME} INTERFACE pybind11)
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11::embed)
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11::module)
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11::numpy)
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11::stl)
 target_link_libraries(${PROJECT_NAME} INTERFACE OpenMP::OpenMP_CXX)
 
 option(QoZ_USE_BUNDLED_ZSTD "prefer the bundled version of Zstd" OFF)
