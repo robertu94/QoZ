@@ -52,7 +52,7 @@ char *compressedData = SZ_compress(conf, data, outSize);
  */
 
 template<class T>
-char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
+char *SZ_compress( QoZ::Config &config, const T *data, size_t &outSize) {
     QoZ::Config conf(config);
     std::vector<T> inData(data, data + conf.num);
     char *cmpData;
@@ -71,7 +71,7 @@ char *SZ_compress(const QoZ::Config &config, const T *data, size_t &outSize) {
     //std::cout<<"szcf"<<std::endl;
     if(conf.pybind_activated)
         config.pybind_activated=true;
-    
+
     {
         
         //save config
