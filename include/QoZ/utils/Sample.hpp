@@ -63,6 +63,7 @@ namespace QoZ {
                 }
             }
         }
+        //current has a problem. May return no blocks. Thinking how to better solve it.
 //        auto sampling_time = timer.stop();
 //        printf("Generate sampling data, block = %lu percent = %.3f%% Time = %.3f \n", sampling_block, sample_num * 100.0 / num,
 //               sampling_time);

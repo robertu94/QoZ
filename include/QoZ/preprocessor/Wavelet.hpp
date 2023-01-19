@@ -7,8 +7,10 @@
 
 #include <gsl/gsl_wavelet.h>
 #include "QoZ/utils/FileUtil.hpp"
-
-
+#include <pybind11/embed.h>
+#include <pybind11/numpy.h>
+#include <pybind11/stl.h>
+namespace py = pybind11;
 namespace QoZ {
 
 
@@ -77,10 +79,10 @@ namespace QoZ {
             QoZ::readfile<size_t>(size_filename.c_str(), N, coeffs_size.data());
 
 
-            for (int i = 0; i <N; i++)
-            {
+            //for (int i = 0; i <N; i++)
+            //{
                 //std::cout<<coeffs_size[i]<<std::endl;
-            }
+           // }
 
             size_t coeffs_num = 1;
             for (size_t i = 0; i < N; i++)
@@ -113,6 +115,7 @@ namespace QoZ {
         system(del_command.c_str());
         std::string output_filename = std::to_string(pid) + "_external_deccoeff_idwt.tmp";
         del_command="rm -f "+ output_filename;
+        
       
         if (inplace)
         {
@@ -135,6 +138,101 @@ namespace QoZ {
         }
     }
 
+
+    template<class T, QoZ::uint N>
+    T * pybind_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string & metadata, int wave_type=2,bool inplace=true,std::vector<size_t> &coeffs_size=std::vector<size_t>())
+    {
+        std::string wavetype;
+        /*Interp
+        if (wave_type==2)
+            wavetype="sym16";//rtms
+        else if(wave_type==3)
+            wavetype="bior3.1";//miranda scale
+        else if(wave_type==4)
+            wavetype="bior4.4";//nyx (hurricane)
+        else if(wave_type==5)
+            wavetype="coif6";//qmcpack
+        else
+            wavetype="bior6.8";//hurricane
+        */
+
+        
+        if (wave_type==2)
+            wavetype="sym13";//rtms,hurricane,nyx,miranda
+        else if(wave_type==3)
+            wavetype="bior3.3";//qmcpack
+        else if(wave_type==4)
+            wavetype="bior4.4";//scale
+
+        py::array_t<T> ori_data_py(dims, data);
+        py::array_t<T> dwt_data = pycode.attr("dwt")(ori_data_py, wavetype);
+        metadata = pycode.attr("dwt_structure")().cast<std::string>();
+        
+
+        if(inplace){
+            memcpy(data,dwt_data.data(),num*sizeof(T));
+            return data;
+        }
+        else{
+            coeffs_size.assign(dwt_data.shape(),dwt_data.shape()+N);
+            size_t coeffs_num = 1;
+            for (size_t i = 0; i < N; i++)
+                coeffs_num *= coeffs_size[i];
+            T *coeffData = new T[coeffs_num];
+            memcpy(coeffData,dwt_data.data(),coeffs_num*sizeof(T));
+            return coeffData;
+
+        }
+
+    }
+
+    template<class T, QoZ::uint N>
+    T * pybind_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string & metadata, int wave_type=2, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
+    {
+        std::string wavetype;
+        /*Interp
+        if (wave_type==2)
+            wavetype="sym16";//rtms
+        else if(wave_type==3)
+            wavetype="bior3.1";//miranda scale
+        else if(wave_type==4)
+            wavetype="bior4.4";//nyx (hurricane)
+        else if(wave_type==5)
+            wavetype="coif6";//qmcpack
+        else
+            wavetype="bior6.8";//hurricane
+        */
+
+        
+        if (wave_type==2)
+            wavetype="sym13";//rtms,hurricane,nyx,miranda
+        else if(wave_type==3)
+            wavetype="bior3.3";//qmcpack
+        else if(wave_type==4)
+            wavetype="bior4.4";//scale
+
+        py::array_t<T> dwt_data(dims, data);
+        py::array_t<float> idwt_data;
+        if(inplace){
+            idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,dims);
+            memcpy(data,idwt_data,num*sizeof(T));
+            return data;
+        }
+        else{
+            idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,output_dims);
+            size_t outnum=1;
+            for (size_t i = 0; i < N; i++)
+                outnum *= output_dims[i];
+
+            T *outData = new T[outnum];
+            memcpy(outDdata,idwt_data,outnum*sizeof(T));
+            
+            return outData;
+        }
+        
+
+
+    }
 
     template<class T, uint N>
 

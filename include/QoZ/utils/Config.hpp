@@ -192,6 +192,7 @@ namespace QoZ {
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
             QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
+            pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
 
 
 
@@ -278,6 +279,12 @@ namespace QoZ {
             write(sperrWithoutWave, c);
             //write(trimToZero, c);
             //write(prewave_absErrorBound, c);
+            
+            write(pyBind,c);
+            if(pyBind>0){
+                write(metadata.size(),c);
+                write(metadata.data(),metadata.size(),c);
+            }
             write(conditioning, c);
             if(conditioning>0){
                 meta_size=meta.size();
@@ -337,6 +344,14 @@ namespace QoZ {
             read(sperrWithoutWave, c);
             //read(trimToZero, c);
             //read(prewave_absErrorBound, c);
+            read(pyBind,c);
+            if(pyBind>0){
+                size_t msize;
+                read(msize,c);
+                metadata.resize(msize);
+                read(metadata.data(),msize,c);
+            }
+
             read(conditioning, c);
             if(conditioning>0){
                // std::cout<<"dwad"<<std::endl;
@@ -457,6 +472,9 @@ namespace QoZ {
         std::vector<sperr::Conditioner::meta_type>block_metas;
         int fixWave=-1;
         bool sperrWithoutWave=false;
+        bool pyBind=false;
+        std::string metadata;
+
 
         
 
