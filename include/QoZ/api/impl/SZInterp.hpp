@@ -2825,7 +2825,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(conf.pyBind){
                  
                 py::scoped_interpreter guard{};
-                //std::string HOME = "/home/jinyang.liu";
+                std::string HOME = "/home/jinyang.liu";
                 py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 auto newpyModule = py::module_::import("pywt_wrapper");
                 std::cout<<"idwt"<<std::endl;
