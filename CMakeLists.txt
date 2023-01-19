@@ -20,7 +20,7 @@ endif()
 find_package(PkgConfig)
 find_package(OpenMP)
 find_package(pybind11 REQUIRED)
-target_link_libraries(${PROJECT_NAME} INTERFACE pybind11::module)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp)
 
 add_library(${PROJECT_NAME} INTERFACE)
@@ -32,7 +32,7 @@ target_include_directories(
 target_compile_features(${PROJECT_NAME}
     INTERFACE cxx_std_17
   )
-
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11)
 target_link_libraries(${PROJECT_NAME} INTERFACE OpenMP::OpenMP_CXX)
 
 option(QoZ_USE_BUNDLED_ZSTD "prefer the bundled version of Zstd" OFF)
