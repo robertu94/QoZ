@@ -2920,7 +2920,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         //std::cout<<outlier_outSize<<std::endl;
 
         size_t totalsize=outSize+outlier_outSize;
-        char * final_output=new char[totalsize+conf.size_est()];
+        char * final_output=new char[totalsize+conf.size_est()+conf.metadata.size()];
         //for(size_t i=0;i<totalsize;i++)
             //final_output[i]=0;
         memcpy(final_output,compress_output,outSize);
