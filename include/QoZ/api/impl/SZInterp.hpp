@@ -410,6 +410,7 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.wavelet>1){
             T* newDecData;
             if(conf.pyBind){
+                py::scoped_interpreter guard{};
                 std::string HOME = "/home/jinyang.liu";
                 py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 auto pyModule = py::module_::import("pywt_wrapper");
