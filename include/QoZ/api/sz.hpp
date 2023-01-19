@@ -161,6 +161,7 @@ void SZ_decompress( QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decD
     //QoZ::Timer timer(true);
    
     QoZ::Config conf(config);
+    std::cout<<conf.pybind_activated<<std::endl;
     //{
         //load config
         int confSize;
