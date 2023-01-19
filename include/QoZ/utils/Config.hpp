@@ -228,7 +228,7 @@ namespace QoZ {
         }
 
         static size_t size_est() {
-            size_t est_size
+            
             return sizeof(size_t) * 10 + sizeof(double) * 8 + sizeof(bool) * 10 + sizeof(uint8_t) * 12 + sizeof(int) * 10 + 200; //doubled SZ3 est+100
         }
 
