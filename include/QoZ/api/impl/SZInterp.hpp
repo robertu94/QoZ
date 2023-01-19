@@ -2425,6 +2425,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             if(conf.pyBind){
                 std::cout<<"inits"<<std::endl;
                 std::string HOME = "/home/jinyang.liu";
+                py::scoped_interpreter guard{};
 
                 py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 std::cout<<"inits1"<<std::endl;
