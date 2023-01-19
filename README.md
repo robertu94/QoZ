@@ -1,3 +1,5 @@
+For users: This is the developing branch which is unstable and may have bugs. Do not use it for test.
+
 QoZ: Dynamic Quality Metric Oriented Error Bounded Lossy Compression for Scientific Datasets
 
 ## Introduction
