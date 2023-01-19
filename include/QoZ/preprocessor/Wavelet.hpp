@@ -163,11 +163,11 @@ namespace QoZ {
             wavetype="bior3.3";//qmcpack
         else if(wave_type==4)
             wavetype="bior4.4";//scale
-        std::cout<<"waveprep"<<std::endl;
+       
         py::array_t<T> ori_data_py(dims, data);
         py::array_t<T> dwt_data = pyModule.attr("dwt")(ori_data_py, wavetype);
         metadata = pyModule.attr("dwt_structure")().cast<std::string>();
-        std::cout<<"waveend"<<std::endl;
+     
         
 
         if(inplace){
@@ -179,10 +179,10 @@ namespace QoZ {
             size_t coeffs_num = 1;
             for (size_t i = 0; i < N; i++)
                 coeffs_num *= coeffs_size[i];
-            std::cout<<coeffs_num<<std::endl;
+            
             T *coeffData = new T[coeffs_num];
             memcpy(coeffData,dwt_data.data(),coeffs_num*sizeof(T));
-            std::cout<<"cpyend"<<std::endl;
+        
             return coeffData;
 
         }
