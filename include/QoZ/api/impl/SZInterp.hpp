@@ -412,7 +412,8 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
             if(conf.pyBind){
                 //py::scoped_interpreter guard{};
                 //py::finalize_interpreter();
-                py::initialize_interpreter();
+                if(!conf.pybind_activated)
+                    py::initialize_interpreter();
 
                 {
                     std::string HOME = "/home/jinyang.liu";
@@ -2428,11 +2429,11 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     //py::module_ pyModule=py::module_::import("pywt_wrapper");
     std::string metadata;
 
-    bool bind=false;
-    if(conf.wavelet>1 and conf.pyBind){
+    //bool bind=false;
+    if(conf.wavelet>1 and conf.pyBind and !conf.pybind_activated){
         py::initialize_interpreter();
        // std::cout<<"started."<<std::endl;
-        bind=true;
+        conf.pybind_activated=true;
         
     
 

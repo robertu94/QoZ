@@ -519,11 +519,11 @@ int main(int argc, char *argv[]) {
         
     }
 
-    if(conf.pyBind){
+    //if(conf.pyBind){
         //py::initialize_interpreter();
-    }
+    //}
 
-
+   
     if (compression) {
 
         if (dataType == SZ_FLOAT) {
@@ -537,6 +537,7 @@ int main(int argc, char *argv[]) {
             compress<int64_t>(inPath, cmpPath, conf);
         }
         */
+       
          else {
             printf("Error: data type not supported \n");
             usage();

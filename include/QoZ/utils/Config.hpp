@@ -479,6 +479,7 @@ namespace QoZ {
         bool sperrWithoutWave=false;
         bool pyBind=false;
         std::string metadata;
+        bool pybind_activated=false;
 
 
         
