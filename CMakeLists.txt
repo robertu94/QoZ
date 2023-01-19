@@ -19,7 +19,8 @@ endif()
 
 find_package(PkgConfig)
 find_package(OpenMP)
-add_subdirectory(pybind11)
+find_package(pybind11 REQUIRED)
+target_link_libraries(${PROJECT_NAME} INTERFACE pybind11)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/QoZ/version.hpp)
 
 add_library(${PROJECT_NAME} INTERFACE)
@@ -62,7 +63,7 @@ else()
   message("GSL not found.")
 endif()
 
-#add_subdirectory(include/QoZ/sperr/src)
+
 add_subdirectory(test)
 
 install(TARGETS ${PROJECT_NAME} 
