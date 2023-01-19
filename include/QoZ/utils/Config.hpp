@@ -291,6 +291,7 @@ namespace QoZ {
                 std::vector<uint8_t> temp_meta(meta.begin(),meta.end());
                 write(meta_size,c);
                 write(temp_meta.data(),meta_size,c);
+                std::cout<<"fujian"<<std::endl;
             }
 
             
@@ -346,10 +347,13 @@ namespace QoZ {
             //read(prewave_absErrorBound, c);
             read(pyBind,c);
             if(pyBind>0){
+                std::cout<<"mudao"<<std::endl;
                 size_t msize;
                 read(msize,c);
+                std::cout<<msize<<std::endl;
                 metadata.resize(msize);
                 read(metadata.data(),msize,c);
+                std::cout<<"dwad"<<std::endl;
             }
 
             read(conditioning, c);
