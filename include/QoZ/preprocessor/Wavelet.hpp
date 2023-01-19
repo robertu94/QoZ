@@ -213,10 +213,10 @@ namespace QoZ {
             wavetype="bior3.3";//qmcpack
         else if(wave_type==4)
             wavetype="bior4.4";//scale
-        std::cout<<"i1"<<std::endl;
+       // std::cout<<"i1"<<std::endl;
         py::array_t<T> dwt_data(dims, data);
         py::array_t<float> idwt_data;
-        std::cout<<"i2"<<std::endl;
+        //std::cout<<"i2"<<std::endl;
         if(inplace){
             idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,dims);
             memcpy(data,idwt_data.data(),num*sizeof(T));
@@ -224,14 +224,14 @@ namespace QoZ {
         }
         else{
             idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,output_dims);
-            std::cout<<"i3"<<std::endl;
+            //std::cout<<"i3"<<std::endl;
             size_t outnum=1;
             for (size_t i = 0; i < N; i++)
                 outnum *= output_dims[i];
 
             T *outData = new T[outnum];
             memcpy(outData,idwt_data.data(),outnum*sizeof(T));
-            std::cout<<"i4"<<std::endl;
+           //std::cout<<"i4"<<std::endl;
             
             return outData;
         }

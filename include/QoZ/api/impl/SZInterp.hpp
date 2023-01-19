@@ -2430,7 +2430,8 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     bool bind=false;
     if(conf.wavelet>1 and conf.pyBind){
-        //py::initialize_interpreter();
+        py::initialize_interpreter();
+        std::cout<<"started."<<std::endl;
         bind=true;
         
     
@@ -2932,8 +2933,10 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
         //std::cout<<"p5"<<std::endl;
         //QoZ::writefile<T>("waved.qoz.cmp.offset", decData, conf.num);
-        //if(bind)
-            //py::finalize_interpreter();
+        if(bind){
+            std::cout<<"ended."<<std::endl;
+            py::finalize_interpreter();
+        }
         
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
