@@ -60,7 +60,7 @@ auto pre_Condition(const QoZ::Config &conf,T * data){
     //std::cout<<"pre3"<<std::endl;
     //for(size_t i=0;i<conf.num;i++)
     //    data[i]=buf[i];
-    memcpy(data,buf.data(),conf.num);//maybe not efficient
+    memcpy(data,buf.data(),conf.num*sizeof(T));//maybe not efficient
     //std::cout<<"pre4"<<std::endl;
     return condi_meta;
 }
@@ -76,7 +76,7 @@ auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_ty
     auto rtn = conditioner.inverse_condition(buf,meta);
     //for(size_t i=0;i<num;i++)
     //    data[i]=buf[i];
-    memcpy(data,buf.data(),num);//maybe not efficient
+    memcpy(data,buf.data(),num*sizeof(T));//maybe not efficient
     return rtn;
 }
 
@@ -2383,13 +2383,13 @@ template<class T, QoZ::uint N>
 char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     assert(conf.cmprAlgo == QoZ::ALGO_INTERP_LORENZO);
     QoZ::calAbsErrorBound(conf, data);
-    std::cout<<conf.absErrorBound<<std::endl;
+   
     double prewave_absErrorBound=conf.absErrorBound;
     
     T *origdata,*coeffData;
     if (conf.rng<0)
         conf.rng=QoZ::data_range<T>(data,conf.num);
-    std::cout<<conf.rng<<std::endl;
+
     
     if (conf.relErrorBound<=0)
         conf.relErrorBound=conf.absErrorBound/conf.rng;
