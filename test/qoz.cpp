@@ -2,7 +2,10 @@
 #include <cstdlib>
 #include <cmath>
 #include "QoZ/api/sz.hpp"
-
+#include <pybind11/embed.h>
+#include <pybind11/numpy.h>
+#include <pybind11/stl.h>
+namespace py = pybind11;
 
 #define SZ_FLOAT 0
 #define SZ_DOUBLE 1
@@ -516,7 +519,9 @@ int main(int argc, char *argv[]) {
         
     }
 
-
+    if(conf.pyBind){
+        py::initialize_interpreter();
+    }
 
 
     if (compression) {
@@ -563,6 +568,11 @@ int main(int argc, char *argv[]) {
             exit(0);
         }
     }
+
+    if(conf.pyBind){
+        py::finaialize_interpreter();
+    }
+
     if (delCmpPath) {
         remove(cmpPath);
     }
