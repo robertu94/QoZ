@@ -410,9 +410,9 @@ void SZ_decompress_Interp(const QoZ::Config &conf, char *cmpData, size_t cmpSize
         if(conf.wavelet>1){
             T* newDecData;
             if(conf.pyBind){
-                py::scoped_interpreter guard{};
-               // std::string HOME = "/home/jinyang.liu";
-                //py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
+                //py::scoped_interpreter guard{};
+                std::string HOME = "/home/jinyang.liu";
+                py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 auto pyModule = py::module_::import("pywt_wrapper");
                 newDecData= QoZ::pybind_wavelet_postprocessing<T,N>(decData, conf.coeffs_dims, conf.coeffs_num, pyModule,conf.metadata,conf.wavelet, false,conf.dims);
             }
@@ -2828,9 +2828,9 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 //std::string HOME = "/home/jinyang.liu";
                // py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
                 //auto pyModule = py::module_::import("pywt_wrapper");
-                std::cout<<"idwt"<<std::endl;
+                //std::cout<<"idwt"<<std::endl;
                 decData=QoZ::pybind_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,pyModule,metadata,conf.wavelet, false,orig_dims);
-                std::cout<<"idwtf"<<std::endl;
+                //std::cout<<"idwtf"<<std::endl;
             }
             else
                 decData=QoZ::external_wavelet_postprocessing<T,N>(coeffData, conf.dims, conf.num,conf.wavelet, conf.pid, false,orig_dims);
