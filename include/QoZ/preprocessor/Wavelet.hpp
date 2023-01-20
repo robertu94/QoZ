@@ -176,14 +176,14 @@ namespace QoZ {
         else if(wave_type==4)
             wavetype="bior4.4";//scale
        
-        py::array_t<T> ori_data_py(dims, data);
+        py::array_t<T> ori_data_py(conf.dims, data);
         py::array_t<T> dwt_data = pyModule.attr("dwt")(ori_data_py, wavetype);
         metadata = pyModule.attr("dwt_structure")().cast<std::string>();
      
         
 
         if(inplace){
-            memcpy(data,dwt_data.data(),num*sizeof(T));
+            memcpy(data,dwt_data.data(),conf.num*sizeof(T));
             return data;
         }
         else{
