@@ -1,11 +1,12 @@
 #ifndef SZ3_WAVELET_HPP
 #define SZ3_WAVELET_HPP
 
-#ifdef ENABLE_GSL 
+
 #include "QoZ/preprocessor/PreProcessor.hpp"
 #include "QoZ/sperr/CDF97.h"
-
+#ifdef ENABLE_GSL 
 #include <gsl/gsl_wavelet.h>
+#endif
 #include "QoZ/utils/FileUtil.hpp"
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
@@ -262,7 +263,7 @@ namespace QoZ {
 
 
     }
-
+    #ifdef ENABLE_GSL
     template<class T, uint N>
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
@@ -313,40 +314,7 @@ namespace QoZ {
         }
 
 
-        void preProcess_cdf97(T *data, std::vector<size_t> dims) {
-            size_t n=1;
-            std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
-            for (size_t i=0;i<N;i++){
-                n*=dims[i];
-                m_dims[N-1-i]=dims[i];
-            }
-
-            std::vector<double> dwtdata(n, 0);
-            for (size_t i = 0; i < n; i++) {
-                dwtdata[i] = data[i];
-            }
-
-            sperr::CDF97 m_cdf;
-
-            m_cdf.take_data(std::move(dwtdata), m_dims);
-            /*
-            auto xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
-            auto xforms_z = num_of_xforms(m_dims[2]);
-            if (xforms_xy == xforms_z)
-                m_cdf.dwt3d_dyadic();
-            else
-                m_cdf.dwt3d_wavelet_packet();
-            */
-            m_cdf.dwt3d();
-
-
-            dwtdata=m_cdf.release_data();
-
-            for (size_t i = 0; i < n; i++) {
-                data[i] = dwtdata[i];
-            }
-            //std::cout<<"pre finished"<<std::endl;
-        }
+        
 
 
 
@@ -397,6 +365,42 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
+    #endif
+        void preProcess_cdf97(T *data, std::vector<size_t> dims) {
+            size_t n=1;
+            std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
+            for (size_t i=0;i<N;i++){
+                n*=dims[i];
+                m_dims[N-1-i]=dims[i];
+            }
+
+            std::vector<double> dwtdata(n, 0);
+            for (size_t i = 0; i < n; i++) {
+                dwtdata[i] = data[i];
+            }
+
+            sperr::CDF97 m_cdf;
+
+            m_cdf.take_data(std::move(dwtdata), m_dims);
+            /*
+            auto xforms_xy = num_of_xforms(std::min(m_dims[0], m_dims[1]));
+            auto xforms_z = num_of_xforms(m_dims[2]);
+            if (xforms_xy == xforms_z)
+                m_cdf.dwt3d_dyadic();
+            else
+                m_cdf.dwt3d_wavelet_packet();
+            */
+            m_cdf.dwt3d();
+
+
+            dwtdata=m_cdf.release_data();
+
+            for (size_t i = 0; i < n; i++) {
+                data[i] = dwtdata[i];
+            }
+            //std::cout<<"pre finished"<<std::endl;
+        }
+
 
         void postProcess_cdf97(T *data, std::vector<size_t> dims) {
             size_t n=1;
@@ -446,5 +450,4 @@ namespace QoZ {
 }
 
 
-#endif
 #endif //SZ3_WAVELET_HPP
