@@ -70,7 +70,7 @@ char *SZ_compress( QoZ::Config &config, const T *data, size_t &outSize) {
     }
     //std::cout<<"szcf"<<std::endl;
     if(conf.pybind_activated){
-        std::cout<<"123"<<std::endl;
+        
         config.pybind_activated=true;
     }
 
@@ -161,8 +161,7 @@ void SZ_decompress( QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decD
     //QoZ::Timer timer(true);
    
     QoZ::Config conf(config);
-    std::cout<<config.pybind_activated<<std::endl;
-    std::cout<<conf.pybind_activated<<std::endl;
+
     //{
         //load config
         int confSize;
@@ -196,7 +195,7 @@ void SZ_decompress( QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decD
         exit(0);
     }
     if(conf.pybind_activated){
-        std::cout<<"123"<<std::endl;
+      
         config.pybind_activated=true;
 
     }
