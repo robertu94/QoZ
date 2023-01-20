@@ -263,14 +263,14 @@ namespace QoZ {
 
 
     }
-    #ifdef ENABLE_GSL
+   
     template<class T, uint N>
 
     class Wavelet : public concepts::PreprocessorInterface<T, N> {
     public:
         
 
-        
+        #ifdef ENABLE_GSL
         void preProcess(T *data, size_t n) {
 
 
@@ -312,24 +312,7 @@ namespace QoZ {
             
 
         }
-
-
         
-
-
-
-
-
-
-
-
-
-        
-        
-
-       
-
-
         void postProcess(T *data, size_t n) {
             size_t m = n - 1;
             m |= m >> 1;
@@ -365,7 +348,7 @@ namespace QoZ {
             gsl_wavelet_workspace_free(work);
 
         }
-    #endif
+        #endif
         void preProcess_cdf97(T *data, std::vector<size_t> dims) {
             size_t n=1;
             std::array<size_t,3> m_dims=std::array<size_t,3>{1,1,1};
