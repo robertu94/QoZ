@@ -135,7 +135,7 @@ void usage_sz2() {
 }
 
 template<class T>
-void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
+void compress(char *inPath, char *cmpPath, QoZ::Config &conf) {//conf changed to reference
     T *data = new T[conf.num];
     QoZ::readfile<T>(inPath, conf.num, data);
 
@@ -170,8 +170,8 @@ void compress(char *inPath, char *cmpPath, QoZ::Config conf) {
 
 template<class T>
 void decompress(char *inPath, char *cmpPath, char *decPath,
-                QoZ::Config conf,
-                int binaryOutput, int printCmpResults) {
+                QoZ::Config &conf,
+                int binaryOutput, int printCmpResults) {//conf changed to reference
 
     size_t cmpSize;
    
@@ -570,9 +570,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if(conf.pyBind){
+    //if(conf.pyBind){
         //py::finalize_interpreter();
-    }
+    //}
 
     if (delCmpPath) {
         remove(cmpPath);
