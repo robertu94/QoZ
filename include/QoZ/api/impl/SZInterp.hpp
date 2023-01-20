@@ -1125,7 +1125,12 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 if(1){//tuningTarget!=QoZ::TUNING_TARGET_CR){
                     SPERR_Decompress<T,N>(cmprData,sampleOutSize,cur_block.data());
                     std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
-                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);//
+                    T *idwtData;
+                    if(conf.pyBind)
+                        idwtData=QoZ::pybind_wavelet_postprocessing<T,N>(testConfig,cur_block.data(), testConfig.metadata,testConfig.wavelet, false,ori_sbs);//
+                    else
+
+                        idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);//
                     
 
                     //std::cout<<"fuqindejian3"<<std::endl;     
@@ -1180,7 +1185,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                 }
                 else{
                     std::vector<size_t> ori_sbs(N,testConfig.sampleBlockSize+1);
-                    T *idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
+                    T *idwtData;
+                    if(testConfig.pyBind)
+                        idwtData=QoZ::pybind_wavelet_postprocessing<T,N>(testConfig,cur_block.data(), testConfig.metadata,testConfig.wavelet, false,ori_sbs);
+                    else
+                        idwtData=QoZ::external_wavelet_postprocessing<T,N>(cur_block.data(),testConfig.dims, testConfig.num, testConfig.wavelet, testConfig.pid, false,ori_sbs);
                     //std::cout<<"fuqindejian3"<<std::endl;     
 
                     //cur_block.resize(per_block_ele_num);
@@ -1719,7 +1728,11 @@ double Tuning(QoZ::Config &conf, T *data){
                 else{
                     size_t coeffs_num=1;
                     for(size_t i=0;i<sampled_blocks.size();i++){
-                        T *coeffData=QoZ::external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
+                        T *coeffData;
+                        if(conf.pyBind)
+                            coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,sampled_blocks[i].data(), conf.metadata, wave_idx,false,coeffs_size);
+                        else
+                            coeffData=QoZ::external_wavelet_preprocessing<T,N>(sampled_blocks[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){
                             
                             for (size_t j=0;j<N;j++)
@@ -2130,7 +2143,12 @@ double Tuning(QoZ::Config &conf, T *data){
                          //   std::cout<<waveleted_input[i].size()<<std::endl;
                         //    std::cout<<conf.num<<std::endl;
                         //}
-                        T * coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
+                        T * coeffData;
+                        if(conf.pyBind)
+                            coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,waveleted_input[i].data(), conf.metadata, wave_idx,false,coeffs_size);
+                        else
+
+                            coeffData=QoZ::external_wavelet_preprocessing<T,N>(waveleted_input[i].data(), conf.dims, conf.num, wave_idx, conf.pid,false,coeffs_size);
                         if(i==0){     
                             //std::cout<<coeffs_size[0]<<std::endl;
                             for (size_t j=0;j<N;j++)
@@ -2418,7 +2436,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
     //std::string HOME = "/home/jinyang.liu";
    // py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
     //py::module_ pyModule=py::module_::import("pywt_wrapper");
-    std::string metadata;
+    //std::string metadata;
 
     //bool bind=false;
     /*
@@ -2450,7 +2468,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                
                 
                 
-                coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,data, metadata,conf.wavelet, false, coeffs_size);
+                coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,data, conf.metadata,conf.wavelet, false, coeffs_size);
                
             }
             else{
@@ -2576,7 +2594,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         else{
             if(conf.pyBind){
                 
-                coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,data, metadata,conf.wavelet, false, coeffs_size);
+                coeffData=QoZ::pybind_wavelet_preprocessing<T,N>(conf,data, conf.metadata,conf.wavelet, false, coeffs_size);
             }
             else
                 coeffData=QoZ::external_wavelet_preprocessing<T,N>(data, conf.dims, conf.num, conf.wavelet, conf.pid, false, coeffs_size);
@@ -2846,7 +2864,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
                 
                 //std::cout<<"idwt"<<std::endl;
     
-                decData=QoZ::pybind_wavelet_postprocessing<T,N>(conf,coeffData,metadata,conf.wavelet, false,orig_dims);
+                decData=QoZ::pybind_wavelet_postprocessing<T,N>(conf,coeffData,conf.metadata,conf.wavelet, false,orig_dims);
                 //std::cout<<"idwtf"<<std::endl;
             }
             else
@@ -2933,7 +2951,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
-        conf.metadata=metadata;
+        //conf.metadata=metadata;
       
         //newconf.blockSize=32768;
         size_t outlier_outSize=0;
