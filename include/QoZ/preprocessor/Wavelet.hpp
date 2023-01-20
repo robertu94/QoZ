@@ -140,8 +140,20 @@ namespace QoZ {
 
 
     template<class T, QoZ::uint N>
-    T * pybind_wavelet_preprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string & metadata, int wave_type=2,bool inplace=true,std::vector<size_t> &coeffs_size=std::vector<size_t>())
+    T * pybind_wavelet_preprocessing(QoZ::Config &conf,T *data, std::string & metadata, int wave_type=2,bool inplace=true,std::vector<size_t> &coeffs_size=std::vector<size_t>())
     {
+
+        if(!conf.pybind_activated){
+            conf.pybind_activated=true;
+            py::initialize_interpreter();
+        }
+        QoZ::Timer temptimer(true);
+        std::string HOME = "/home/jinyang.liu";
+        py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
+        auto pyModule=py::module_::import("pywt_wrapper");
+        temptimer.stop("Pybind import");
+
+
         std::string wavetype;
         /*Interp
         if (wave_type==2)
@@ -190,8 +202,19 @@ namespace QoZ {
     }
 
     template<class T, QoZ::uint N>
-    T * pybind_wavelet_postprocessing(T *data, const std::vector<size_t> &dims, size_t num, const py::module_ & pyModule, std::string metadata, int wave_type=2, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
+    T * pybind_wavelet_postprocessing(QoZ::Config &conf, T *data, std::string metadata, int wave_type=2, bool inplace=true,const std::vector<size_t> &output_dims=std::vector<size_t>())
     {
+        if(!conf.pybind_activated){
+            conf.pybind_activated=true;
+            py::initialize_interpreter();
+        }
+        QoZ::Timer temptimer(true);
+        std::string HOME = "/home/jinyang.liu";
+        py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
+        auto pyModule=py::module_::import("pywt_wrapper");
+        temptimer.stop("Pybind import");
+
+
         std::string wavetype;
         /*Interp
         if (wave_type==2)
@@ -214,12 +237,12 @@ namespace QoZ {
         else if(wave_type==4)
             wavetype="bior4.4";//scale
        // std::cout<<"i1"<<std::endl;
-        py::array_t<T> dwt_data(dims, data);
+        py::array_t<T> dwt_data(conf.dims, data);
         py::array_t<float> idwt_data;
         //std::cout<<"i2"<<std::endl;
         if(inplace){
-            idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,dims);
-            memcpy(data,idwt_data.data(),num*sizeof(T));
+            idwt_data = pyModule.attr("idwt")(dwt_data, py::bytes(metadata), wavetype,conf.dims);
+            memcpy(data,idwt_data.data(),conf.num*sizeof(T));
             return data;
         }
         else{
