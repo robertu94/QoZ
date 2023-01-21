@@ -477,7 +477,7 @@ namespace QoZ {
         std::vector<sperr::Conditioner::meta_type>block_metas;
         int fixWave=-1;
         bool sperrWithoutWave=false;
-        bool pyBind=false;
+        bool pyBind=true;
         std::string metadata;
         bool pybind_activated=false;
 
