@@ -243,12 +243,9 @@ namespace QoZ {
 
                 }
                 return value;
+
                 
-                /*
-                return (int)coeffs[7] * iter.prev(0, 1) + (int)coeffs[6]*iter.prev(0, 2) + (int)coeffs[5] * iter.prev(1, 0)
-                       + (int)coeffs[4] * iter.prev(1, 1) + (int)coeffs[3] * iter.prev(1, 2) + (int)coeffs[2]*iter.prev(2, 0)
-                       + (int)coeffs[1] * iter.prev(2, 1) + (int)coeffs[0]*iter.prev(2, 2);
-                       */
+                
             }
             */
         }
