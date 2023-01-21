@@ -37,9 +37,12 @@ make_lorenzo_regression_compressor(const QoZ::Config &conf, Quantizer quantizer,
         exit(0);
     }
     if (conf.lorenzo) {
+        /*
         std::vector<double> coeffs;
+
         if(conf.useCoeff)
             coeffs=conf.lorenzo1_coeffs;
+        */
         if (use_single_predictor) {
             return QoZ::make_sz_general_compressor<T, N>(
                     QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 1>(conf.absErrorBound,coeffs), quantizer),
@@ -49,9 +52,11 @@ make_lorenzo_regression_compressor(const QoZ::Config &conf, Quantizer quantizer,
         }
     }
     if (conf.lorenzo2) {
+        /*
         std::vector<double> coeffs;
         if(conf.useCoeff)
             coeffs=conf.lorenzo2_coeffs;
+        */
         if (use_single_predictor) {
             return QoZ::make_sz_general_compressor<T, N>(
                     QoZ::make_sz_general_frontend<T, N>(conf, QoZ::LorenzoPredictor<T, N, 2>(conf.absErrorBound,coeffs), quantizer),
@@ -94,7 +99,7 @@ char *SZ_compress_LorenzoReg(QoZ::Config &conf, T *data, size_t &outSize) {
 
     char *cmpData;
     auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
-    if (N == 3 and !conf.regression2 and !conf.useCoeff) {
+    if (N == 3 and !conf.regression2 ) {
         // use fast version for 3D
         auto sz = QoZ::make_sz_general_compressor<T, N>(QoZ::make_sz_fast_frontend<T, N>(conf, quantizer), QoZ::HuffmanEncoder<int>(),
                                                        QoZ::Lossless_zstd());
@@ -117,7 +122,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
     if(conf.wavelet==0){
 
         
-        if (N == 3 and !conf.regression2 and !conf.useCoeff) {
+        if (N == 3 and !conf.regression2) {
             // use fast version for 3D
             auto sz = QoZ::make_sz_general_compressor<T, N>(QoZ::make_sz_fast_frontend<T, N>(conf, quantizer),
                                                            QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
@@ -139,7 +144,7 @@ void SZ_decompress_LorenzoReg(const QoZ::Config &theconf, char *cmpData, size_t 
 
         size_t first =conf.firstSize;
         size_t second=cmpSize-conf.firstSize;
-        if (N == 3 and !conf.regression2 and !conf.useCoeff) {
+        if (N == 3 and !conf.regression2 ) {
             // use fast version for 3D
             auto sz = QoZ::make_sz_general_compressor<T, N>(QoZ::make_sz_fast_frontend<T, N>(conf, quantizer),
                                                            QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());

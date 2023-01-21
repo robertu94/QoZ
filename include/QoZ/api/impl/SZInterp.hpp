@@ -1569,10 +1569,11 @@ double Tuning(QoZ::Config &conf, T *data){
 
     std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
     std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
-
+     /*
     if(conf.multiDimInterp){
         dir_candidates.push_back(QoZ::factorial(N));
     }
+    */
 
     std::vector<std::vector<uint8_t> > interpAlgo_lists(conf.waveletAutoTuning+1);
     std::vector<std::vector<uint8_t> > interpDirection_lists(conf.waveletAutoTuning+1);
@@ -1668,7 +1669,8 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.waveletAutoTuning=1;
         else{
             double normvar=QoZ::calcNormedVariance(data,global_num);
-            std::cout<<" Normvar: "<<normvar<<std::endl;
+            if (conf.verbose)
+                std::cout<<" Normvar: "<<normvar<<std::endl;
             double threshold=3e-3;
             if(normvar>=threshold)
                 conf.waveletAutoTuning=1;
@@ -1763,7 +1765,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
             }
           //   std::cout<<"a4"<<std::endl;
-            if (conf.exhaustiveTuning==0 and conf.autoTuningRate>0){
+            if (conf.autoTuningRate>0){
 
                 if(conf.pdTuningAbConf<=2){               
                     std::pair<double,double> ab=setABwithRelBound(rel_bound,conf.pdTuningAbConf);
@@ -1780,8 +1782,9 @@ double Tuning(QoZ::Config &conf, T *data){
           //  std::cout<<"a5"<<std::endl;
             std::vector<int> interpAlgo_Candidates={QoZ::INTERP_ALGO_LINEAR, QoZ::INTERP_ALGO_CUBIC};
             std::vector<int> interpDirection_Candidates={0, QoZ::factorial(N) -1};
-            if(conf.multiDimInterp)
-                interpDirection_Candidates.push_back(QoZ::factorial(N));
+            //if(conf.multiDimInterp)
+              
+              //  interpDirection_Candidates.push_back(QoZ::factorial(N));
             //std::cout<<"pd1"<<std::endl;
             if(conf.levelwisePredictionSelection>0){
                 std::vector<uint8_t> interpAlgo_list(conf.levelwisePredictionSelection,0);
@@ -2711,7 +2714,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
         }
       
         //further tune lorenzo
-        if (N == 3 and !conf.useCoeff) {
+        if (N == 3 ) {
             lorenzo_config.quantbinCnt = QoZ::optimize_quant_invl_3d<T>(data, conf.dims[0], conf.dims[1], conf.dims[2], conf.absErrorBound);
             lorenzo_config.pred_dim = 2;
             auto cmprData = SZ_compress_LorenzoReg<T, N>(lorenzo_config, sampling_data.data(), sampleOutSize);

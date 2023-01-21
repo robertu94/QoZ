@@ -31,7 +31,7 @@ namespace QoZ {
             if(the_coeffs.size()>0){
                 this->coeffs=the_coeffs;
                 useCoeff=true;
-                std::cout<<"Coeffs:"<<std::endl;
+                //std::cout<<"Coeffs:"<<std::endl;
                 for(int i=0;i<this->coeffs.size();i++)
 
                     std::cout<<this->coeffs[i]<<std::endl;
@@ -117,13 +117,13 @@ namespace QoZ {
 
             
             read(useCoeff,c,remaining_length);
-            std::cout<<useCoeff<<std::endl;
+            //std::cout<<useCoeff<<std::endl;
             if (useCoeff){
                 int coeff_num=int(pow(L+1,N)-1);
 
                 coeffs=std::vector<double>(coeff_num,0.0);
                 read(coeffs.data(),coeff_num,c,remaining_length);
-                std::cout<<"Coeffs:"<<std::endl;
+               // std::cout<<"Coeffs:"<<std::endl;
                 for(int i=0;i<coeffs.size();i++)
 
                     std::cout<<coeffs[i]<<std::endl;
@@ -158,9 +158,9 @@ namespace QoZ {
 
         template<uint NN = N, uint LL = L>
         inline typename std::enable_if<NN == 2 && LL == 1, T>::type do_predict(const iterator &iter) const noexcept {
-            if(coeffs.size()==0)
+            //if(!useCoeff)
                 return iter.prev(0, 1) + iter.prev(1, 0) - iter.prev(1, 1);
-            else{
+            /*else{
                 
                 T value=0;
                 size_t idx=0;
@@ -176,15 +176,16 @@ namespace QoZ {
                 return value;
                 
                // return (int)coeffs[2]*iter.prev(0, 1) + (int)coeffs[1]*iter.prev(1, 0) - (int)coeffs[0]*iter.prev(1, 1);
-            }
+            }*/
         }
 
         template<uint NN = N, uint LL = L>
         inline typename std::enable_if<NN == 3 && LL == 1, T>::type do_predict(const iterator &iter) const noexcept {
-            if (coeffs.size()==0)
+           // if (!useCoeff)
                 return iter.prev(0, 0, 1) + iter.prev(0, 1, 0) + iter.prev(1, 0, 0)
                        - iter.prev(0, 1, 1) - iter.prev(1, 0, 1) - iter.prev(1, 1, 0)
                        + iter.prev(1, 1, 1);
+            /*
             else{
                 T value=0;
                 size_t idx=0;
@@ -202,6 +203,7 @@ namespace QoZ {
                 return value;
 
             }
+            */
 
 
 
@@ -222,10 +224,11 @@ namespace QoZ {
 
         template<uint NN = N, uint LL = L>
         inline typename std::enable_if<NN == 2 && LL == 2, T>::type do_predict(const iterator &iter) const noexcept {
-            if(coeffs.size()==0)
+            //if(!useCoeff)
                 return 2 * iter.prev(0, 1) - iter.prev(0, 2) + 2 * iter.prev(1, 0)
                        - 4 * iter.prev(1, 1) + 2 * iter.prev(1, 2) - iter.prev(2, 0)
                        + 2 * iter.prev(2, 1) - iter.prev(2, 2);
+            /*           
             else{
                 
                 T value=0;
@@ -247,11 +250,12 @@ namespace QoZ {
                        + (int)coeffs[1] * iter.prev(2, 1) + (int)coeffs[0]*iter.prev(2, 2);
                        */
             }
+            */
         }
 
         template<uint NN = N, uint LL = L>
         inline typename std::enable_if<NN == 3 && LL == 2, T>::type do_predict(const iterator &iter) const noexcept {
-            if (coeffs.size()==0)
+            //if (!useCoeff)
                 return 2 * iter.prev(0, 0, 1) - iter.prev(0, 0, 2) + 2 * iter.prev(0, 1, 0)
                        - 4 * iter.prev(0, 1, 1) + 2 * iter.prev(0, 1, 2) - iter.prev(0, 2, 0)
                        + 2 * iter.prev(0, 2, 1) - iter.prev(0, 2, 2) + 2 * iter.prev(1, 0, 0)
@@ -261,6 +265,7 @@ namespace QoZ {
                        + 2 * iter.prev(2, 0, 1) - iter.prev(2, 0, 2) + 2 * iter.prev(2, 1, 0)
                        - 4 * iter.prev(2, 1, 1) + 2 * iter.prev(2, 1, 2) - iter.prev(2, 2, 0)
                        + 2 * iter.prev(2, 2, 1) - iter.prev(2, 2, 2);
+            /*
             else{
                 T value=0;
                 size_t idx=0;
@@ -277,7 +282,7 @@ namespace QoZ {
                 }
                 return value;
 
-            }
+            }*/
         
         }
     };
