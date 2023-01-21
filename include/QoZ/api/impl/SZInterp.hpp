@@ -1508,7 +1508,7 @@ double Tuning(QoZ::Config &conf, T *data){
     double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
     if(rel_bound>1e-3)
         conf.testLorenzo=0;
-    //QoZ::Timer timer(true);
+    QoZ::Timer timer(true);
     //timer.stop("")
     if(conf.QoZ){
         if(conf.autoTuningRate<=0)
@@ -1608,6 +1608,10 @@ double Tuning(QoZ::Config &conf, T *data){
     }
     std::vector<size_t> global_dims=conf.dims;
     size_t global_num=conf.num;
+    if(conf.verbose){
+        timer.stop("Prep");
+        timer.start();
+    }
 
     if(conf.waveletTest>0 and conf.waveletAutoTuning>=2){        
         /*
@@ -1679,6 +1683,10 @@ double Tuning(QoZ::Config &conf, T *data){
             else
                 conf.fixWave=2;
         }
+    }
+    if(conf.verbose){
+        timer.stop("WaveCheck");
+        timer.start();
     }
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
         //int ori_sperr=conf.sperr;//temp
@@ -1949,6 +1957,7 @@ double Tuning(QoZ::Config &conf, T *data){
         }
 
     }
+    
     else{
         QoZ::Timer timer(true);
         //size_t sampling_num, sampling_block;
@@ -2015,6 +2024,10 @@ double Tuning(QoZ::Config &conf, T *data){
         }
         if(conf.verbose)
             timer.stop("sz3 tuning");
+    }
+    if(conf.verbose){
+        timer.stop("PredTuning");
+        timer.start();
     }
 
     if (useInterp and conf.autoTuningRate>0){
@@ -2091,6 +2104,10 @@ double Tuning(QoZ::Config &conf, T *data){
 
         }
         double oriabseb=conf.absErrorBound;
+        if(conf.verbose){
+            timer.stop("B-M prep");
+            timer.start();
+        }
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
             if(conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
@@ -2343,6 +2360,10 @@ double Tuning(QoZ::Config &conf, T *data){
                 }          
             }
             conf.absErrorBound=oriabseb;
+            if(conf.verbose){
+                timer.stop("B-M step");
+                timer.start();
+            }
             
         }
         if(conf.tuningTarget==QoZ::TUNING_TARGET_AC){
