@@ -2792,7 +2792,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
 
     if(conf.wavelet>0){
         //if(conf.coeffTracking>0)
-        std::cout<<"Coeff CR = "<<(orig_num*1.0*sizeof(T))/outSize<<std::endl; 
+        //std::cout<<"Coeff CR = "<<(orig_num*1.0*sizeof(T))/outSize<<std::endl; 
         conf.firstSize=outSize;
         size_t tempSize=outSize; 
         T * decData;
