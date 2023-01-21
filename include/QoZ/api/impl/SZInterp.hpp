@@ -221,7 +221,7 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
     if (conf.offsetPredictor ==0){
         std::cout<<conf.absErrorBound<<std::endl;
         //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
-        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), QoZ::LinearQuantizer<T>), QoZ::HuffmanEncoder<int>(),
+        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), QoZ::LinearQuantizer<T>()), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
 
         //std::cout<<"dwa"<<std::endl;
@@ -240,7 +240,7 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         conf.quantbinCnt = 65536 * 2;
 
         //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
-        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, QoZ::LinearQuantizer<T>(), QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
                   
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
@@ -256,7 +256,7 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         conf.quantbinCnt = 65536 * 2;
 
         //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
-        auto sz = make_lorenzo_regression_compressor<T, N>(conf, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
+        auto sz = make_lorenzo_regression_compressor<T, N>(conf, QoZ::LinearQuantizer<T>(), QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
     }
@@ -267,7 +267,7 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
 
            
         auto sz = QoZ::SZInterpolationCompressor<T, 1, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::LinearQuantizer<T>(),
         QoZ::HuffmanEncoder<int>(),
         QoZ::Lossless_zstd());      
         sz.decompress((QoZ::uchar *)cmprData,outSize,decData);
@@ -280,7 +280,7 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         conf.interpAlgo=QoZ::INTERP_ALGO_CUBIC;
         conf.interpDirection=0;          
         auto sz = QoZ::SZInterpolationCompressor<T, N, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>, QoZ::Lossless_zstd>(
-        QoZ::LinearQuantizer<T>(conf.absErrorBound),
+        QoZ::LinearQuantizer<T>(),
         QoZ::HuffmanEncoder<int>(),
         QoZ::Lossless_zstd());      
         sz.decompress((QoZ::uchar *)cmprData,outSize,decData);
