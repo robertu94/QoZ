@@ -1703,6 +1703,7 @@ double Tuning(QoZ::Config &conf, T *data){
         num_sampled_blocks=sampled_blocks.size();
         per_block_ele_num=pow(sampleBlockSize+1,N);
         ele_num=num_sampled_blocks*per_block_ele_num;
+        std::cout<<ele::num<<std::endl;
         conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
         conf.num=per_block_ele_num;
         std::vector<T> cur_block(per_block_ele_num,0);
