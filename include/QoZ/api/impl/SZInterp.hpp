@@ -220,8 +220,8 @@ template<class T, QoZ::uint N>
 void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decData){
     if (conf.offsetPredictor ==0){
         std::cout<<conf.absErrorBound<<std::endl;
-        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
-        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), quantizer), QoZ::HuffmanEncoder<int>(),
+        //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
+        auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), QoZ::LinearQuantizer<T>), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
 
         //std::cout<<"dwa"<<std::endl;
@@ -239,8 +239,8 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         conf.blockSize = 16;//original 5
         conf.quantbinCnt = 65536 * 2;
 
-        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
-        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
+        //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, 1>(conf, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());
                   
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
@@ -255,8 +255,8 @@ void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decDat
         conf.blockSize = 5;
         conf.quantbinCnt = 65536 * 2;
 
-        auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
-        auto sz = make_lorenzo_regression_compressor<T, N>(conf, quantizer, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
+        //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound, conf.quantbinCnt / 2);
+        auto sz = make_lorenzo_regression_compressor<T, N>(conf, QoZ::LinearQuantizer<T>, QoZ::HuffmanEncoder<int>(), QoZ::Lossless_zstd());       
         sz->decompress((QoZ::uchar *)cmprData,outSize,decData);
         delete sz;
     }

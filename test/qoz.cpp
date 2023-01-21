@@ -545,6 +545,7 @@ int main(int argc, char *argv[]) {
         }
         
     }
+    std::cout<<conf.absErrorBound;
     if (decompression) {
         if (printCmpResults && inPath == nullptr) {
             printf("Error: Since you add -a option (analysis), please specify the original data path by -i <path>.\n");
