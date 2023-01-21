@@ -19,6 +19,7 @@ char *SZ_compress_impl(QoZ::Config &conf, const T *data, size_t &outSize) {
         //std::cout<<"implstart"<<std::endl;
         auto output=SZ_compress_dispatcher<T, N>(conf, dataCopy.data(), outSize);
         //std::cout<<"implend"<<std::endl;
+       
         return output;
     }
 }

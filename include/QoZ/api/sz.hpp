@@ -102,7 +102,7 @@ char *SZ_compress( QoZ::Config &config, const T *data, size_t &outSize) {
             QoZ::writefile<uint8_t>("interp_dirs.qoz", conf.interp_dirs.data(), conf.interp_dirs.size());
         }
     }
-
+    
     //std::cout<<"szce"<<std::endl;
     return cmpData;
 }
@@ -169,6 +169,7 @@ void SZ_decompress( QoZ::Config &config, char *cmpData, size_t cmpSize, T *&decD
         memcpy(&confSize, cmpData + (cmpSize - sizeof(int)), sizeof(int));
         QoZ::uchar const *cmpDataPos = (QoZ::uchar *) cmpData + (cmpSize - sizeof(int) - confSize);
         conf.load(cmpDataPos);
+        std::cout<<"afterload"<<cof.absErrorBound<<std::endl;
     //}
     //timer.stop("load config");
     //timer.start();
