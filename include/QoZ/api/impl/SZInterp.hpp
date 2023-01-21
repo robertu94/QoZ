@@ -2952,7 +2952,7 @@ char *SZ_compress_Interp_lorenzo(QoZ::Config &conf, T *data, size_t &outSize) {
             //std::cout<<"ended."<<std::endl;
             //py::finalize_interpreter();
         //}
-        
+        conf.absErrorBound=prewave_absErrorBound;
         QoZ::Config newconf(conf.num);
         newconf.absErrorBound=prewave_absErrorBound;
         //conf.metadata=metadata;
