@@ -11,10 +11,10 @@ def dwt(data, wave_type):
     c = pywt.wavedecn(data, wave_type, mode="periodization")
     d = pywt.coeffs_to_array(c)
     end = time.time()
-    print('pure python time without c++ binding', end - start)
+   # print('pure python time without c++ binding', end - start)
     global shape, structure
     structure = pickle.dumps(d[1])
-    print(d[0].shape)
+    #print(d[0].shape)
    
     return d[0].astype(np.float32)
 
@@ -35,5 +35,5 @@ def idwt(data, wave_structure, wave_type, ori_shape):
         else:
             b = b[:ori_shape[0], :ori_shape[1], :ori_shape[2]]
     end = time.time()
-    print('pure python time without c++ binding', end - start)
+    #print('pure python time without c++ binding', end - start)
     return b.astype(np.float32)
