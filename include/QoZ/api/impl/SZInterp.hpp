@@ -219,7 +219,7 @@ char * outlier_compress(QoZ::Config &conf,T *data,size_t &outSize){
 template<class T, QoZ::uint N>
 void outlier_decompress(QoZ::Config &conf,char *cmprData,size_t outSize,T*decData){
     if (conf.offsetPredictor ==0){
-        std::cout<<conf.absErrorBound<<std::endl;
+        //std::cout<<conf.absErrorBound<<std::endl;
         //auto quantizer = QoZ::LinearQuantizer<T>(conf.absErrorBound,conf.quantbinCnt / 2);
         auto sz = QoZ::make_sz_general_compressor<T, 1>(QoZ::make_sz_general_frontend<T, 1>(conf, QoZ::ZeroPredictor<T, 1>(), QoZ::LinearQuantizer<T>()), QoZ::HuffmanEncoder<int>(),
                                                                        QoZ::Lossless_zstd());
