@@ -37,9 +37,9 @@ make_lorenzo_regression_compressor(const QoZ::Config &conf, Quantizer quantizer,
         exit(0);
     }
     if (conf.lorenzo) {
-        /*
+        
         std::vector<double> coeffs;
-
+        /*
         if(conf.useCoeff)
             coeffs=conf.lorenzo1_coeffs;
         */
@@ -52,8 +52,9 @@ make_lorenzo_regression_compressor(const QoZ::Config &conf, Quantizer quantizer,
         }
     }
     if (conf.lorenzo2) {
-        /*
+       
         std::vector<double> coeffs;
+         /*
         if(conf.useCoeff)
             coeffs=conf.lorenzo2_coeffs;
         */
