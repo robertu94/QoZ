@@ -1347,7 +1347,11 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
     } 
     else if(testConfig.wavelet>1){
         bitrate*=testConfig.waveletBrFix2;
-    }           
+    }       
+
+    if(ALGO==QoZ::ALGO_LORENZO_REG)    {
+        bitrate*=testConfig.lorenzoBrFix;
+    }
     delete sz;
     return std::pair(bitrate,metric);
 }
@@ -1434,7 +1438,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double e2=1e-2;
         double e3=1e-1;
         double f1=1;
-        double f2=0.8;
+        double f2=conf.sampleBlockSize>=64?0.8:0.7;
         double f3=0.6;
         if(rel_bound<=e1)
             conf.waveletBrFix=f1;
@@ -1527,8 +1531,7 @@ double Tuning(QoZ::Config &conf, T *data){
         }
 
     }   
-    if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
-        setFixRates(conf,rel_bound);
+    
     size_t sampling_num, sampling_block;
     double best_interp_cr=0.0;
     double best_lorenzo_ratio=0.0;
@@ -1688,6 +1691,9 @@ double Tuning(QoZ::Config &conf, T *data){
         timer.stop("WaveCheck");
         timer.start();
     }
+    if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
+        setFixRates(conf,rel_bound);
+
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
         //int ori_sperr=conf.sperr;//temp
         //conf.sperr=0;

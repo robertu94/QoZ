@@ -154,6 +154,7 @@ namespace QoZ {
             waveletBrFix2 = cfg.GetReal("AlgoSettings", "waveletBrFix2", waveletBrFix2);
             waveletMseFix = cfg.GetReal("AlgoSettings", "waveletMseFix", waveletMseFix);
             waveletMseFix2 = cfg.GetReal("AlgoSettings", "waveletMseFix2", waveletMseFix2);
+            lorenzoBrFix = cfg.GetReal("AlgoSettings", "lorenzoBrFix", lorenzoBrFix);
             //sperr_eb_coeff = cfg.GetReal("AlgoSettings", "sperr_eb_coeff", sperr_eb_coeff);
 
             openmp = cfg.GetBoolean("GlobalSettings", "OpenMP", openmp);
@@ -465,6 +466,7 @@ namespace QoZ {
         double waveletMseFix = 1.0;
         double waveletBrFix2 = 1.0;
         double waveletMseFix2 = 1.0;
+        double lorenzoBrFix = 1.0;
         int var_first=0;
         size_t profStride=0;
         int sperr=-1;
