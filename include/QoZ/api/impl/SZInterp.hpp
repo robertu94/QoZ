@@ -1636,7 +1636,7 @@ double Tuning(QoZ::Config &conf, T *data){
         if (mindim<dimthres)
             conf.waveletAutoTuning=1;
         else{
-            double normvar=QoZ::calcNormedVariance(data,global_num);
+            double normvar=QoZ::calcNormedVariance(data,conf.num);
             if (conf.verbose)
                 std::cout<<" Normvar: "<<normvar<<std::endl;
             double threshold=3e-3;
