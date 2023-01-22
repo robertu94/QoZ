@@ -1503,7 +1503,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         
     }
 
-    if(conf.sampleBlockSize<=32){//FOR CONVENIENCE, modify later.
+    if(1){//conf.sampleBlockSize<=32){//FOR CONVENIENCE, modify later.
         double e1=1e-5;
         double e2=1e-4;
         double e3=1e-3;
