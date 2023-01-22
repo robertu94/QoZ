@@ -1349,7 +1349,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
         bitrate*=testConfig.waveletBrFix2;
     }       
 
-    if(ALGO==QoZ::ALGO_LORENZO_REG)    {
+    if(algo==QoZ::ALGO_LORENZO_REG)    {
         bitrate*=testConfig.lorenzoBrFix;
     }
     delete sz;
