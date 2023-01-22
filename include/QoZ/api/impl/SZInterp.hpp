@@ -1503,6 +1503,27 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         
     }
 
+    if(conf.lorenzoBrFix!=1){//FOR CONVENIENCE, modify later.
+        double e1=1e-5;
+        double e2=1e-4;
+        double e3=1e-3;
+        //double e4=1e-1;
+        double f1=1;//change to 1
+        double f2=1.05;//changt to 0.9
+        double f3=1.15;//0.8
+        //double f4=0.15;
+        if(rel_bound<=e1)
+            conf.lorenzoBrFix=f1;
+        else if(rel_bound<=e2)
+            conf.lorenzoBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
+        else if (rel_bound<=e3)
+            conf.lorenzoBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
+        else 
+            conf.lorenzoBrFix=f3;
+        std::cout<<conf.lorenzoBrFix<<std::endl;
+    }
+    
+
 }
 
 template<class T, QoZ::uint N>
