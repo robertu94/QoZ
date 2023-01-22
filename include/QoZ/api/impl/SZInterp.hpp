@@ -1434,14 +1434,18 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
     if(conf.sperr>=1){
+        double e0=1e-4;
         double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
+        double f0=1;
         double f1=conf.sampleBlockSize>=64?1:0.9;
         double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane
         double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane
-        if(rel_bound<=e1)
-            conf.waveletBrFix=f1;
+        if(rel_bound<=e0)
+            conf.waveletBrFix=f0;
+        else if(rel_bound<=e1)
+            conf.waveletBrFix=f0-(f0-f1)*(rel_bound-e0)/(e1-e0);
         else if(rel_bound<=e2)
             conf.waveletBrFix=f1-(f1-f2)*(rel_bound-e1)/(e2-e1);
         else if (rel_bound<=e3)
