@@ -1508,9 +1508,9 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double e2=1e-4;
         double e3=1e-3;
         //double e4=1e-1;
-        double f1=1;//change to 1
-        double f2=1.05;//changt to 0.9
-        double f3=1.15;//0.8
+        double f1=1;
+        double f2=1.1;
+        double f3=1.2;
         //double f4=0.15;
         if(rel_bound<=e1)
             conf.lorenzoBrFix=f1;
