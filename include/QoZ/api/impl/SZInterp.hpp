@@ -855,8 +855,11 @@ inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bou
     {   
         if(conf.tuningTarget==QoZ::TUNING_TARGET_CR)
             gamma_list={1,1.25,1.5,1.75,2};
-        else
-            gamma_list={0.5,0.75,1,1.25,1.5};
+        else{
+            //gamma_list={0.5,0.75,1,1.25,1.5};
+            gamma_list={0.75,1,1.25};//reduced for faster speed
+
+        }
             //gamma_list={1.5,3,5,10,20};
        
     }
@@ -868,8 +871,10 @@ inline void init_gammalist(std::vector<double> &gamma_list,const double &rel_bou
         {
             if(conf.tuningTarget==QoZ::TUNING_TARGET_CR)
                 gamma_list={1,1.25,1.5,1.75,2};
-            else
-                gamma_list={0.5,0.75,1,1.25,1.5};
+            else{
+                //gamma_list={0.5,0.75,1,1.25,1.5};
+            gamma_list={0.75,1,1.25};//reduced for faster speed
+            }
         }
         
     }
@@ -1434,16 +1439,20 @@ std::pair <double,double> setABwithRelBound(double rel_bound,int configuration=0
 
 void setFixRates(QoZ::Config &conf,double rel_bound){
     if(conf.sperr>=1){
+        double em1=1e-5;
         double e0=1e-4;
         double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
-        double f0=1;
+        double fm1=1;
+        double f0=conf.sampleBlockSize>=64?1:0.9;
         double f1=conf.sampleBlockSize>=64?1:0.9;
         double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane
         double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane
-        if(rel_bound<=e0)
-            conf.waveletBrFix=f0;
+        if(rel_bound<=em1)
+            conf.waveletBrFix=fm1;
+        else if(rel_bound<=e0)
+            conf.waveletBrFix=fm1-(fm1-f0)*(rel_bound-em1)/(e0-em1);
         else if(rel_bound<=e1)
             conf.waveletBrFix=f0-(f0-f1)*(rel_bound-e0)/(e1-e0);
         else if(rel_bound<=e2)
@@ -1601,7 +1610,12 @@ double Tuning(QoZ::Config &conf, T *data){
     std::vector<uint8_t> bestInterpAlgos(conf.waveletAutoTuning+1);
     std::vector<uint8_t> bestInterpDirections(conf.waveletAutoTuning+1);
 
-    
+    size_t shortest_edge=conf.dims[0];
+    for (size_t i=0;i<N;i++){
+        shortest_edge=conf.dims[i]<shortest_edge?conf.dims[i]:shortest_edge;
+    }
+    if (shortest_edge<64 and conf.waveletAutoTuning>1)
+        conf.waveletAutoTuning=1;
 
     if(conf.waveletTest>0 and conf.waveletAutoTuning>=2){        
         /*
@@ -1695,6 +1709,27 @@ double Tuning(QoZ::Config &conf, T *data){
                 */
     }
     //add sbs autoreduce
+
+    
+    
+    size_t minimum_sbs=conf.waveletAutoTuning>1?64:4;
+    if (conf.sampleBlockSize<minimum_sbs)
+        conf.sampleBlockSize=minimum_sbs;
+
+
+    while(conf.sampleBlockSize>shortest_edge)
+        conf.sampleBlockSize/=2;
+
+
+    
+
+    while(conf.autoTuningRate>0 and conf.sampleBlockSize>=2*minimum_sbs and (pow(conf.sampleBlockSize,N)/(double)conf.num)>1.5*conf.autoTuningRate)
+        conf.sampleBlockSize/=2;
+    std::cout<<"sbs "<<conf.sampleBlockSize<<std::endl;
+
+    
+
+
            
     size_t totalblock_num=1;  
     for(int i=0;i<N;i++){                      
