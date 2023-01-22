@@ -1437,9 +1437,9 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
-        double f1=1;
-        double f2=conf.sampleBlockSize>=64?0.8:0.46;//just for hurricane
-        double f3=conf.sampleBlockSize>=64?0.6:0.46;//just for hurricane
+        double f1=conf.sampleBlockSize>=64?1:0.9;
+        double f2=conf.sampleBlockSize>=64?0.8:0.6;//just for hurricane
+        double f3=conf.sampleBlockSize>=64?0.6:0.5;//just for hurricane
         if(rel_bound<=e1)
             conf.waveletBrFix=f1;
         else if(rel_bound<=e2)
@@ -1503,7 +1503,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         
     }
 
-    if(conf.lorenzoBrFix!=1){//FOR CONVENIENCE, modify later.
+    if(conf.sampleBlockSize<=32){//FOR CONVENIENCE, modify later.
         double e1=1e-5;
         double e2=1e-4;
         double e3=1e-3;
@@ -1520,7 +1520,10 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
             conf.lorenzoBrFix=f2-(f2-f3)*(rel_bound-e2)/(e3-e2);
         else 
             conf.lorenzoBrFix=f3;
-        std::cout<<conf.lorenzoBrFix<<std::endl;
+        //std::cout<<conf.lorenzoBrFix<<std::endl;
+    }
+    else{
+        conf.lorenzoBrFix=1;
     }
     
 
