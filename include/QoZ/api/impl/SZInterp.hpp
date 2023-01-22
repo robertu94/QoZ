@@ -1512,7 +1512,7 @@ double Tuning(QoZ::Config &conf, T *data){
     double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
     if(rel_bound>1e-3)
         conf.testLorenzo=0;
-    QoZ::Timer timer(true);
+   // QoZ::Timer timer(true);
     //timer.stop("")
     if(conf.QoZ){
         if(conf.autoTuningRate<=0)
@@ -1559,18 +1559,6 @@ double Tuning(QoZ::Config &conf, T *data){
             conf.levelwisePredictionSelection=max_interp_level;
     }
             
-    std::vector< std::vector<T> > sampled_blocks;
-    size_t sampleBlockSize=conf.sampleBlockSize;
-    size_t num_sampled_blocks;
-    size_t per_block_ele_num;
-    size_t ele_num;
-    if (sampleBlockSize<=0){
-        sampleBlockSize = (N==2?64:32);
-            /*
-            if (conf.maxStep>sampleBlockSize)
-                sampleBlockSize=conf.maxStep;
-                */
-    }
 
     std::vector<int> op_candidates={QoZ::INTERP_ALGO_LINEAR,QoZ::INTERP_ALGO_CUBIC};
     std::vector<int> dir_candidates={0,QoZ::factorial(N)-1};
@@ -1584,37 +1572,8 @@ double Tuning(QoZ::Config &conf, T *data){
     std::vector<std::vector<uint8_t> > interpDirection_lists(conf.waveletAutoTuning+1);
     std::vector<uint8_t> bestInterpAlgos(conf.waveletAutoTuning+1);
     std::vector<uint8_t> bestInterpDirections(conf.waveletAutoTuning+1);
-           
-    size_t totalblock_num=1;  
-    for(int i=0;i<N;i++){                      
-        totalblock_num*=(size_t)((conf.dims[i]-1)/sampleBlockSize);
-    }
 
-    std::vector<std::vector<size_t> >starts;
-    if((conf.waveletTuningRate>0 or conf.autoTuningRate>0 or conf.predictorTuningRate>0) and conf.profiling){      
-        conf.profStride=conf.sampleBlockSize/4;
-        if(N==2){
-            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
-        }
-        else if (N==3){
-            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
-        }
-        //num_blocks=starts.size();
-    }
-
-
-    size_t num_filtered_blocks=starts.size();
-    double profiling_coeff=1;
-    if(conf.profiling){
-        profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
-
-    }
-    std::vector<size_t> global_dims=conf.dims;
-    size_t global_num=conf.num;
-    if(conf.verbose){
-        timer.stop("Prep");
-        timer.start();
-    }
+    
 
     if(conf.waveletTest>0 and conf.waveletAutoTuning>=2){        
         /*
@@ -1687,12 +1646,66 @@ double Tuning(QoZ::Config &conf, T *data){
                 conf.fixWave=2;
         }
     }
+    /*
     if(conf.verbose){
         timer.stop("WaveCheck");
         timer.start();
     }
+    */
+    
+
+    std::vector< std::vector<T> > sampled_blocks;
+    size_t sampleBlockSize=conf.sampleBlockSize;
+    size_t num_sampled_blocks;
+    size_t per_block_ele_num;
+    size_t ele_num;
+    if (sampleBlockSize<=0){
+        sampleBlockSize = (N==2?64:32);
+            /*
+            if (conf.maxStep>sampleBlockSize)
+                sampleBlockSize=conf.maxStep;
+                */
+    }
+    //add sbs autoreduce
+           
+    size_t totalblock_num=1;  
+    for(int i=0;i<N;i++){                      
+        totalblock_num*=(size_t)((conf.dims[i]-1)/sampleBlockSize);
+    }
+
+    std::vector<std::vector<size_t> >starts;
+    if((conf.waveletTuningRate>0 or conf.autoTuningRate>0 or conf.predictorTuningRate>0) and conf.profiling){      
+        conf.profStride=conf.sampleBlockSize/4;
+        if(N==2){
+            QoZ::profiling_block_2d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
+        }
+        else if (N==3){
+            QoZ::profiling_block_3d<T,N>(data,conf.dims,starts,sampleBlockSize,conf.absErrorBound,conf.profStride);
+        }
+        //num_blocks=starts.size();
+    }
+
+
+    size_t num_filtered_blocks=starts.size();
+    double profiling_coeff=1;
+    if(conf.profiling){
+        profiling_coeff=((double)num_filtered_blocks)/(totalblock_num);
+
+    }
+    std::vector<size_t> global_dims=conf.dims;
+    size_t global_num=conf.num;
+
     if(conf.waveletAutoTuning>0 and conf.waveAutoFix)
         setFixRates(conf,rel_bound);
+
+
+    /*
+    if(conf.verbose){
+        timer.stop("Prep");
+        timer.start();
+    }
+    */
+
 
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
         //int ori_sperr=conf.sperr;//temp
@@ -1709,7 +1722,7 @@ double Tuning(QoZ::Config &conf, T *data){
         num_sampled_blocks=sampled_blocks.size();
         per_block_ele_num=pow(sampleBlockSize+1,N);
         ele_num=num_sampled_blocks*per_block_ele_num;
-        std::cout<<ele_num<<std::endl;
+        //std::cout<<ele_num<<std::endl;
         conf.dims=std::vector<size_t>(N,sampleBlockSize+1);
         conf.num=per_block_ele_num;
         std::vector<T> cur_block(per_block_ele_num,0);
@@ -2032,11 +2045,12 @@ double Tuning(QoZ::Config &conf, T *data){
         if(conf.verbose)
             timer.stop("sz3 tuning");
     }
+    /*
     if(conf.verbose){
         timer.stop("PredTuning");
         timer.start();
     }
-
+    */
     if (useInterp and conf.autoTuningRate>0){
             
         if(conf.verbose)
@@ -2111,10 +2125,12 @@ double Tuning(QoZ::Config &conf, T *data){
 
         }
         double oriabseb=conf.absErrorBound;
+        /*
         if(conf.verbose){
             timer.stop("B-M prep");
             timer.start();
         }
+        */
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
             if(conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
@@ -2367,11 +2383,12 @@ double Tuning(QoZ::Config &conf, T *data){
                 }          
             }
             conf.absErrorBound=oriabseb;
+            /*
             if(conf.verbose){
                 timer.stop("B-M step");
                 timer.start();
             }
-            
+            */
         }
         if(conf.tuningTarget==QoZ::TUNING_TARGET_AC){
             bestm=1-bestm;
@@ -2390,7 +2407,7 @@ double Tuning(QoZ::Config &conf, T *data){
             printf("Autotuning finished.\n");
             printf("Selected wavelet: %d\n",bestWave);
             if (useInterp)
-                printf("Interp selected. Selected gamma: %f. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestgamma,bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
+                printf("Interp/SPECK selected. Selected gamma: %f. Selected alpha: %f. Selected beta: %f. Best bitrate: %f. Best %s: %f.\n",bestgamma,bestalpha,bestbeta,bestb, const_cast<char*>(metric_name.c_str()),bestm);
             else
                 printf("Lorenzo selected. Best bitrate: %f. Best %s: %f.\n",bestb, const_cast<char*>(metric_name.c_str()),bestm);
 
