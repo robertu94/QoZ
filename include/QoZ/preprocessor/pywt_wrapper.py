@@ -29,6 +29,7 @@ def idwt(data, wave_structure, wave_type, ori_shape):
     start = time.time()
     structure = pickle.loads(wave_structure)
     print(structure)
+    print(data.shape)
     dc_c = pywt.array_to_coeffs(data, structure)
     print(ori_shape)
     b = pywt.waverecn(dc_c, wave_type, mode="periodization")
