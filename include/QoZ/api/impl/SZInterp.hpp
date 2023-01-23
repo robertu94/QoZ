@@ -1725,7 +1725,7 @@ double Tuning(QoZ::Config &conf, T *data){
 
     while(conf.autoTuningRate>0 and conf.sampleBlockSize>=2*minimum_sbs and (pow(conf.sampleBlockSize,N)/(double)conf.num)>1.5*conf.autoTuningRate)
         conf.sampleBlockSize/=2;
-    //std::cout<<"sbs "<<conf.sampleBlockSize<<std::endl;
+    std::cout<<"sbs "<<conf.sampleBlockSize<<std::endl;
 
     
 
