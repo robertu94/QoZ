@@ -418,7 +418,7 @@ void SZ_decompress_Interp(QoZ::Config &conf, char *cmpData, size_t cmpSize, T *d
                 size_t ori_num=conf.num;
                 conf.dims=conf.coeffs_dims;
                 conf.num=conf.coeffs_num; 
-                newDecData= QoZ::pybind_wavelet_postprocessing<T,N>(conf,decData,conf.metadata,conf.wavelet, false,conf.dims);
+                newDecData= QoZ::pybind_wavelet_postprocessing<T,N>(conf,decData,conf.metadata,conf.wavelet, false,ori_dims);
                 conf.dims=ori_dims;
                 conf.num=ori_num;
                
