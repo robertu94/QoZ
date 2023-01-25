@@ -36,6 +36,7 @@ namespace QoZ {
         for (size_t i = 0; i < dimx-block_size; i+=block_size) {
             for (size_t j = 0; j < dimy-block_size; j+=block_size) {
                 for (size_t k = 0; k < dimz-block_size; k+=block_size) {
+                    std::cout<<i<<" "<<j<<" "<<k<<std::endl;
                     size_t start_idx=i*dimyz+j*dimz+k;
                     T min=data[start_idx];
                     T max=data[start_idx];
@@ -53,6 +54,7 @@ namespace QoZ {
                         }
                     }
                     if (max-min>abseb){
+                        std::cout<<"selected"<<std::endl;
                         size_t a[3]={i,j,k};
                         starts.push_back(std::vector<size_t>(a,a+3));
                     }
