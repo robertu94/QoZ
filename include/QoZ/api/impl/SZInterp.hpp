@@ -942,14 +942,14 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
             
         }
         else{
-           // std::vector< std::pair<double,std::vector<size_t> > >block_heap;
+            std::vector< std::pair<double,std::vector<size_t> > >block_heap;
             for(size_t i=0;i<num_filtered_blocks;i++){
                 double mean,sigma2,range;
-                //QoZ::blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
-                //block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,starts[i]));
+                QoZ::blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
+                block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,starts[i]));
                 
             }
-            //std::make_heap(block_heap.begin(),block_heap.end());
+            std::make_heap(block_heap.begin(),block_heap.end());
           
 
             size_t sampled_block_num=totalblock_num*sample_rate;
@@ -960,14 +960,14 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
 
             for(size_t i=0;i<sampled_block_num;i++){
                 std::vector<T> s_block;
-                std::vector<size_t> temp_start={64,192,0};
+                //std::vector<size_t> temp_start={64,192,0};
              
-                //QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
-                QoZ::sample_blocks<T,N>(data, s_block,dims, temp_start,sampleBlockSize+1);
+                QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
+                //QoZ::sample_blocks<T,N>(data, s_block,dims, temp_start,sampleBlockSize+1);
               
                 sampled_blocks.push_back(s_block);
-                //std::pop_heap(block_heap.begin(),block_heap.end());
-               // block_heap.pop_back();
+                std::pop_heap(block_heap.begin(),block_heap.end());
+                block_heap.pop_back();
                
             }
         }
