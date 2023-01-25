@@ -960,10 +960,10 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
 
             for(size_t i=0;i<sampled_block_num;i++){
                 std::vector<T> s_block;
-                std::cout<<block_heap.front().first<<std::endl;
+                //std::cout<<block_heap.front().first<<std::endl;
                 QoZ::sample_blocks<T,N>(data, s_block,dims, block_heap.front().second,sampleBlockSize+1);
-                for(size_t j=0;j<N;j++)
-                    std::cout<<block_heap.front().second[j]<<std::endl;
+                //for(size_t j=0;j<N;j++)
+                    //std::cout<<block_heap.front().second[j]<<std::endl;
                 sampled_blocks.push_back(s_block);
                 std::pop_heap(block_heap.begin(),block_heap.end());
                 block_heap.pop_back();
