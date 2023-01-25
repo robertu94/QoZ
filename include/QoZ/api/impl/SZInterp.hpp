@@ -945,7 +945,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
            // std::vector< std::pair<double,std::vector<size_t> > >block_heap;
             for(size_t i=0;i<num_filtered_blocks;i++){
                 double mean,sigma2,range;
-                QoZ::blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
+                //QoZ::blockwise_profiling<T>(data,dims, starts[i],sampleBlockSize+1, mean,sigma2,range);
                 //block_heap.push_back(std::pair<double,std::vector<size_t> >(sigma2,starts[i]));
                 
             }
