@@ -950,6 +950,8 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
                 //block_heap.push_back(std::pair<double,std::vector<size_t> >(1.0,starts[i]));
             }
             std::make_heap(block_heap.begin(),block_heap.end());
+            std::cout<<block_heap.size();
+            
             size_t sampled_block_num=totalblock_num*sample_rate;
             if(sampled_block_num==0)
                 sampled_block_num=1;
@@ -960,6 +962,7 @@ void sampleBlocks(T *data,std::vector<size_t> &dims, size_t sampleBlockSize,std:
                 sampled_blocks.push_back(s_block);
                 std::pop_heap(block_heap.begin(),block_heap.end());
                 block_heap.pop_back();
+                std::cout<<block_heap.size();
             }
         }
     }               
