@@ -1785,6 +1785,8 @@ double Tuning(QoZ::Config &conf, T *data){
         timer.start();
     }
     */
+    std::cout<<conf.waveletBrFix<<std::endl;
+    std::cout<<conf.waveletBrFix2<<std::endl;
 
 
     if (conf.predictorTuningRate>0 and conf.predictorTuningRate<1){
