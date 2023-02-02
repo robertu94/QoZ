@@ -1562,7 +1562,7 @@ double Tuning(QoZ::Config &conf, T *data){
    
     T rng=conf.rng;
     double rel_bound = conf.relErrorBound>0?conf.relErrorBound:conf.absErrorBound/rng;
-    if((conf.waveAutoFix==1 and  rel_bound>1e-3) or conf.tuningTarget==QoZ::TUNING_TARGET_SSIM)//rencently changed
+    if((conf.waveAutoFix==1 and  rel_bound>1e-3) or (conf.waveAutoFix==1 and conf.tuningTarget==QoZ::TUNING_TARGET_SSIM))//rencently changed
         conf.testLorenzo=0;
    // QoZ::Timer timer(true);
     //timer.stop("")
@@ -2410,7 +2410,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double bitrate=results.first;
                 double metric=results.second;
 
-                  
+                
                 printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                     
