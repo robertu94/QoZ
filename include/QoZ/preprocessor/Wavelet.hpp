@@ -149,12 +149,12 @@ namespace QoZ {
                 py::initialize_interpreter();
             }
 
-            QoZ::Timer temptimer(true);
+           // QoZ::Timer temptimer(true);
             std::string HOME = "/home/jinyang.liu";
             py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
             auto pyModule=py::module_::import("pywt_wrapper");
-            if(conf.verbose)
-                temptimer.stop("Pybind import");
+            //if(conf.verbose)
+           //     temptimer.stop("Pybind import");
 
 
             std::string wavetype;
@@ -219,12 +219,12 @@ namespace QoZ {
                 conf.pybind_activated=true;
                 py::initialize_interpreter();
             }
-            QoZ::Timer temptimer(true);
+            //QoZ::Timer temptimer(true);
             std::string HOME = "/home/jinyang.liu";
             py::module_::import("sys").attr("path").attr("append")(HOME + "/QoZ/include/QoZ/preprocessor");
             auto pyModule=py::module_::import("pywt_wrapper");
-            if(conf.verbose)
-                temptimer.stop("Pybind import");
+            //if(conf.verbose)
+            //    temptimer.stop("Pybind import");
 
 
             std::string wavetype;
