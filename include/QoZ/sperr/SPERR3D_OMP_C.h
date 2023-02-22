@@ -32,7 +32,7 @@ class SPERR3D_OMP_C {
   auto copy_data(const T*, size_t len, sperr::dims_type vol_dims, sperr::dims_type chunk_dims)
       -> RTNType;
 
-  void toggle_conditioning(sperr::Conditioner::settings_type);
+ // void toggle_conditioning(sperr::Conditioner::settings_type);
 
   // Return 1) the number of outliers, and 2) the num of bytes to encode them.
   auto get_outlier_stats() const -> std::pair<size_t, size_t>;
@@ -54,7 +54,7 @@ class SPERR3D_OMP_C {
   sperr::dims_type m_dims = {0, 0, 0};        // Dimension of the entire volume
   sperr::dims_type m_chunk_dims = {0, 0, 0};  // Preferred dimensions for a chunk
   size_t m_num_threads = 1;
-  sperr::Conditioner::settings_type m_conditioning_settings = {true, false, false, false};
+ // sperr::Conditioner::settings_type m_conditioning_settings = {true, false, false, false};
 
   std::vector<sperr::vecd_type> m_chunk_buffers;
   std::vector<sperr::vec8_type> m_encoded_streams;
@@ -100,12 +100,12 @@ void SPERR3D_OMP_C::set_num_threads(size_t n)
   m_num_threads = 1;
 #endif
 }
-
+/*
 void SPERR3D_OMP_C::toggle_conditioning(sperr::Conditioner::settings_type b4)
 {
   m_conditioning_settings = b4;
 }
-
+*/
 auto SPERR3D_OMP_C::get_outlier_stats() const -> std::pair<size_t, size_t>
 {
   using pair = std::pair<size_t, size_t>;
@@ -224,7 +224,7 @@ auto SPERR3D_OMP_C::compress() -> RTNType
 
     // Prepare for compression
     compressor.take_data(std::move(m_chunk_buffers[i]), {chunks[i][1], chunks[i][3], chunks[i][5]});
-    compressor.toggle_conditioning(m_conditioning_settings);
+    //compressor.toggle_conditioning(m_conditioning_settings);
     compressor.set_skip_wave(skip_wave);
 
     // Figure out the bit budget for this chunk

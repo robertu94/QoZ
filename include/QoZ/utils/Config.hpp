@@ -290,9 +290,9 @@ namespace QoZ {
             write(conditioning, c);
             if(conditioning>0){
                 meta_size=meta.size();
-                std::vector<uint8_t> temp_meta(meta.begin(),meta.end());
+                //std::vector<uint8_t> temp_meta(meta.begin(),meta.end());
                 write(meta_size,c);
-                write(temp_meta.data(),meta_size,c);
+                write(meta.data(),meta_size,c);
                
             }
 
@@ -364,10 +364,10 @@ namespace QoZ {
                 read(meta_size,c);
                 //std::cout<<meta_size<<std::endl;
                 std::vector<uint8_t> temp_meta(meta_size);
-
-                read(temp_meta.data(),meta_size,c);
+                meta.resize(meta_size);
+                read(meta.data(),meta_size,c);
                // std::cout<<"dwad2"<<std::endl;
-                std::copy(temp_meta.begin(),temp_meta.end(),meta.begin());
+                //std::copy(temp_meta.begin(),temp_meta.end(),meta.begin());
                 //std::cout<<"dwad3"<<std::endl;
             }
         }
@@ -475,8 +475,8 @@ namespace QoZ {
 
         int conditioning=0;
         size_t meta_size=0;
-        sperr::Conditioner::meta_type meta;
-        std::vector<sperr::Conditioner::meta_type>block_metas;
+        sperr::vec8_type meta;
+        std::vector<sperr::vec8_type> block_metas;
         int fixWave=-1;
         bool sperrWithoutWave=false;
         bool pyBind=true;

@@ -50,11 +50,15 @@ auto pre_Condition(const QoZ::Config &conf,T * data){//conditioner not updated t
     std::vector<double> buf(data,data+conf.num);//maybe not efficient
     //std::cout<<"pre2"<<std::endl;
     sperr::Conditioner conditioner;
+    sperr::dims_type temp_dims={0,0,0};//temp. Fix for later introducing custom filter.
+    /*
     if(conf.conditioning==2){
         std::array<bool, 4> b4{true,true,false,false};
         conditioner.toggle_all_settings(b4);
     }
-    auto [rtn, condi_meta] = conditioner.condition(buf);
+    */
+
+    auto condi_meta = conditioner.condition(buf,temp_dims);
     //if(rtn!=sperr::RTNType::Good)
         //std::cout<<"bad cond"<<std::endl;
     //std::cout<<"pre3"<<std::endl;
@@ -66,14 +70,14 @@ auto pre_Condition(const QoZ::Config &conf,T * data){//conditioner not updated t
 }
 
 template<class T, QoZ::uint N>
-auto post_Condition(T * data,const size_t &num,const sperr::Conditioner::meta_type& meta){
+auto post_Condition(T * data,const size_t &num,const sperr::vec8_type& meta){
     //std::cout<<"post"<<std::endl;
     std::vector<double> buf(data,data+num);//maybe not efficient
     //for(size_t i=0;i<num;i++)
     //    buf[i]=data[i];
-
+    sperr::dims_type temp_dims={0,0,0};//temp. Fix for later introducing custom filter.
     sperr::Conditioner conditioner;
-    auto rtn = conditioner.inverse_condition(buf,meta);
+    auto rtn = conditioner.inverse_condition(buf,temp_dims,meta);
     for(size_t i=0;i<num;i++)
         data[i]=buf[i];
     //memcpy(data,buf.data(),num*sizeof(T));//maybe not efficient
@@ -1160,7 +1164,7 @@ std::pair<double,double> CompressTest(const QoZ::Config &conf,const std::vector<
                     //cur_block.resize(per_block_ele_num);
                     //for(size_t i=0;i<per_block_ele_num;i++)
                     //    cur_block[i]=idwtData[i];
-                    cur_block.assign(idwtData,idwtData+per_block_ele_num);//maybe not efficient, what about change the return type of ewp?
+                    cur_block.assign(idwtData,idwtData+per_block_ele_num);//maybe not efficient, what about change the return meta of ewp?
                     delete []idwtData;
                     if(testConfig.conditioning){
                         post_Condition<T,N>(cur_block.data(),per_block_ele_num,testConfig.block_metas[k]);

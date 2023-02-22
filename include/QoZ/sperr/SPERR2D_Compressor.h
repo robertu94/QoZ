@@ -31,7 +31,7 @@ class SPERR2D_Compressor {
   // Accept incoming data by taking ownership of the memory block
   auto take_data(std::vector<double>&& buf, sperr::dims_type dims) -> RTNType;
 
-  void toggle_conditioning(sperr::Conditioner::settings_type);
+  //void toggle_conditioning(sperr::Conditioner::settings_type);
 
   auto set_target_bpp(double) -> RTNType;
   void set_target_psnr(double);
@@ -58,7 +58,7 @@ class SPERR2D_Compressor {
 
   // A few data members for outlier correction
   sperr::SPERR m_sperr;
-  sperr::vec8_type m_sperr_stream;
+  //sperr::vec8_type m_sperr_stream;
   sperr::vecd_type m_val_buf2;        // A copy of `m_val_buf` used for outlier coding
   std::vector<sperr::Outlier> m_LOS;  // List of OutlierS
 
@@ -66,11 +66,13 @@ class SPERR2D_Compressor {
   sperr::CDF97 m_cdf;
   sperr::SPECK2D m_encoder;
 
-  sperr::Conditioner::settings_type m_conditioning_settings = {true, false, false, false};
-  sperr::Conditioner::meta_type m_condi_stream;
+ // sperr::Conditioner::settings_type m_conditioning_settings = {true, false, false, false};
+  //sperr::Conditioner::meta_type m_condi_stream;
 
   // Store bitstreams from the conditioner and SPECK encoding, and the overall bitstream.
+  sperr::vec8_type m_condi_stream;
   sperr::vec8_type m_speck_stream;
+  sperr::vec8_type m_sperr_stream;
   sperr::vec8_type m_encoded_stream;
 
   auto m_assemble_encoded_bitstream() -> RTNType;
@@ -152,11 +154,6 @@ void SPERR2D_Compressor::set_target_pwe(double pwe)
   m_target_pwe = std::max(pwe, 0.0);
 }
 
-void SPERR2D_Compressor::toggle_conditioning(sperr::Conditioner::settings_type settings)
-{
-  m_conditioning_settings = settings;
-}
-
 auto SPERR2D_Compressor::view_encoded_bitstream() const -> const std::vector<uint8_t>&
 {
   return m_encoded_stream;
@@ -173,7 +170,7 @@ auto SPERR2D_Compressor::compress() -> RTNType
   if (m_val_buf.empty() || m_val_buf.size() != total_vals)
     return RTNType::Error;
 
-  m_condi_stream.fill(0);
+  m_condi_stream.clear();
   m_speck_stream.clear();
   m_encoded_stream.clear();
 
@@ -181,40 +178,47 @@ auto SPERR2D_Compressor::compress() -> RTNType
   m_val_buf2.clear();
   m_LOS.clear();
 
-  // Believe it or not, there are constant fields passed in for compression!
-  // Let's detect that case and skip the rest of the compression routine if it occurs.
-  auto constant = m_conditioner.test_constant(m_val_buf);
-  if (constant.first) {
-    m_condi_stream = constant.second;
-    auto tmp = m_assemble_encoded_bitstream();
-    return tmp;
-  }
+  // Keep track of data range before and after the conditioning step, in case they change.
+  // This is only used in `FixedPWE` mode though.
+  auto range_before = double{0.0};
+  auto range_after = double{0.0};
 
   // Find out the compression mode, and initialize data members accordingly.
   const auto mode = sperr::compression_mode(m_bit_budget, m_target_psnr, m_target_pwe);
   assert(mode != sperr::CompMode::Unknown);
+  if (mode == sperr::CompMode::FixedPWE and 0) {//currently add a 0 for saving time, because custom filter is not used.
+    // Make a copy of the original data for outlier correction use.
+    m_val_buf2.resize(total_vals);
+    std::copy(m_val_buf.begin(), m_val_buf.end(), m_val_buf2.begin());
+    auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
+    range_before = *max - *min;
+  }
+
+  // Step 1: data goes through the conditioner
+  m_condi_stream = m_conditioner.condition(m_val_buf, m_dims);
+  // Step 1.1: Believe it or not, there are constant fields passed in for compression!
+  // Let's detect that case and skip the rest of the compression routine if it occurs.
+  if (m_conditioner.is_constant(m_condi_stream[0])) {
+    auto rtn = m_assemble_encoded_bitstream();
+    return rtn;
+  }
 
   if (mode == sperr::CompMode::FixedPSNR) {
-    // Calculate the original data range and pass it to the encoder.
+    // Calculate data range using the conditioned data, and pass it to the encoder.
+    //to tell the truth should add a way to pass the pre-calculated range.
     auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
     auto range = *max - *min;
     m_encoder.set_data_range(range);
   }
-  else if (mode == sperr::CompMode::FixedPWE) {
-    // Make a copy of the original data for outlier correction use.
-    m_val_buf2.resize(total_vals);
-    std::copy(m_val_buf.begin(), m_val_buf.end(), m_val_buf2.begin());
+  else if (mode == sperr::CompMode::FixedPWE &&
+           m_conditioner.has_custom_filter(m_condi_stream[0])) {
+    // Only re-calculate data range when there's custom filter enabled in the conditioner.
+    auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
+    range_after = *max - *min;
   }
 
-  // Step 1: data goes through the conditioner
-  m_conditioner.toggle_all_settings(m_conditioning_settings);
-  auto [rtn, condi_meta] = m_conditioner.condition(m_val_buf);
-  if (rtn != RTNType::Good)
-    return rtn;
-  m_condi_stream = condi_meta;
-
   // Step 2: wavelet transform
-  rtn = m_cdf.take_data(std::move(m_val_buf), m_dims);
+  auto rtn = m_cdf.take_data(std::move(m_val_buf), m_dims);
   if (rtn != RTNType::Good)
     return rtn;
   m_cdf.dwt2d();
@@ -229,7 +233,17 @@ auto SPERR2D_Compressor::compress() -> RTNType
     speck_bit_budget = sperr::max_size;
   else
     speck_bit_budget = m_bit_budget - (m_meta_size + m_condi_stream.size()) * 8;
-  m_encoder.set_comp_params(speck_bit_budget, m_target_psnr, m_target_pwe);
+
+  // In the FixedPWE mode, in case there's custom filter, we scale the PWE tolerance
+  auto speck_pwe = m_target_pwe;
+  if (mode == sperr::CompMode::FixedPWE && m_conditioner.has_custom_filter(m_condi_stream[0])) {
+    assert(range_before != 0.0);
+    speck_pwe *= range_after / range_before;
+  }
+
+  m_encoder.set_comp_params(speck_bit_budget, m_target_psnr, speck_pwe);
+  if (rtn != RTNType::Good)
+    return rtn;
 
   rtn = m_encoder.encode();
   if (rtn != RTNType::Good)
@@ -247,7 +261,7 @@ auto SPERR2D_Compressor::compress() -> RTNType
     m_cdf.take_data(std::move(qz_coeff), m_dims);
     m_cdf.idwt2d();
     m_val_buf = m_cdf.release_data();
-    m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
+    m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
 
     // Step 4.2: Find all outliers
     for (size_t i = 0; i < total_vals; i++) {
@@ -294,7 +308,7 @@ auto SPERR2D_Compressor::m_assemble_encoded_bitstream() -> RTNType
   // bool_byte[3-7]: unused
   //
   auto meta = std::vector<uint8_t>(m_meta_size, 0);
-  meta[0] = 0;//static_cast<uint8_t>(SPERR_VERSION_MAJOR);
+  meta[0] = static_cast<uint8_t>(SPERR_VERSION_MAJOR);
   auto metabool = std::array<bool, 8>{false, false, false, false, false, false, false, false};
 
 #ifdef USE_ZSTD

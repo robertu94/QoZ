@@ -38,7 +38,8 @@ class SPERR3D_Decompressor {
 
  private:
   dims_type m_dims = {0, 0, 0};
-  Conditioner::meta_type m_condi_stream;
+  //Conditioner::meta_type m_condi_stream;
+  vec8_type m_condi_stream;
   vec8_type m_speck_stream;
   vecd_type m_val_buf;
 
@@ -62,7 +63,8 @@ auto sperr::SPERR3D_Decompressor::use_bitstream(const void* p, size_t len) -> RT
 {
   // It'd be bad to have some buffers updated, and some others not.
   // So let's clean up everything at the very beginning of this routine
-  m_condi_stream.fill(0);
+  //m_condi_stream.fill(0);
+  m_condi_stream.clear();
   m_speck_stream.clear();
   m_val_buf.clear();
   m_sperr_stream.clear();
@@ -95,9 +97,11 @@ auto sperr::SPERR3D_Decompressor::use_bitstream(const void* p, size_t len) -> RT
 //#endif
 
   // Step 1: extract conditioner stream from it
-  const auto condi_size = m_condi_stream.size();
+  //const auto condi_size = m_condi_stream.size();
+  const auto condi_size = m_conditioner.header_size(ptr);
   if (condi_size > ptr_len)
     return RTNType::BitstreamWrongLen;
+  m_condi_stream.resize(condi_size);
   std::copy(ptr, ptr + condi_size, m_condi_stream.begin());
   size_t pos = condi_size;
 
@@ -105,8 +109,9 @@ auto sperr::SPERR3D_Decompressor::use_bitstream(const void* p, size_t len) -> RT
   // In that case, there will be no more speck or sperr streams.
   // Let's detect that case here and return early if it is true.
   // It will be up to the decompress() routine to restore the actual constant field.
-  auto constant = m_conditioner.parse_constant(m_condi_stream);
-  if (std::get<0>(constant)) {
+  //auto constant = m_conditioner.parse_constant(m_condi_stream);
+  //if (std::get<0>(constant)) {
+  if (m_conditioner.is_constant(m_condi_stream[0])) {
     if (condi_size == ptr_len)
       return RTNType::Good;
     else
@@ -144,12 +149,17 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
 {
   // `m_condi_stream` might be indicating a constant field, so let's see if that's
   // the case, and if it is, we don't need to go through dwt and speck stuff anymore.
+  /*
   auto constant = m_conditioner.parse_constant(m_condi_stream);
   if (std::get<0>(constant)) {
     auto val = std::get<1>(constant);
     auto nval = std::get<2>(constant);
     m_val_buf.assign(nval, val);
     return RTNType::Good;
+  */
+  if (m_conditioner.is_constant(m_condi_stream[0])) {
+    auto rtn = m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
+    return rtn;
   }
 
  
@@ -194,7 +204,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     const auto& cdf_out = m_cdf.view_data();
     m_val_buf.resize(cdf_out.size());
     std::copy(cdf_out.begin(), cdf_out.end(), m_val_buf.begin());
-    m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
+    m_conditioner.inverse_condition(m_val_buf, m_dims,m_condi_stream);
   }
   else{
   
