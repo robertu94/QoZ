@@ -235,6 +235,8 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     //const auto & coeffs=m_cdf.release_data();
 
     //sperr::write_n_bytes("sperr.dwt",coeffs.size()*sizeof(double),coeffs.data());
+    const auto header_size = 1 + sizeof(mean) + 0;//0 is the custom filter header size.
+    m_condi_stream.resize(header_size,0);
     auto b8=sperr::unpack_8_booleans(m_condi_stream[0]);
     b8[2]=true;
     m_condi_stream[0]=sperr::pack_8_booleans(b8);
