@@ -141,6 +141,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   m_sperr_stream.clear();
   m_val_buf2.clear();
   m_LOS.clear();
+  std::cout<<"p1"<<std::endl;
   /*
   // Believe it or not, there are constant fields passed in for compression!
   // Let's detect that case and skip the rest of the compression routine if it occurs.
@@ -176,7 +177,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
      auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
     range_before = *max - *min;
   }
-
+  std::cout<<"p2"<<std::endl;
   // Step 1: data goes through the conditioner
   if(!skip_wave){
     /*
@@ -206,6 +207,8 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
       range_after = *max - *min;
     }
 
+    std::cout<<"p3"<<std::endl;
+
 
     // Step 2: wavelet transform
     //rtn = m_cdf.take_data(std::move(m_val_buf), m_dims);
@@ -222,6 +225,8 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     rtn = m_encoder.take_data(m_cdf.release_data(), m_dims);
     if (rtn != RTNType::Good)
       return rtn;
+
+    std::cout<<"p4"<<std::endl;
 
   }
   else{
@@ -260,7 +265,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     return rtn;
 
   rtn = m_encoder.encode();
-
+   std::cout<<"p5"<<std::endl;
   if (rtn != RTNType::Good)
     return rtn;
   //std::cout<<m_encoder.count_LSP()<<std::endl;
@@ -309,7 +314,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
         return RTNType::Error;
     }
   }
-
+   std::cout<<"p6"<<std::endl;
   rtn = m_assemble_encoded_bitstream();
 
   return rtn;

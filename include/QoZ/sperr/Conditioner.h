@@ -74,6 +74,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
   m_reset_meta();
   // Operation 1
   //
+   std::cout<<"cp1"<<std::endl;
   if (std::all_of(buf.cbegin(), buf.cend(), [v0 = buf[0]](auto v) { return v == v0; })) {
     m_meta[m_constant_field_idx] = true;
     const double val = buf[0];
@@ -89,7 +90,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
     std::memcpy(header.data() + pos, &val, sizeof(val));
     return header;
   }
-
+  std::cout<<"cp2"<<std::endl;
   // Operation 2
   //
   m_meta[m_custom_filter_idx] = !std::is_same<Base_Filter, decltype(m_filter)>::value;
@@ -97,6 +98,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
 
   // Operation 3
   //
+  std::cout<<"cp3"<<std::endl;
   m_adjust_strides(buf.size());
   const auto mean = m_calc_mean(buf);
   std::for_each(buf.begin(), buf.end(), [mean](auto& v) { v -= mean; });
