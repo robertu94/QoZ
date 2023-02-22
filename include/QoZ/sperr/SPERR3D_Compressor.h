@@ -255,7 +255,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     speck_pwe *= range_after / range_before;
   }
 
-  rtn = m_encoder.set_comp_params(speck_budget, m_target_psnr, speck_pwe);
+  auto rtn = m_encoder.set_comp_params(speck_budget, m_target_psnr, speck_pwe);
   if (rtn != RTNType::Good)
     return rtn;
 
