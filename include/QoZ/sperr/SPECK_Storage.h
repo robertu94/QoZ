@@ -57,12 +57,12 @@ class SPECK_Storage {
   //
   // Member variables
   //
-  const size_t m_header_size = 12;  // See header definition in SPECK_Storage.cpp.
+  const size_t m_header_size = 16;  // See header definition in SPECK_Storage.cpp.
   const size_t m_u64_garbage_val = std::numeric_limits<size_t>::max();
   size_t m_encode_budget = 0;
   size_t m_LSP_mask_cnt = 0;           // Number of TRUE values in `m_LSP_mask`. Decoding only
   size_t m_bit_idx = 0;                // Which bit we're at? Decoding only
-  float m_max_threshold_f = 0.0;       // float representation of max threshold
+  double m_max_threshold = 0.0;       // float representation of max threshold
   double m_data_range = sperr::max_d;  // range of data before DWT
   double m_target_pwe = 0.0;           // used in fixed-PWE mode
   double m_threshold = 0.0;            // Threshold that's used for an iteration
@@ -162,9 +162,9 @@ void sperr::SPECK_Storage::set_data_range(double range)
 
 auto sperr::SPECK_Storage::m_prepare_encoded_bitstream() -> RTNType
 {
-  // Header definition: 12 bytes in total:
-  // m_max_threshold_f, stream_len
-  // float,             uint64_t
+  // Header definition: 16 bytes in total:
+  // m_max_threshold,   num_useful_bits
+  // double,             uint64_t
 
   assert(m_bit_buffer.size() % 8 == 0);
   const uint64_t bit_in_byte = m_bit_buffer.size() / 8;
@@ -174,8 +174,8 @@ auto sperr::SPECK_Storage::m_prepare_encoded_bitstream() -> RTNType
 
   // Fill header
   size_t pos = 0;
-  std::memcpy(ptr + pos, &m_max_threshold_f, sizeof(m_max_threshold_f));
-  pos += sizeof(m_max_threshold_f);
+  std::memcpy(ptr + pos, &m_max_threshold, sizeof(m_max_threshold));
+  pos += sizeof(m_max_threshold);
 
   std::memcpy(ptr + pos, &bit_in_byte, sizeof(bit_in_byte));
   pos += sizeof(bit_in_byte);
@@ -197,8 +197,8 @@ auto sperr::SPECK_Storage::parse_encoded_bitstream(const void* comp_buf, size_t 
 
   // Parse the header
   size_t pos = 0;
-  std::memcpy(&m_max_threshold_f, ptr + pos, sizeof(m_max_threshold_f));
-  pos += sizeof(m_max_threshold_f);
+  std::memcpy(&m_max_threshold, ptr + pos, sizeof(m_max_threshold));
+  pos += sizeof(m_max_threshold);
 
   uint64_t bit_in_byte = 0;
   std::memcpy(&bit_in_byte, ptr + pos, sizeof(bit_in_byte));

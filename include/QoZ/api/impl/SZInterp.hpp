@@ -45,7 +45,7 @@ bool use_sperr(const QoZ::Config & conf){
 }
 
 template<class T, QoZ::uint N>
-auto pre_Condition(const QoZ::Config &conf,T * data){
+auto pre_Condition(const QoZ::Config &conf,T * data){//conditioner not updated to the newest version of SPERR.
     //std::cout<<"pre"<<std::endl;
     std::vector<double> buf(data,data+conf.num);//maybe not efficient
     //std::cout<<"pre2"<<std::endl;
