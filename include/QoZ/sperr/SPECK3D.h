@@ -210,12 +210,12 @@ auto sperr::SPECK3D::encode() -> RTNType
     m_clean_LIS();
   }
   //std::cout<<m_threshold<<std::endl;
-
+  /*
   // If the bit buffer has the last byte half-empty, let's fill in zero's.
   // The decoding process will not read them anyway.
   while (m_bit_buffer.size() % 8 != 0)
     m_bit_buffer.push_back(false);
-
+  */
   // Finally we prepare the bitstream
   rtn = m_prepare_encoded_bitstream();
 
