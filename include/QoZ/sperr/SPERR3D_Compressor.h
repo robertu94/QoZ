@@ -141,7 +141,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   m_sperr_stream.clear();
   m_val_buf2.clear();
   m_LOS.clear();
-  std::cout<<"p1"<<std::endl;
+  //std::cout<<"p1"<<std::endl;
   /*
   // Believe it or not, there are constant fields passed in for compression!
   // Let's detect that case and skip the rest of the compression routine if it occurs.
@@ -177,7 +177,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     // auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());//commented for saving time as currently custom filter is not used.
     //range_before = *max - *min;
   }
-  std::cout<<"p2"<<std::endl;
+  //std::cout<<"p2"<<std::endl;
   // Step 1: data goes through the conditioner
   if(!skip_wave){
     /*
@@ -207,7 +207,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
       range_after = *max - *min;
     }
 
-    std::cout<<"p3"<<std::endl;
+    //std::cout<<"p3"<<std::endl;
 
 
     // Step 2: wavelet transform
@@ -226,7 +226,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     if (rtn != RTNType::Good)
       return rtn;
 
-    std::cout<<"p4"<<std::endl;
+    //std::cout<<"p4"<<std::endl;
 
   }
   else{
@@ -267,7 +267,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     return rtn;
 
   rtn = m_encoder.encode();
-   std::cout<<"p5"<<std::endl;
+ //  std::cout<<"p5"<<std::endl;
   if (rtn != RTNType::Good)
     return rtn;
   //std::cout<<m_encoder.count_LSP()<<std::endl;
@@ -295,7 +295,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     m_val_buf = m_cdf.release_data();
     //m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
     m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
-     std::cout<<"p5.1"<<std::endl;
+   //  std::cout<<"p5.1"<<std::endl;
     // Step 4.2: Find all outliers
     for (size_t i = 0; i < total_vals; i++) {
       const auto diff = m_val_buf2[i] - m_val_buf[i];
@@ -316,7 +316,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
         return RTNType::Error;
     }
   }
-   std::cout<<"p6"<<std::endl;
+  // std::cout<<"p6"<<std::endl;
   rtn = m_assemble_encoded_bitstream();
 
   return rtn;

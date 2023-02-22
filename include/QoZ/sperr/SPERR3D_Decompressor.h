@@ -166,7 +166,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
 
 
   // Step 1: SPECK decode.
-  std::cout<<"dep1"<<std::endl;
+ // std::cout<<"dep1"<<std::endl;
   if (m_speck_stream.empty())
     return RTNType::Error;
 
@@ -197,7 +197,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
      
     //sperr::write_n_bytes("sperr.dwt.dec",decoder_out.size()*sizeof(double),decoder_out.data());
 
-    std::cout<<"dep2"<<std::endl;
+   // std::cout<<"dep2"<<std::endl;
     m_cdf.copy_data(decoder_out.data(), decoder_out.size(), m_dims);
     m_cdf.idwt3d();
 
@@ -206,7 +206,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     m_val_buf.resize(cdf_out.size());
     std::copy(cdf_out.begin(), cdf_out.end(), m_val_buf.begin());
     m_conditioner.inverse_condition(m_val_buf, m_dims,m_condi_stream);
-    std::cout<<"dep3"<<std::endl;
+    //std::cout<<"dep3"<<std::endl;
   }
   else{
   
@@ -229,7 +229,7 @@ auto sperr::SPERR3D_Decompressor::decompress() -> RTNType
     for (const auto& outlier : los)
       m_val_buf[outlier.location] += outlier.error;
   }
-  std::cout<<"dep4"<<std::endl;
+  //std::cout<<"dep4"<<std::endl;
   //std::cout<<"fuqin7"<<std::endl;
   return RTNType::Good;
 }

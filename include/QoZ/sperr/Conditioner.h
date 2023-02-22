@@ -74,7 +74,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
   m_reset_meta();
   // Operation 1
   //
-   std::cout<<"cp1"<<std::endl;
+   //std::cout<<"cp1"<<std::endl;
   if (std::all_of(buf.cbegin(), buf.cend(), [v0 = buf[0]](auto v) { return v == v0; })) {
     m_meta[m_constant_field_idx] = true;
     const double val = buf[0];
@@ -90,7 +90,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
     std::memcpy(header.data() + pos, &val, sizeof(val));
     return header;
   }
-  std::cout<<"cp2"<<std::endl;
+  //std::cout<<"cp2"<<std::endl;
   // Operation 2
   //
   m_meta[m_custom_filter_idx] = !std::is_same<Base_Filter, decltype(m_filter)>::value;
@@ -98,7 +98,7 @@ auto sperr::Conditioner::condition(vecd_type& buf, dims_type dims) -> vec8_type
 
   // Operation 3
   //
-  std::cout<<"cp3"<<std::endl;
+  //std::cout<<"cp3"<<std::endl;
   m_adjust_strides(buf.size());
   const auto mean = m_calc_mean(buf);
   std::for_each(buf.begin(), buf.end(), [mean](auto& v) { v -= mean; });
@@ -130,7 +130,7 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
 
   // Operation 1: if this is a constant field?
   //
-  std::cout<<"dp1"<<std::endl;
+  //std::cout<<"dp1"<<std::endl;
   if (m_meta[m_constant_field_idx]) {
     if (header.size() != m_constant_field_header_size)
       return RTNType::BitstreamWrongLen;
@@ -149,14 +149,14 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
 
   // Operation 2: add back the mean
   //
-  std::cout<<"dp2"<<std::endl;
+  //std::cout<<"dp2"<<std::endl;
   double mean = 0.0;
   std::memcpy(&mean, header.data() + pos, sizeof(mean));
   std::for_each(buf.begin(), buf.end(), [mean](auto& v) { v += mean; });
 
   // Operation 3: if there's custom filter, apply the inverse of that filter
   //
-  std::cout<<"dp3"<<std::endl;
+  //std::cout<<"dp3"<<std::endl;
   if (m_meta[m_custom_filter_idx]) {
     // Sanity check: the custom filter is compiled
     if (std::is_same<Base_Filter, decltype(m_filter)>::value)
@@ -170,7 +170,7 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
     if (!m_filter.inverse_filter(buf, dims, filter, filter_len))
       return RTNType::CustomFilterError;
   }
-  std::cout<<"dp4"<<std::endl;
+  //std::cout<<"dp4"<<std::endl;
   return RTNType::Good;
 }
 
