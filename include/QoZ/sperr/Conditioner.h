@@ -130,6 +130,7 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
 
   // Operation 1: if this is a constant field?
   //
+  std::cout<<"dp1"<<std::endl;
   if (m_meta[m_constant_field_idx]) {
     if (header.size() != m_constant_field_header_size)
       return RTNType::BitstreamWrongLen;
@@ -148,12 +149,14 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
 
   // Operation 2: add back the mean
   //
+  std::cout<<"dp2"<<std::endl;
   double mean = 0.0;
   std::memcpy(&mean, header.data() + pos, sizeof(mean));
   std::for_each(buf.begin(), buf.end(), [mean](auto& v) { v += mean; });
 
   // Operation 3: if there's custom filter, apply the inverse of that filter
   //
+  std::cout<<"dp3"<<std::endl;
   if (m_meta[m_custom_filter_idx]) {
     // Sanity check: the custom filter is compiled
     if (std::is_same<Base_Filter, decltype(m_filter)>::value)
