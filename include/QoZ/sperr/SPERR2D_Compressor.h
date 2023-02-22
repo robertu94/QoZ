@@ -186,12 +186,12 @@ auto SPERR2D_Compressor::compress() -> RTNType
   // Find out the compression mode, and initialize data members accordingly.
   const auto mode = sperr::compression_mode(m_bit_budget, m_target_psnr, m_target_pwe);
   assert(mode != sperr::CompMode::Unknown);
-  if (mode == sperr::CompMode::FixedPWE and 0) {//currently add a 0 for saving time, because custom filter is not used.
+  if (mode == sperr::CompMode::FixedPWE ) {
     // Make a copy of the original data for outlier correction use.
     m_val_buf2.resize(total_vals);
     std::copy(m_val_buf.begin(), m_val_buf.end(), m_val_buf2.begin());
-    auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
-    range_before = *max - *min;
+    //auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());//currently commented for saving time, because custom filter is not used.
+   // range_before = *max - *min;
   }
 
   // Step 1: data goes through the conditioner

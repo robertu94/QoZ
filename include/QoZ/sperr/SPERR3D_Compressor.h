@@ -170,12 +170,12 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
   }
   else if (mode == sperr::CompMode::FixedPWE) {
     */ 
-  if (mode == sperr::CompMode::FixedPWE and 0) {//add 0 for saving time as currently custom filter is not used.
+  if (mode == sperr::CompMode::FixedPWE ) {
     // Make a copy of the original data for outlier correction use.
     m_val_buf2.resize(total_vals);
     std::copy(m_val_buf.cbegin(), m_val_buf.cend(), m_val_buf2.begin());
-     auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());
-    range_before = *max - *min;
+    // auto [min, max] = std::minmax_element(m_val_buf.cbegin(), m_val_buf.cend());//commented for saving time as currently custom filter is not used.
+    //range_before = *max - *min;
   }
   std::cout<<"p2"<<std::endl;
   // Step 1: data goes through the conditioner
@@ -293,7 +293,7 @@ auto sperr::SPERR3D_Compressor::compress() -> RTNType
     m_val_buf = m_cdf.release_data();
     //m_conditioner.inverse_condition(m_val_buf, m_condi_stream);
     m_conditioner.inverse_condition(m_val_buf, m_dims, m_condi_stream);
-
+     std::cout<<"p5.1"<<std::endl;
     // Step 4.2: Find all outliers
     for (size_t i = 0; i < total_vals; i++) {
       const auto diff = m_val_buf2[i] - m_val_buf[i];

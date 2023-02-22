@@ -170,7 +170,7 @@ auto sperr::Conditioner::inverse_condition(vecd_type& buf, dims_type dims, const
     if (!m_filter.inverse_filter(buf, dims, filter, filter_len))
       return RTNType::CustomFilterError;
   }
-
+  std::cout<<"dp4"<<std::endl;
   return RTNType::Good;
 }
 
