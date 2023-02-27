@@ -1483,7 +1483,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         //conf.waveletBrFix=1.0;
         conf.waveletMseFix=1.0;
     }
-    else{
+    else{//not updated. maybe should update.
         double e1=1e-3;
         double e2=1e-2;
         double e3=1e-1;
@@ -1511,7 +1511,7 @@ void setFixRates(QoZ::Config &conf,double rel_bound){
         double e3=1e-2;
         //double e4=1e-1;
         double f1=0.8;//change to 1
-        double f2=0.8;//changt to 0.9
+        double f2=0.8;//change to 0.9
         double f3=0.8;//0.8
         //double f4=0.15;
         if(rel_bound<=e1)
@@ -2341,7 +2341,7 @@ double Tuning(QoZ::Config &conf, T *data){
                         //std::cout<<"fuqindejian0.2"<<std::endl;  
                         double bitrate=results.first;
                         double metric=results.second;
-                        printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
+                        //printf("%d %.2f %.2f %.2f %.4f %.2f\n",wave_idx,gamma,alpha,beta,bitrate,metric);
                         if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                             bestalpha=alpha;
                             bestbeta=beta;
@@ -2415,7 +2415,7 @@ double Tuning(QoZ::Config &conf, T *data){
                 double metric=results.second;
 
                 
-                printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
+                //printf("Lorenzo: %.4f %.2f\n",bitrate,metric);     
                 if ( (conf.tuningTarget!=QoZ::TUNING_TARGET_CR and metric>=bestm and bitrate<=bestb) or (conf.tuningTarget==QoZ::TUNING_TARGET_CR and bitrate<=bestb ) ){
                     
                     bestb=bitrate;
