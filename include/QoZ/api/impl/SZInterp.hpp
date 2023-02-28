@@ -2219,7 +2219,7 @@ double Tuning(QoZ::Config &conf, T *data){
         */
         for(size_t wave_idx=0;wave_idx<=conf.waveletAutoTuning;wave_idx++){
 
-            if(conf.fixWave>0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
+            if(conf.fixWave>=0 and conf.fixWave<=conf.waveletAutoTuning and  wave_idx!=conf.fixWave)
                 continue;
         //std::vector<double> flattened_cur_blocks;
             //std::cout<<wave_idx<<std::endl;
