@@ -1601,7 +1601,7 @@ double Tuning(QoZ::Config &conf, T *data){
     }   
     //Add conf.FZ
     
-    else if(Conf.FZ){//untested
+    else if(conf.FZ){//untested
         if(conf.autoTuningRate<=0)
             conf.autoTuningRate = (N==2?0.01:0.005);
         if(conf.predictorTuningRate<=0)
