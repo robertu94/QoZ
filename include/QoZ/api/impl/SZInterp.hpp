@@ -1774,7 +1774,7 @@ double Tuning(QoZ::Config &conf, T *data){
         conf.sampleBlockSize=minimum_sbs;
 
 
-    while(conf.sampleBlockSize>shortest_edge)
+    while(conf.sampleBlockSize>=shortest_edge)
         conf.sampleBlockSize/=2;
 
 
