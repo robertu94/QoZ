@@ -1790,6 +1790,7 @@ double Tuning(QoZ::Config &conf, T *data){
     size_t per_block_ele_num;
     size_t ele_num;
 
+    std::cout<<conf.sampleBlockSize<<std::endl;
     
 
 
@@ -1848,6 +1849,7 @@ double Tuning(QoZ::Config &conf, T *data){
         //}        
         //std::cout<<"a0"<<std::endl;
         num_sampled_blocks=sampled_blocks.size();
+        std::cout<<num_sampled_blocks<<std::endl;
         per_block_ele_num=pow(sampleBlockSize+1,N);
         ele_num=num_sampled_blocks*per_block_ele_num;
         //std::cout<<ele_num<<std::endl;
