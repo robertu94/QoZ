@@ -192,6 +192,7 @@ namespace QoZ {
             fixBlockSize=cfg.GetInteger("AlgoSettings", "fixBlockSize", fixBlockSize);
             verbose=cfg.GetBoolean("AlgoSettings", "verbose", verbose);
             QoZ=cfg.GetBoolean("AlgoSettings", "QoZ", QoZ);
+            QoZ=cfg.GetBoolean("AlgoSettings", "FZ", FZ);
             sperrWithoutWave=cfg.GetBoolean("AlgoSettings", "sperrWithoutWave",sperrWithoutWave);
             pyBind=cfg.GetBoolean("AlgoSettings", "pyBind",pyBind);
 
@@ -266,7 +267,7 @@ namespace QoZ {
             write(openmp, c);
             write(fixBlockSize, c);
             write(blockwiseSampleBlockSize, c);
-            write(QoZ, c);
+            //write(QoZ, c);//recently changed.
             write(crossBlock, c);
             write(wavelet, c);
             write(firstSize, c);
@@ -332,7 +333,7 @@ namespace QoZ {
             read(openmp, c);
             read(fixBlockSize, c);
             read(blockwiseSampleBlockSize, c);
-            read(QoZ, c);
+            //read(QoZ, c);//recently changed.
             read(crossBlock, c);
             read(wavelet, c);
             read(firstSize, c);
@@ -482,6 +483,7 @@ namespace QoZ {
         bool pyBind=true;
         std::string metadata;
         bool pybind_activated=false;
+        bool FZ=false;
 
 
         

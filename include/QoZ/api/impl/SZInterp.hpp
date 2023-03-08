@@ -1585,8 +1585,50 @@ double Tuning(QoZ::Config &conf, T *data){
             else
                 conf.sampleBlockSize = (N==2?64:32);
         }
-
+        //testLorenzo?
+        //deactivate FZ-related parts.
+        conf.profiling=0;
+        conf.var_first=0;
+        conf.testLorenzo=0;
+        conf.waveletAutoTuning=0;
+        conf.waveletTest=0;
+        conf.waveAutoFix=0;
+        conf.sperr=-1;
+        conf.conditioning=0;
+        conf.pyBind=0;
+        conf.fixWave=-1;
+        conf.sperrWithoutWave=false;
     }   
+    //Add conf.FZ
+    
+    else if(Conf.FZ){//untested
+        if(conf.autoTuningRate<=0)
+            conf.autoTuningRate = (N==2?0.01:0.005);
+        if(conf.predictorTuningRate<=0)
+            conf.predictorTuningRate = (N==2?0.01:0.005);
+        if (conf.maxStep<=0)
+            conf.maxStep = (N==2?64:32);
+        if (conf.levelwisePredictionSelection<=0)
+            conf.levelwisePredictionSelection = (N==2?6:4);
+        if (conf.sampleBlockSize<=0){
+            if(conf.waveletAutoTuning>=2)
+                conf.sampleBlockSize = 64;
+            else
+                conf.sampleBlockSize = (N==2?64:32);
+        }
+        conf.profiling=1;
+        conf.var_first=1;
+        conf.testLorenzo=1;
+        conf.waveletAutoTuning=2;//maybe flexible
+        conf.waveletTest=1;
+        conf.waveAutoFix=1;//maybe selective
+        conf.sperr=2;//maybe selective
+        conf.conditioning=1;//maybe selective
+        conf.pyBind=1;//change later
+        conf.fixWave=-1;//maybe selective
+        conf.sperrWithoutWave=false;//maybe selective
+        //profStride not included.
+    }
     
     size_t sampling_num, sampling_block;
     double best_interp_cr=0.0;
